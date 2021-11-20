@@ -15,22 +15,23 @@ async def send_everyone_func(chat_id):
 
 
 # Show post sample
+@dp.message_handler(state=AdminSendEveryOne.all_states, text='Отменить')
+async def admin_reject_handler(message: Message, state: FSMContext):
+    await bot.send_message(message.chat.id, 'Вы отменили действия', reply_markup=admin_markup)
+    await state.finish()
+
+
+# Show post sample
 @dp.message_handler(state=AdminSendEveryOne.ask_post, content_types=['photo', 'text', 'voice', 'animation', 'video'])
-async def admin_post_type(message: Message, state: FSMContext):
+async def admin_ask_post(message: Message, state: FSMContext):
     chat_id = message.chat.id
-    admin_message = message.text
-
-    if admin_message == 'Отменить':
-        await reject_message(chat_id, state)
-        return
-
     buttons = message.reply_markup
 
     await state.update_data(buttons=buttons)
-    await state.update_data(message_id=message.forward_from_message_id)
+    await state.update_data(message_id=message.message_id)
     await state.update_data(copy_from=chat_id)
 
-    await bot.copy_message(chat_id, chat_id, message.forward_from_message_id)
+    await bot.copy_message(chat_id, chat_id, message.message_id)
     await bot.send_message(chat_id, 'Ваш пост будет выглядеть так, начать рассылку?', reply_markup=sure_markup)
 
     await AdminSendEveryOne.ask_send.set()
@@ -41,10 +42,6 @@ async def admin_post_type(message: Message, state: FSMContext):
 async def admin_ask_send(message: Message, state: FSMContext):
     chat_id = message.chat.id
     admin_message = message.text
-
-    if admin_message == 'Отменить':
-        await reject_message(chat_id, state)
-        return
 
     if admin_message == 'Начать':
         await send_post(chat_id, state)
@@ -127,8 +124,3 @@ async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, butto
 async def send_progress_message(chat_id, count):
     sent_message = await bot.send_message(chat_id, '{0:,} пользователей получили рассылку'.format(count))
     return sent_message
-
-
-async def reject_message(chat_id, state):
-    await bot.send_message(chat_id, 'Вы отменили действия', reply_markup=admin_markup)
-    await state.finish()

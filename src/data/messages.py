@@ -14,8 +14,6 @@ msg_dict = {
     'action-rejected': 'Вы отменили действия',
 
     'caption': '{}',
-
-
 }
 
 RECORD_VOICE = 'Записать войс'
