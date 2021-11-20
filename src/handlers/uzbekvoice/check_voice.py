@@ -44,7 +44,9 @@ async def message_receiver_handler(message: Message, state: FSMContext):
 async def ask_user_action(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
+
     await call.message.delete_reply_markup()
+    await call.answer()
 
     data = await state.get_data()
     list_number = data['list_number']
