@@ -9,8 +9,8 @@ GET_VOICES_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/95.0.4638.69 Safari/537.36',
-           'Authorization': 'Basic YjcxNDA2MTktNjZiNS00NDBlLWIwZjItNGQ1MzZlYTk3Nz'
-                            'MwOmNhN2ViMjQ2NjQ0OWYxZWJmZjJmMjgzYjNhMTczOGMyOTJmYWQ0Mzg='}
+           'Authorization': 'Basic YzI2ZTZhOTAtMWMwOS00ZjFlLTk5ZmYtMTRmZWQ2'
+                            'MGNlMTlhOmNhN2ViMjQ2NjQ0OWYxZWJmZjJmMjgzYjNhMTczOGMyOTJmYWQ0Mzg='}
 
 
 async def get_text_to_read():
