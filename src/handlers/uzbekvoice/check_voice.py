@@ -3,7 +3,7 @@ import os
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from data.messages import CHECK_VOICE
+from data.messages import CHECK_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
 from keyboards.inline import yes_no_markup
 from main import dp, AskUserAction
@@ -30,7 +30,7 @@ async def message_receiver_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     user_message = message.text
 
-    if user_message == 'Отменить':
+    if user_message == CANCEL_MESSAGE:
         await send_message(message.chat.id, 'action-rejected', markup=start_markup)
         await state.finish()
     else:

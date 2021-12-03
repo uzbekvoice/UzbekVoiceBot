@@ -1,6 +1,6 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-from data.messages import RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS
+from data.messages import RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS, CANCEL_MESSAGE
 
 admin_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 admin_button_1 = KeyboardButton(SEND_EVERYONE)
@@ -8,7 +8,7 @@ admin_button_2 = KeyboardButton(BOT_STATISTICS)
 admin_markup.add(*[admin_button_1, admin_button_2])
 
 reject_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-reject_button = KeyboardButton('Отменить')
+reject_button = KeyboardButton(CANCEL_MESSAGE)
 reject_markup.add(reject_button)
 
 

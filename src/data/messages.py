@@ -24,3 +24,4 @@ VOICE_INCORRECT = 'Noto\'g\'ri 👎'
 
 SEND_EVERYONE = 'Рассылка рекламы'
 BOT_STATISTICS = 'Bot statistikasi'
+CANCEL_MESSAGE = 'Отменить'
