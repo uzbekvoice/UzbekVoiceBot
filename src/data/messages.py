@@ -1,26 +1,26 @@
 
 msg_dict = {
-    'admin-bot-start': 'Бот запущен',
+    'admin-bot-start': 'Bot ishga tushurildi',
 
-    'start': 'Привет это бот @UzbekVoiceBot.',
+    'start': 'Salom, bu @UzbekVoiceBot.',
 
-    'ask-record-voice': 'Пожалуйста, прочтите следующие текста, записавая голосовые сообщения.',
-    'ask-record-voice-again': 'Пожалуйста, прочитайте текст выше, записавая голосовое сообщение.',
+    'ask-record-voice': 'Iltimos, quyida berilgan matnlarni o\'qing, ovozli xabar sifatida yuboring.',
+    'ask-record-voice-again': 'Iltimos, ushbu tepadagi matnni o\'qing, ovozli xabar sifatida yuboring.',
 
-    'ask-check-voice': 'Пожалуйста, проверьте, правильно ли следующие голосовые сообщения были записаны?',
-    'ask-check-voice-again': 'Пожалуйста, проверьте, правильно ли выше голосовое сообщение было записано, '
-                             'а затем нажмите на кнопку Принять/Отклонить',
+    'ask-check-voice': 'Iltimos, quyidagi ovozli xabarlarni eshitib, to\'g\'ri o\'qilganligini tekshiring',
+    'ask-check-voice-again': 'Iltimos ushbu tepadagi ovozli xabarni eshitib ko\'rib to\'g\'ri yozilganini tekshiring,'
+                             'va kerakli tugmani bosing - To\'g\'ri/Noto\'g\'ri',
 
-    'action-rejected': 'Вы отменили действия',
+    'action-rejected': 'Bekor qilindi',
 
     'caption': '{}',
 }
 
-RECORD_VOICE = 'Записать войс'
-CHECK_VOICE = 'Проверить войс'
+RECORD_VOICE = 'Matn o\'qish'
+CHECK_VOICE = 'Ovoz yozuvlarini tekshirish'
 
-VOICE_CORRECT = 'Принять'
-VOICE_INCORRECT = 'Отколнить'
+VOICE_CORRECT = 'To\'g\'ri 👍'
+VOICE_INCORRECT = 'Noto\'g\'ri 👎'
 
 SEND_EVERYONE = 'Рассылка рекламы'
-BOT_STATISTICS = 'Статистика бота'
+BOT_STATISTICS = 'Bot statistikasi'
