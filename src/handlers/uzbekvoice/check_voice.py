@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 from aiogram.dispatcher import FSMContext
@@ -7,7 +8,7 @@ from data.messages import CHECK_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
 from keyboards.inline import yes_no_markup
 from main import dp, AskUserAction
-from utils.helpers import send_message, send_voice
+from utils.helpers import send_message, send_voice, edit_reply_markup
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote
 
 
@@ -45,7 +46,6 @@ async def ask_user_action(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
 
-    await call.message.delete_reply_markup()
     await call.answer()
 
     data = await state.get_data()
@@ -53,7 +53,11 @@ async def ask_user_action(call: CallbackQuery, state: FSMContext):
     voices_info = data['voices_info']
     voice_id = voices_info[list_number]['id']
 
-    await send_voice_vote(voice_id, call_data)
+    if call_data == 'report':
+        await call.message.delete()
+    else:
+        await call.message.delete_reply_markup()
+        await send_voice_vote(voice_id, call_data)
 
     if list_number == 4:
         voices_info = await get_voices_to_check()
@@ -77,8 +81,9 @@ async def ask_to_check_voice(chat_id, state):
 
     file_directory = await download_file(voice_url, voice_id)
 
-    message_id = await send_voice(chat_id, open(file_directory, 'rb'), 'caption',
-                                  args=text_to_check, markup=yes_no_markup)
+    message_id = await send_voice(chat_id, open(file_directory, 'rb'), 'caption', args=text_to_check)
+    await asyncio.sleep(4)
+    await edit_reply_markup(chat_id, message_id, yes_no_markup)
     await state.update_data(reply_message_id=message_id)
 
     os.remove(file_directory)

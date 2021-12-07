@@ -25,6 +25,10 @@ async def send_voice(chat_id, file_to_send, caption, args=None, markup=None):
     return sent_voice.message_id
 
 
+async def edit_reply_markup(chat_id, message_id, markup):
+    await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
+
+
 # Get user message
 async def user_msg(message_str, args):
     if args is None:
