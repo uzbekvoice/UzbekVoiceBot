@@ -21,8 +21,17 @@ CHECK_VOICE = 'Ovoz yozuvlarini tekshirish'
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
+SKIP_STEP = 'Tashlab ketish [skip]'
 VOICE_REPORT = 'Xabar berish ❗️'
 
 SEND_EVERYONE = 'Рассылка рекламы'
 BOT_STATISTICS = 'Bot statistikasi'
 CANCEL_MESSAGE = 'Bekor qilish'
+
+REPORT_TEXT_1 = 'Haqoratli nutq'
+REPORT_TEXT_2 = 'Grammatik / imlo xatosi'
+REPORT_TEXT_3 = 'Boshqa tillar'
+REPORT_TEXT_4 = 'Talaffuz qilish qiyin'
+REPORT_TEXT_5 = 'Orqaga qaytish'
+
+

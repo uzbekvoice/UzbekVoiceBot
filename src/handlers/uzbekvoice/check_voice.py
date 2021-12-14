@@ -6,10 +6,10 @@ from aiogram.types import Message, CallbackQuery
 
 from data.messages import CHECK_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
-from keyboards.inline import yes_no_markup
+from keyboards.inline import yes_no_markup, report_voice_markup
 from main import dp, AskUserAction
 from utils.helpers import send_message, send_voice, edit_reply_markup
-from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote
+from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function
 
 
 # Handler that answers to Check Voice message
@@ -45,6 +45,7 @@ async def message_receiver_handler(message: Message, state: FSMContext):
 async def ask_user_action(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
+    message_id = call.message.message_id
 
     await call.answer()
 
@@ -54,11 +55,46 @@ async def ask_user_action(call: CallbackQuery, state: FSMContext):
     voice_id = voices_info[list_number]['id']
 
     if call_data == 'report':
+        await edit_reply_markup(chat_id, message_id, report_voice_markup)
+        await AskUserAction.report_type.set()
+        return
+    elif call_data == 'skip':
         await call.message.delete()
     else:
         await call.message.delete_reply_markup()
         await send_voice_vote(voice_id, call_data)
 
+    # If there are no more voice to check, get new list of text
+    if list_number == 4:
+        voices_info = await get_voices_to_check()
+        await state.update_data(list_number=0, voices_info=voices_info)
+    else:
+        await state.update_data(list_number=list_number + 1)
+
+    await ask_to_check_voice(chat_id, state)
+
+
+# Handler that receives action on pressed report inline button
+@dp.callback_query_handler(state=AskUserAction.report_type)
+async def ask_user_report(call: CallbackQuery, state: FSMContext):
+    call_data = str(call.data)
+    chat_id = call.message.chat.id
+    message_id = call.message.message_id
+
+    if call_data == 'back':
+        await edit_reply_markup(chat_id, message_id, yes_no_markup)
+        await AskUserAction.ask_action.set()
+        return
+    else:
+        data = await state.get_data()
+        list_number = data['list_number']
+        voices_info = data['voices_info']
+        voice_id = voices_info[list_number]['id']
+
+        await report_function('clip', voice_id, call_data)
+        await call.message.delete()
+
+    # If there are no more voice to check, get new list of text
     if list_number == 4:
         voices_info = await get_voices_to_check()
         await state.update_data(list_number=0, voices_info=voices_info)

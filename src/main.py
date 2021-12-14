@@ -23,7 +23,9 @@ class AdminSendEveryOne(StatesGroup):
 
 class AskUserVoice(StatesGroup):
     ask_voice = State()
+    report_type = State()
 
 
 class AskUserAction(StatesGroup):
     ask_action = State()
+    report_type = State()

@@ -6,6 +6,7 @@ GET_TEXT_URL = 'https://commonvoice.mozilla.org/api/v1/uz/sentences'
 SEND_VOICE_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
 VOICE_VOTE_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips/{}/votes'
 GET_VOICES_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
+REPORT_URL = 'https://commonvoice.mozilla.org/api/v1/reports'
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/95.0.4638.69 Safari/537.36',
@@ -55,6 +56,23 @@ async def send_voice_vote(voice_id, vote):
     async with aiohttp.ClientSession() as session:
         async with session.post(request_url, params=data, headers=HEADERS) as posted_vote:
             posted_vote_response = await posted_vote.json()
+
+
+async def report_function(kind, id_to_report, report_type):
+    if report_type == 'report_1':
+        reason = 'offensive-language'
+    elif report_type == 'report_2':
+        reason = 'grammar-or-spelling'
+    elif report_type == 'report_3':
+        reason = 'different-language'
+    else:
+        reason = 'difficult-pronounce'
+
+    data = {"kind": kind, "id": id_to_report, "reasons": [reason]}
+    async with aiohttp.ClientSession() as session:
+        async with session.post(REPORT_URL, data=data) as post_report:
+            posted_report_response = await post_report.json()
+            # print(posted_report_response)
 
 
 async def download_file(download_url, voice_id):
