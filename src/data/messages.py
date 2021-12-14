@@ -21,7 +21,7 @@ CHECK_VOICE = 'Ovoz yozuvlarini tekshirish'
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
-SKIP_STEP = 'Tashlab ketish [skip]'
+SKIP_STEP = 'Tashlab ketish'
 VOICE_REPORT = 'Xabar berish ❗️'
 
 SEND_EVERYONE = 'Рассылка рекламы'
