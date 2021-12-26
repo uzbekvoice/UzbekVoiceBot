@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STEP, REPORT_TEXT_1, \
-    REPORT_TEXT_2, REPORT_TEXT_3, REPORT_TEXT_4, REPORT_TEXT_5
+    REPORT_TEXT_2, REPORT_TEXT_3, REPORT_TEXT_4, REPORT_TEXT_5, CONFIRM_VOICE_TEXT, REJECT_VOICE_TEXT
 
 yes_no_markup = InlineKeyboardMarkup(row_width=2)
 accept_button = InlineKeyboardButton(text=VOICE_CORRECT, callback_data='accept')
@@ -27,3 +27,9 @@ report_text_markup.add(*[report_button_1, report_button_2, report_button_3, repo
 
 skip_report_markup = InlineKeyboardMarkup(row_width=1)
 skip_report_markup.add(*[skip_button, report_button])
+
+
+confirm_voice_markup = InlineKeyboardMarkup(row_width=2)
+confirm_voice_button_1 = InlineKeyboardButton(CONFIRM_VOICE_TEXT, callback_data='confirm-voice')
+confirm_voice_button_2 = InlineKeyboardButton(REJECT_VOICE_TEXT, callback_data='reject-voice')
+confirm_voice_markup.add(*[confirm_voice_button_1, confirm_voice_button_2])

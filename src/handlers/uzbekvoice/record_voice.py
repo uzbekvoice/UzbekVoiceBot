@@ -3,11 +3,11 @@ import os
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from keyboards.inline import skip_report_markup, report_text_markup
 from main import dp, AskUserVoice
 from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
-from utils.helpers import send_message, edit_reply_markup
+from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
+from utils.helpers import send_message, edit_reply_markup, send_voice
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function
 
 
@@ -24,48 +24,78 @@ async def record_voice_handler(message: Message, state: FSMContext):
     await ask_to_send_voice(chat_id, state)
 
 
-# Handler that receives all messages
+# Handler that answer to cancel message
+@dp.message_handler(state=AskUserVoice.all_states, text=CANCEL_MESSAGE)
+async def cancel_message_handler(message: Message, state: FSMContext):
+    await send_message(message.chat.id, 'action-rejected', markup=start_markup)
+    await state.finish()
+
+
+# Handler that receives messages in ask_voice state and asks to send voice
 @dp.message_handler(state=AskUserVoice.ask_voice, content_types=['text'])
-async def message_receiver_handler(message: Message, state: FSMContext):
-    chat_id = message.chat.id
-    user_message = message.text
-
-    if user_message == CANCEL_MESSAGE:
-        await send_message(message.chat.id, 'action-rejected', markup=start_markup)
-        await state.finish()
-    else:
-        data = await state.get_data()
-        reply_message_id = data['reply_message_id']
-        await send_message(chat_id, 'ask-record-voice-again', markup=reject_markup, reply=reply_message_id)
+async def ask_voice_message_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    reply_message_id = data['reply_message_id']
+    await send_message(message.chat.id, 'ask-record-voice-again', markup=reject_markup, reply=reply_message_id)
 
 
-# Handler that receives all voice messages
+# Handler that asks to recheck user sent voice message with the text that he need to read
 @dp.message_handler(state=AskUserVoice.ask_voice, content_types=['voice'])
 async def voice_receiver_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
+    audio_id = message.voice.file_id
+
+    data = await state.get_data()
+    list_number = data['list_number']
+    text_info = data['text_info']
+    text_to_read = text_info[list_number]['text']
+
+    sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice', args=text_to_read,
+                                     markup=confirm_voice_markup)
+
+    await state.update_data(reply_message_id=sent_audio_id)
+    await AskUserVoice.ask_confirm.set()
+
+
+# Handler that receives all unnecessary messages in ask confirmation state
+@dp.message_handler(state=AskUserVoice.ask_confirm, content_types=['text'])
+async def ask_confirm_message_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    reply_message_id = data['reply_message_id']
+    await send_message(message.chat.id, 'ask-recheck-voice', args='', markup=reject_markup, reply=reply_message_id)
+
+
+# Handler that receives pressed button, where the users confirm whether it is correct or not
+@dp.callback_query_handler(state=AskUserVoice.ask_confirm)
+async def ask_user_confirm(call: CallbackQuery, state: FSMContext):
+    chat_id = call.message.chat.id
+    call_data = call.data
+
+    await call.message.delete()
 
     data = await state.get_data()
     list_number = data['list_number']
     text_info = data['text_info']
     text_id = text_info[list_number]['id']
 
-    file_directory = 'downloads/{}.ogg'.format(text_id)
-    await message.voice.download(file_directory)
-    await send_text_voice(file_directory, text_id)
-    os.remove(file_directory)
+    if call_data == 'confirm-voice':
+        file_directory = 'downloads/{}.ogg'.format(text_id)
+        await call.message.voice.download(file_directory)
+        await send_text_voice(file_directory, text_id)
+        os.remove(file_directory)
 
-    # If there are no more text to read, get new list of text
-    if list_number == 4:
-        text_info = await get_text_to_read()
-        await state.update_data(list_number=0, text_info=text_info)
-    else:
-        await state.update_data(list_number=list_number + 1)
+        # If there are no more text to read, get new list of text
+        if list_number == 4:
+            text_info = await get_text_to_read()
+            await state.update_data(list_number=0, text_info=text_info)
+        else:
+            await state.update_data(list_number=list_number + 1)
 
     await ask_to_send_voice(chat_id, state)
 
 
 # Handler that receives action on pressed report inline button
-@dp.callback_query_handler(state=AskUserVoice.all_states)
+@dp.callback_query_handler(state=AskUserVoice.report_type)
 async def ask_user_report(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id

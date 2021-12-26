@@ -11,6 +11,9 @@ msg_dict = {
     'ask-check-voice-again': 'Iltimos ushbu tepadagi ovozli xabarni eshitib ko\'rib to\'g\'ri yozilganini tekshiring,'
                              'va kerakli tugmani bosing - To\'g\'ri/Noto\'g\'ri',
 
+    'ask-recheck-voice': 'Ozingiz yuborgan audioingizni tekshirib oling!\n\n'
+                         '{}',
+
     'action-rejected': 'Bekor qilindi',
 
     'caption': '{}',
@@ -33,5 +36,8 @@ REPORT_TEXT_2 = 'Grammatik / imlo xatosi'
 REPORT_TEXT_3 = 'Boshqa tillar'
 REPORT_TEXT_4 = 'Talaffuz qilish qiyin'
 REPORT_TEXT_5 = 'Orqaga qaytish'
+
+CONFIRM_VOICE_TEXT = 'Togri'
+REJECT_VOICE_TEXT = 'Notogri'
 
 
