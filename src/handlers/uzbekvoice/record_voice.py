@@ -31,7 +31,7 @@ async def cancel_message_handler(message: Message, state: FSMContext):
     await state.finish()
 
 
-# Handler that receives messages in ask_voice state and asks to send voice
+# Handler that receives all unnecessary messages in ask voice state
 @dp.message_handler(state=AskUserVoice.ask_voice, content_types=['text'])
 async def ask_voice_message_handler(message: Message, state: FSMContext):
     data = await state.get_data()
@@ -39,9 +39,9 @@ async def ask_voice_message_handler(message: Message, state: FSMContext):
     await send_message(message.chat.id, 'ask-record-voice-again', markup=reject_markup, reply=reply_message_id)
 
 
-# Handler that asks to recheck user sent voice message with the text that he need to read
+# Handler that receives user sent voices
 @dp.message_handler(state=AskUserVoice.ask_voice, content_types=['voice'])
-async def voice_receiver_handler(message: Message, state: FSMContext):
+async def ask_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     audio_id = message.voice.file_id
 
@@ -65,12 +65,13 @@ async def ask_confirm_message_handler(message: Message, state: FSMContext):
     await send_message(message.chat.id, 'ask-recheck-voice', args='', markup=reject_markup, reply=reply_message_id)
 
 
-# Handler that receives pressed button, where the users confirm whether it is correct or not
-@dp.callback_query_handler(state=AskUserVoice.ask_confirm)
-async def ask_user_confirm(call: CallbackQuery, state: FSMContext):
+# Handler that receives pressed button, where the users confirm whether voice is correct or not
+@dp.callback_query_handler(state=AskUserVoice.ask_confirm, text=['confirm-voice', 'reject-voice'])
+async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     call_data = call.data
 
+    await call.answer()
     await call.message.delete()
 
     data = await state.get_data()
@@ -95,8 +96,8 @@ async def ask_user_confirm(call: CallbackQuery, state: FSMContext):
 
 
 # Handler that receives action on pressed report inline button
-@dp.callback_query_handler(state=AskUserVoice.report_type)
-async def ask_user_report(call: CallbackQuery, state: FSMContext):
+@dp.callback_query_handler(state=AskUserVoice.ask_voice)
+async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
     message_id = call.message.message_id
