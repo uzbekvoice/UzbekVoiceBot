@@ -96,7 +96,7 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
 
 
 # Handler that receives action on pressed report inline button
-@dp.callback_query_handler(state=AskUserVoice.ask_voice)
+@dp.callback_query_handler(state=AskUserVoice.ask_voice, text=['report_1', 'report_2', 'report_3', 'report_4', 'back', 'report', 'skip'])
 async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id

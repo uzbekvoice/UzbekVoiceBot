@@ -25,24 +25,24 @@ async def check_voice_handler(message: Message, state: FSMContext):
     await ask_to_check_voice(chat_id, state)
 
 
-# Handler that receives all messages
+# Handler that answer to cancel message
+@dp.message_handler(state=AskUserAction.all_states, text=CANCEL_MESSAGE)
+async def cancel_message_handler(message: Message, state: FSMContext):
+    await send_message(message.chat.id, 'action-rejected', markup=start_markup)
+    await state.finish()
+
+
+# Handler that receives all unnecessary messages in ask action state
 @dp.message_handler(state=AskUserAction.ask_action, content_types=['text'])
-async def message_receiver_handler(message: Message, state: FSMContext):
-    chat_id = message.chat.id
-    user_message = message.text
-
-    if user_message == CANCEL_MESSAGE:
-        await send_message(message.chat.id, 'action-rejected', markup=start_markup)
-        await state.finish()
-    else:
-        data = await state.get_data()
-        reply_message_id = data['reply_message_id']
-        await send_message(chat_id, 'ask-check-voice-again', markup=reject_markup, reply=reply_message_id)
+async def ask_action_message_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    reply_message_id = data['reply_message_id']
+    await send_message(message.chat.id, 'ask-check-voice-again', markup=reject_markup, reply=reply_message_id)
 
 
-# Handler that receives action on pressed accept and reject inline button
-@dp.callback_query_handler(state=AskUserAction.ask_action)
-async def ask_user_action(call: CallbackQuery, state: FSMContext):
+# Handler that receives action on pressed accept, reject, skip and report inline button
+@dp.callback_query_handler(state=AskUserAction.ask_action, text=['accept', 'reject', 'skip', 'report'])
+async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
     message_id = call.message.message_id
@@ -75,8 +75,8 @@ async def ask_user_action(call: CallbackQuery, state: FSMContext):
 
 
 # Handler that receives action on pressed report inline button
-@dp.callback_query_handler(state=AskUserAction.report_type)
-async def ask_user_report(call: CallbackQuery, state: FSMContext):
+@dp.callback_query_handler(state=AskUserAction.report_type, text=['report_1', 'report_2', 'report_3', 'back'])
+async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
     message_id = call.message.message_id
