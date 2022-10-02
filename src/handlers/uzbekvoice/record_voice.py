@@ -8,7 +8,7 @@ from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
 from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
 from utils.helpers import send_message, edit_reply_markup, send_voice
-from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function
+from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice
 
 
 # Handler that answers to Record Voice message
@@ -48,8 +48,12 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     list_number = data['list_number']
     text_info = data['text_info']
+    text_id = text_info[list_number]['id']
     text_to_read = text_info[list_number]['text']
-
+    # here goes checking audio
+    file_directory = 'downloads/{}.ogg'.format(text_id)
+    await message.voice.download(file_directory)
+    print(check_if_audio_human_voice(file_directory))
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice', args=text_to_read,
                                      markup=confirm_voice_markup)
 

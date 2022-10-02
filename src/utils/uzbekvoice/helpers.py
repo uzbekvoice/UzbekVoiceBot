@@ -1,6 +1,10 @@
 import asyncio
 
 import aiohttp
+from speechbrain.pretrained import VAD
+
+
+
 
 GET_TEXT_URL = 'https://commonvoice.mozilla.org/api/v1/uz/sentences'
 SEND_VOICE_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
@@ -12,6 +16,14 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleW
                          'Chrome/95.0.4638.69 Safari/537.36',
            'Authorization': 'Basic YzI2ZTZhOTAtMWMwOS00ZjFlLTk5ZmYtMTRmZWQ2'
                             'MGNlMTlhOmNhN2ViMjQ2NjQ0OWYxZWJmZjJmMjgzYjNhMTczOGMyOTJmYWQ0Mzg='}
+
+
+def check_if_audio_human_voice(audio):
+    
+    AAA = VAD.from_hparams(source="speechbrain/vad-crdnn-libriparty", savedir="pretrained_models/vad-crdnn-libriparty")
+    boundaries = AAA.get_speech_segments(audio)
+
+    return boundaries
 
 
 async def get_text_to_read():
