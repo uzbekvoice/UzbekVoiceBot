@@ -6,19 +6,22 @@ from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from data.config import BOT_TOKEN
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
 
 from pathlib import Path
 
 loop = asyncio.get_event_loop()
 storage = MemoryStorage()
-bot = Bot(BOT_TOKEN, parse_mode="HTML")
+bot = Bot(getenv("BOT_TOKEN"), parse_mode="HTML")
 dp = Dispatcher(bot, storage=storage, loop=loop)
 
 users_db = redis.StrictRedis(host='localhost', port=6379, db=1)
 
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
-print(BASE_DIR)
+ADMINS_ID: list = list(map(int, getenv("ADMINS_ID").split()))
 
 
 class AdminSendEveryOne(StatesGroup):

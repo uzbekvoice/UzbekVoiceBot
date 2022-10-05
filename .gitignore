@@ -131,8 +131,3 @@ dmypy.json
 *.iml
 config.py
 linux_venv/
-
-# downloads
-downloads/
-pretrained_model_checkpoints/
-pretrained_models/
