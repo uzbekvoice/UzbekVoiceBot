@@ -3,7 +3,7 @@ import os
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from main import dp, AskUserVoice
+from main import dp, AskUserVoice, BASE_DIR
 from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
 from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
@@ -51,9 +51,14 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     text_id = text_info[list_number]['id']
     text_to_read = text_info[list_number]['text']
     # here goes checking audio
-    file_directory = 'downloads/{}.ogg'.format(text_id)
-    await message.voice.download(file_directory)
-    print(check_if_audio_human_voice(file_directory))
+    file_directory = str(BASE_DIR / "src" / 'downloads' / '{}.ogg'.format(text_id))
+    await message.voice.download(destination_file=file_directory)
+    result = check_if_audio_human_voice(file_directory)
+    # 
+    if len(result) == 0:
+        await message.answer(text="<b>Odam ovoziga o'xshamadi,\nIltimos qaytadan yuboring!!!</b>")
+        return await AskUserVoice.ask_voice.set()
+    #
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice', args=text_to_read,
                                      markup=confirm_voice_markup)
 
