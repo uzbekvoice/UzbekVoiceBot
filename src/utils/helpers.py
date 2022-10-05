@@ -1,6 +1,6 @@
 import json
 
-from data.config import ADMINS_ID
+from main import ADMINS_ID
 from data.messages import msg_dict
 
 from main import bot, users_db

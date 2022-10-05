@@ -1,6 +1,10 @@
 import asyncio
 
 import aiohttp
+from speechbrain.pretrained import VAD
+
+from main import BASE_DIR
+
 
 GET_TEXT_URL = 'https://commonvoice.mozilla.org/api/v1/uz/sentences'
 SEND_VOICE_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
@@ -12,6 +16,14 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleW
                          'Chrome/95.0.4638.69 Safari/537.36',
            'Authorization': 'Basic YzI2ZTZhOTAtMWMwOS00ZjFlLTk5ZmYtMTRmZWQ2'
                             'MGNlMTlhOmNhN2ViMjQ2NjQ0OWYxZWJmZjJmMjgzYjNhMTczOGMyOTJmYWQ0Mzg='}
+
+
+def check_if_audio_human_voice(audio):
+    savedir: str = str(BASE_DIR / "src" / "pretrained_models" / "vad-crdnn-libriparty")
+    AAA = VAD.from_hparams(source="speechbrain/vad-crdnn-libriparty", savedir=savedir)
+    boundaries = AAA.get_speech_segments(audio)
+
+    return boundaries
 
 
 async def get_text_to_read():
@@ -76,8 +88,7 @@ async def report_function(kind, id_to_report, report_type):
 
 
 async def download_file(download_url, voice_id):
-    file_directory = f'downloads/{voice_id}.ogg'
-
+    file_directory = str(BASE_DIR / "src" / 'downloads' / f"{voice_id}.ogg")
     async with aiohttp.ClientSession() as session:
         async with session.get(download_url) as get_voice:
             with open(file_directory, "wb") as file_stream:
