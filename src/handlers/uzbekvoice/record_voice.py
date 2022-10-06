@@ -56,11 +56,14 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     result = check_if_audio_human_voice(file_directory)
     # 
     if len(result) == 0:
+        os.remove(file_directory)
         await message.answer(text="<b>Odam ovoziga o'xshamadi,\nIltimos qaytadan yuboring!!!</b>")
         return await AskUserVoice.ask_voice.set()
     #
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice', args=text_to_read,
                                      markup=confirm_voice_markup)
+
+    await state.update_data(file_directory=file_directory)
 
     await state.update_data(reply_message_id=sent_audio_id)
     await AskUserVoice.ask_confirm.set()
@@ -86,11 +89,10 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     list_number = data['list_number']
     text_info = data['text_info']
+    file_directory = data['file_directory']
     text_id = text_info[list_number]['id']
 
     if call_data == 'confirm-voice':
-        file_directory = 'downloads/{}.ogg'.format(text_id)
-        await call.message.voice.download(file_directory)
         await send_text_voice(file_directory, text_id)
         os.remove(file_directory)
 
