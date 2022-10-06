@@ -129,6 +129,8 @@ dmypy.json
 .pyre/
 *.xml
 *.iml
+
+*.ogg
 config.py
 linux_venv/
 pretrained_model_checkpoints/
