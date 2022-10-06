@@ -131,3 +131,4 @@ dmypy.json
 *.iml
 config.py
 linux_venv/
+pretrained_model_checkpoints/
