@@ -11,6 +11,7 @@ SEND_VOICE_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
 VOICE_VOTE_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips/{}/votes'
 GET_VOICES_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
 REPORT_URL = 'https://commonvoice.mozilla.org/api/v1/reports'
+USER_REGISTER_URL = "https://2898-94-158-59-80.in.ngrok.io/api/v1/user"
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/95.0.4638.69 Safari/537.36',
@@ -24,6 +25,21 @@ def check_if_audio_human_voice(audio):
     boundaries = AAA.get_speech_segments(audio)
 
     return boundaries
+
+
+def native_language(lang):
+    langs = {
+        "Rus tili": "Ru",
+        "O\'zbek tili": "Uz",
+        "Qoraqalpoq tili": "Qq"
+    }
+    return langs[lang]
+
+
+async def register_user(state):
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url=USER_REGISTER_URL, json=await state.get_data()) as res:
+            pass
 
 
 async def get_text_to_read():

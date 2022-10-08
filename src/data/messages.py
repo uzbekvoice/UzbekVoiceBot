@@ -2,7 +2,7 @@
 msg_dict = {
     'admin-bot-start': 'Bot ishga tushurildi',
 
-    'start': 'Salom, bu @UzbekVoiceBot.',
+    'start': 'Assalomu alaykum, @UzbekVoiceBot\'dan foydalanish uchun ro\'yxatdan o\'ting',
 
     'ask-record-voice': 'Iltimos, quyida berilgan matnlarni o\'qing, ovozli xabar sifatida yuboring.',
     'ask-record-voice-again': 'Iltimos, ushbu tepadagi matnni o\'qing, ovozli xabar sifatida yuboring.',
@@ -16,6 +16,15 @@ msg_dict = {
     'action-rejected': 'Bekor qilindi',
 
     'caption': '{}',
+
+    # register msgs
+    'ask-full-name': 'Iltimos to\'liq ism-sharifingizni kiriting kiriting 👇',
+    'ask-gender': 'Iltimos jinsingizni tanlang 👇',
+    'ask-accent': 'Talaffuzingiz ko\'proq qaysi hududga tegishli? 👇',
+    'ask-birth-year': 'Tug\'ilgan yilingizni kiriting 👇\n\nMasalan: 1998, 2000, 2002',
+    'ask-birth-year-again': 'Iltimos tug\'ilgan yilingizni to\'g\'ri kiriting 👇\n\nMasalan: 1998, 2000, 2002',
+    'ask-native-language': 'Iltimos ona-tilingizni tanlang 👇',
+    'register-success': 'Siz muvaffaqiyatli ro\'yxatdan o\'tdingiz! 🎉',
 }
 
 RECORD_VOICE = 'Matn o\'qish'

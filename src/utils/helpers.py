@@ -58,3 +58,4 @@ async def check_user_info(chat_id):
 async def on_startup(args):
     for one_admin_id in ADMINS_ID:
         await send_message(one_admin_id, 'admin-bot-start', markup=start_markup)
+
