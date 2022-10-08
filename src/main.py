@@ -24,6 +24,15 @@ BASE_DIR: Path = Path(__file__).resolve().parent.parent
 ADMINS_ID: list = list(map(int, getenv("ADMINS_ID").split()))
 
 
+class UserRegistration(StatesGroup):
+    full_name = State()
+    gender = State()
+    accent_region = State()
+    year_of_birth = State()
+    native_language = State()
+    finish = State()
+
+
 class AdminSendEveryOne(StatesGroup):
     ask_post = State()
     ask_send = State()
