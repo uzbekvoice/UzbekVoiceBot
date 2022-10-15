@@ -1,3 +1,4 @@
+import re
 import asyncio
 
 import aiohttp
@@ -25,6 +26,17 @@ def check_if_audio_human_voice(audio):
     boundaries = AAA.get_speech_segments(audio)
 
     return boundaries
+
+
+def check_if_correct_year(year):
+    x = re.findall("[a-zA-Z]", year)
+    if len(x) > 0:
+        return False
+    else:
+        if int(year) > 2003 or int(year) < 1900:
+            return False
+        else:
+            return True
 
 
 def native_language(lang):

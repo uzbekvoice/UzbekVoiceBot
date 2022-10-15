@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from keyboards.buttons import accents_markup, genders_markup, native_languages_markup, start_markup
 from utils.helpers import send_message, check_user_info
 from main import UserRegistration, dp
-from utils.uzbekvoice.helpers import native_language, register_user
+from utils.uzbekvoice.helpers import check_if_correct_year, native_language, register_user
 
 
 # Answer to all bot commands
@@ -66,7 +66,7 @@ async def get_accent_region(message: Message, state: FSMContext):
 @dp.message_handler(state=UserRegistration.year_of_birth)
 async def get_birth_year(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        if len(message.text) == 4:
+        if check_if_correct_year(message.text):
             data["year_of_birth"] = message.text
             await send_message(data["tg_id"], 'ask-native-language', markup=native_languages_markup)
             await UserRegistration.next()
