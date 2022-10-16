@@ -1,13 +1,12 @@
 from aiogram.types import Message
 
 from data.messages import SEND_EVERYONE, BOT_STATISTICS
-from data.config import ADMINS_ID
 
 from admin.send_everyone import send_everyone_func
 from admin.get_bot_stat import get_bot_stat_func
 
 from keyboards.buttons import admin_markup
-from main import bot, dp
+from main import bot, dp, ADMINS_ID
 
 
 # Answer to /admin command to get list of admin commands
