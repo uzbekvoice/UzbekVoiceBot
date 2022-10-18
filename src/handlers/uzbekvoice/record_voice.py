@@ -6,8 +6,8 @@ from aiogram.types import Message, CallbackQuery
 from main import dp, AskUserVoice, BASE_DIR
 from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
-from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
 from utils.helpers import send_message, edit_reply_markup, send_voice
+from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice
 
 

@@ -1,6 +1,5 @@
 import re
 import asyncio
-
 import aiohttp
 from speechbrain.pretrained import VAD
 
@@ -65,7 +64,7 @@ async def get_text_to_read():
 
 
 async def get_voices_to_check():
-    HEADERS['Referer'] = 'https://commonvoice.mozilla.org/uz/listen'
+    HEADERS['Referer'] = 'https://common.uzbekvoice.ai/uz/listen'
     data = {'count': '5'}
 
     async with aiohttp.ClientSession() as session:
@@ -124,7 +123,6 @@ async def download_file(download_url, voice_id):
                 file_stream.write(video_url_content)
 
             return file_directory
-
 
 if __name__ == '__main__':
     asyncio.run(get_voices_to_check())

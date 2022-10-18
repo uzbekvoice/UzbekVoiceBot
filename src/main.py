@@ -26,9 +26,11 @@ ADMINS_ID: list = list(map(int, getenv("ADMINS_ID").split()))
 
 class UserRegistration(StatesGroup):
     full_name = State()
-    gender = State()
-    accent_region = State()
     year_of_birth = State()
+    gender = State()
+    phone_number = State()
+    sweatshirt_size = State()
+    accent_region = State()
     native_language = State()
     finish = State()
 

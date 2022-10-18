@@ -7,9 +7,9 @@ msg_dict = {
     'ask-record-voice': 'Iltimos, quyida berilgan matnlarni o\'qing, ovozli xabar sifatida yuboring.',
     'ask-record-voice-again': 'Iltimos, ushbu tepadagi matnni o\'qing, ovozli xabar sifatida yuboring.',
 
-    'ask-check-voice': 'Iltimos, quyidagi ovozli xabarlarni eshitib, to\'g\'ri o\'qilganligini tekshiring',
+    'ask-check-voice': 'Iltimos, quyidagi ovozli xabarlarni eshitib, to\'g\'ri o\'qilganligini tekshiring.',
     'ask-check-voice-again': 'Iltimos ushbu tepadagi ovozli xabarni eshitib ko\'rib to\'g\'ri yozilganini tekshiring,'
-                             'va kerakli tugmani bosing - To\'g\'ri/Noto\'g\'ri',
+                             'va kerakli tugmani bosing - To\'g\'ri/Noto\'g\'ri.',
 
     'ask-recheck-voice': '{}\n\nIltimos matn to\'g\'ri o\'qilganligini tasdiqlang',
 

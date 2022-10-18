@@ -10,14 +10,14 @@ from keyboards.buttons import reject_markup, sure_markup, admin_markup
 
 # Ask admin to send post
 async def send_everyone_func(chat_id):
-    await bot.send_message(chat_id, 'Перешлите пост для рассылки.', reply_markup=reject_markup)
+    await bot.send_message(chat_id, 'Send the post for push-notification.', reply_markup=reject_markup)
     await AdminSendEveryOne.ask_post.set()
 
 
 # Show post sample
-@dp.message_handler(state=AdminSendEveryOne.all_states, text='Отменить')
+@dp.message_handler(state=AdminSendEveryOne.all_states, text='Cancel')
 async def admin_reject_handler(message: Message, state: FSMContext):
-    await bot.send_message(message.chat.id, 'Вы отменили действия', reply_markup=admin_markup)
+    await bot.send_message(message.chat.id, 'You have canceled push-notification.', reply_markup=admin_markup)
     await state.finish()
 
 
@@ -32,12 +32,14 @@ async def admin_ask_post(message: Message, state: FSMContext):
     await state.update_data(copy_from=chat_id)
 
     await bot.copy_message(chat_id, chat_id, message.message_id)
-    await bot.send_message(chat_id, 'Ваш пост будет выглядеть так, начать рассылку?', reply_markup=sure_markup)
+    await bot.send_message(chat_id,
+                           'Your push-notification will look like this, start sending it to users?',
+                           reply_markup=sure_markup)
 
     await AdminSendEveryOne.ask_send.set()
 
 
-# Ask, if the admin sure to start sending notifications
+# Ask if the admin sure to start sending notifications
 @dp.message_handler(state=AdminSendEveryOne.ask_send)
 async def admin_ask_send(message: Message, state: FSMContext):
     chat_id = message.chat.id
@@ -47,7 +49,7 @@ async def admin_ask_send(message: Message, state: FSMContext):
         await send_post(chat_id, state)
         return
 
-    await bot.send_message(chat_id, 'Начать рассылку или отменить?', reply_markup=sure_markup)
+    await bot.send_message(chat_id, 'Begin push-notification or cancel?', reply_markup=sure_markup)
     await AdminSendEveryOne.ask_send.set()
 
 
@@ -59,7 +61,7 @@ async def send_post(chat_id, state):
 
     await state.finish()
 
-    await bot.send_message(chat_id, 'Рассылка началась!', reply_markup=admin_markup)
+    await bot.send_message(chat_id, 'Push-notification begin!', reply_markup=admin_markup)
     users_id = users_db.keys()
 
     blocked = 0
@@ -96,10 +98,10 @@ async def send_post(chat_id, state):
         await asyncio.sleep(1)
         first_users_to_send = []
 
-    admin_stat = "Рассылку получили: {0:,}\n" \
-                 "Удалили бота: {1:,}\n" \
-                 "Удалились с телеграм: {2:,}\n" \
-                 "Прочие ошибки: {3:,}".format(success, blocked, deactivated, errors)
+    admin_stat = "Notification received: {0:,}\n" \
+                 "Blocked the bot: {1:,}\n" \
+                 "Deleted the telegram: {2:,}\n" \
+                 "Other reasons: {3:,}".format(success, blocked, deactivated, errors)
 
     await bot.send_message(chat_id, admin_stat, reply_markup=admin_markup)
     await sent_message.delete()
@@ -120,5 +122,5 @@ async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, butto
 
 
 async def send_progress_message(chat_id, count):
-    sent_message = await bot.send_message(chat_id, '{0:,} пользователей получили рассылку'.format(count))
+    sent_message = await bot.send_message(chat_id, '{0:,} users received the push-notification.'.format(count))
     return sent_message
