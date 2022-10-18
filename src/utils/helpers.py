@@ -42,7 +42,7 @@ async def user_msg(message_str, args):
     return user_message
 
 
-# Save user id If it does not exists in DB
+# Save user id If it does not exist in DB
 async def check_user_info(chat_id):
     user_info_db = users_db.get(chat_id)
     if user_info_db is None:
