@@ -7,11 +7,11 @@ from speechbrain.pretrained import VAD
 from main import BASE_DIR
 
 
-GET_TEXT_URL = 'https://commonvoice.mozilla.org/api/v1/uz/sentences'
-SEND_VOICE_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
-VOICE_VOTE_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips/{}/votes'
-GET_VOICES_URL = 'https://commonvoice.mozilla.org/api/v1/uz/clips'
-REPORT_URL = 'https://commonvoice.mozilla.org/api/v1/reports'
+GET_TEXT_URL = 'https://common.uzbekvoice.ai/api/v1/uz/sentences'
+SEND_VOICE_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
+VOICE_VOTE_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips/{}/votes'
+GET_VOICES_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
+REPORT_URL = 'https://common.uzbekvoice.ai/api/v1/reports'
 USER_REGISTER_URL = "https://2898-94-158-59-80.in.ngrok.io/api/v1/user"
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) '
