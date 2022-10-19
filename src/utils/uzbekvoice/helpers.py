@@ -50,7 +50,7 @@ def native_language(lang):
 async def register_user(state):
     async with aiohttp.ClientSession() as session:
         async with session.post(url=USER_REGISTER_URL, json=await state.get_data()) as res:
-            pass
+            print(res)
 
 
 async def get_text_to_read():
