@@ -12,17 +12,12 @@ from sqlalchemy import (
 
 from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy.sql import exists
+from os import getenv
 
 Base = declarative_base()
 
-DB_USERNAME = 'root'
-DB_PASSWORD = 'password'
-DB_HOST = 'localhost'
-DB_PORT = '3306'
-DB_DATABASE = 'bot'
-DB_ENGINE = 'mysql+pymysql'
 
-engine = create_engine(f"{DB_ENGINE}://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DATABASE}")
+engine = create_engine(getenv("DATABASE_URL"))
 
 metadata_obj = MetaData()
 
