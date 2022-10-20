@@ -18,6 +18,13 @@ async def send_message(chat_id, msg, args=None, markup=None, parse=None, reply=N
     except Exception as err:
         print('Error in send_message', err)
 
+async def delete_message_markup(chat_id, message_id):
+    try:
+        await bot.edit_message_reply_markup(chat_id, message_id)
+
+    except Exception as err:
+        print('Error in delete_message_markup', err)
+
 
 async def send_voice(chat_id, file_to_send, caption, args=None, markup=None):
     msg_to_send = await user_msg(caption, args)

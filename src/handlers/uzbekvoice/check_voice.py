@@ -9,7 +9,7 @@ from data.messages import CHECK_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
 from main import dp, AskUserAction
-from utils.helpers import send_message, send_voice, edit_reply_markup
+from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
 
 
@@ -34,6 +34,9 @@ async def check_voice_handler(message: Message, state: FSMContext):
 # Handler that answer to cancel message
 @dp.message_handler(state=AskUserAction.all_states, text=CANCEL_MESSAGE)
 async def cancel_message_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    reply_message_id = data['reply_message_id']
+    await delete_message_markup(message.chat.id, reply_message_id)
     await send_message(message.chat.id, 'action-rejected', markup=start_markup)
     await state.finish()
 

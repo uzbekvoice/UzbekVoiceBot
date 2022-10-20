@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery
 from main import dp, AskUserVoice, BASE_DIR
 from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
-from utils.helpers import send_message, edit_reply_markup, send_voice
+from utils.helpers import send_message, edit_reply_markup, send_voice, delete_message_markup
 from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, skip_sentence
 
@@ -27,6 +27,9 @@ async def record_voice_handler(message: Message, state: FSMContext):
 # Handler that answer to cancel message
 @dp.message_handler(state=AskUserVoice.all_states, text=CANCEL_MESSAGE)
 async def cancel_message_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    reply_message_id = data['reply_message_id']
+    await delete_message_markup(message.chat.id, reply_message_id)
     await send_message(message.chat.id, 'action-rejected', markup=start_markup)
     await state.finish()
 
