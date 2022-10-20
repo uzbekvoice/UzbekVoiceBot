@@ -1,3 +1,4 @@
+import json
 import re
 import uuid
 import random
@@ -21,6 +22,7 @@ SKIP_SENTENCE_URL = 'https://common.uzbekvoice.ai/api/v1/skipped_sentences/{}'
 GET_VOICES_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
 REPORT_URL = 'https://common.uzbekvoice.ai/api/v1/reports'
 USER_REGISTER_URL = "https://2898-94-158-59-80.in.ngrok.io/api/v1/user"
+
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
@@ -162,7 +164,10 @@ async def skip_sentence(sentence_id, tg_id):
             skipped_sentence_response = await skipped_sentence.json()
 
 
+# ############################################################ 1
 async def report_function(kind, id_to_report, report_type):
+    HEADERS['Content-Type'] = 'application/json'
+
     if report_type == 'report_1':
         reason = 'offensive-language'
     elif report_type == 'report_2':
@@ -174,9 +179,8 @@ async def report_function(kind, id_to_report, report_type):
 
     data = {"kind": kind, "id": id_to_report, "reasons": [reason]}
     async with aiohttp.ClientSession() as session:
-        async with session.post(REPORT_URL, data=data) as post_report:
+        async with session.post(REPORT_URL, data=json.dumps(data), headers=HEADERS) as post_report:
             posted_report_response = await post_report.json()
-            # print(posted_report_response)
 
 
 async def download_file(download_url, voice_id):
