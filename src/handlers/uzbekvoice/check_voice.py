@@ -18,14 +18,13 @@ from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_vo
 async def check_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
 
-    await send_message(chat_id, 'ask-check-voice', markup=reject_markup)
-
     voices_info = await get_voices_to_check(tg_id=chat_id)
 
     if len(voices_info) == 0:
         await send_message(chat_id, 'no-voices-to-check', markup=start_markup)
         await state.finish()
         return
+    await send_message(chat_id, 'ask-check-voice', markup=reject_markup)
 
     await state.update_data(list_number=0, voices_info=voices_info)
 
