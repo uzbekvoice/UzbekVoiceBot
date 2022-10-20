@@ -16,6 +16,7 @@ from main import BASE_DIR
 GET_TEXT_URL = 'https://common.uzbekvoice.ai/api/v1/uz/sentences'
 SEND_VOICE_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
 VOICE_VOTE_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips/{}/votes'
+SKIP_VOICE_URL = 'https://common.uzbekvoice.ai/api/v1/uz/skipped_clips/{}'
 GET_VOICES_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
 REPORT_URL = 'https://common.uzbekvoice.ai/api/v1/reports'
 USER_REGISTER_URL = "https://2898-94-158-59-80.in.ngrok.io/api/v1/user"
@@ -140,6 +141,15 @@ async def send_voice_vote(voice_id, vote, tg_id):
     async with aiohttp.ClientSession() as session:
         async with session.post(request_url, params=data, headers=HEADERS) as posted_vote:
             posted_vote_response = await posted_vote.json()
+
+
+async def skip_voice(voice_id, tg_id):
+    await authorization_base64(tg_id)
+
+    request_url = SKIP_VOICE_URL.format(voice_id)
+    async with aiohttp.ClientSession() as session:
+        async with session.post(request_url, headers=HEADERS) as skipped_voice:
+            skipped_voice_response = await skipped_voice.json()
 
 
 async def report_function(kind, id_to_report, report_type):

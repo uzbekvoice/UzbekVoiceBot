@@ -9,7 +9,7 @@ from keyboards.buttons import start_markup, reject_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
 from main import dp, AskUserAction
 from utils.helpers import send_message, send_voice, edit_reply_markup
-from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function
+from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
 
 
 # Handler that answers to Check Voice message
@@ -59,6 +59,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await AskUserAction.report_type.set()
         return
     elif call_data == 'skip':
+        skip_voice(voice_id, chat_id)
         await call.message.delete()
     else:
         await call.message.delete_reply_markup()
