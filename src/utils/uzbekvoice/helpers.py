@@ -27,14 +27,15 @@ HEADERS = {
            }
 
 
-def authorization_generator(tg_id):
+async def authorization_base64(tg_id):
     user = db.get_user(tg_id)
+    print(user)
     uuid = user.uuid
     access_token = user.access_token
     auth = f"{uuid}:{access_token}".encode('ascii')
     base64_bytes = base64.b64encode(auth)
     base64_string = base64_bytes.decode('ascii')
-    HEADERS['Authorization'] = base64_string
+    HEADERS['Authorization'] = f'Basic {base64_string}'
     print(base64_string)
 
 
@@ -88,7 +89,7 @@ async def register_user(state):
 
 
 async def get_text_to_read(tg_id):
-    authorization_generator(tg_id)
+    await authorization_base64(tg_id)
     data = {'count': '5'}
 
     async with aiohttp.ClientSession() as session:
@@ -100,7 +101,7 @@ async def get_text_to_read(tg_id):
 
 async def get_voices_to_check(tg_id):
     HEADERS['Referer'] = 'https://common.uzbekvoice.ai/uz/listen'
-    authorization_generator(tg_id)
+    await authorization_base64(tg_id)
     data = {'count': '5'}
 
     async with aiohttp.ClientSession() as session:
@@ -112,7 +113,9 @@ async def get_voices_to_check(tg_id):
 
 async def send_text_voice(file_directory, text_id, tg_id):
     HEADERS['sentence_id'] = text_id
-    authorization_generator(tg_id)
+    HEADERS['Content-Type'] = 'audio/ogg'
+
+    await authorization_base64(tg_id)
     data = open(file_directory, 'rb')
 
     async with aiohttp.ClientSession() as session:
@@ -125,7 +128,7 @@ async def send_text_voice(file_directory, text_id, tg_id):
 
 
 async def send_voice_vote(voice_id, vote, tg_id):
-    authorization_generator(tg_id)
+    await authorization_base64(tg_id)
 
     data = {'challenge': 'null'}
     if vote == 'accept':
