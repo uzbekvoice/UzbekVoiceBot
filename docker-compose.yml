@@ -7,3 +7,12 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     container_name: UzbekVoiceBot
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bot
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    ports:
+      - 3306:3306
