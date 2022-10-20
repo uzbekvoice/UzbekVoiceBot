@@ -125,13 +125,10 @@ async def send_text_voice(file_directory, text_id, tg_id):
     async with aiohttp.ClientSession() as session:
         async with session.post(SEND_VOICE_URL, headers=HEADERS, data=data) as sent_voice:
             await sent_voice.json()
-            print('--------------------------------------------------------------------------------------------------')
-            print(sent_voice.content)
-            print(sent_voice.headers)
-            print(HEADERS)
 
 
 async def send_voice_vote(voice_id, vote, tg_id):
+    HEADERS['Content-Type'] = 'application/json'
     await authorization_base64(tg_id)
 
     data = {'challenge': 'null'}
@@ -142,7 +139,7 @@ async def send_voice_vote(voice_id, vote, tg_id):
 
     request_url = VOICE_VOTE_URL.format(voice_id)
     async with aiohttp.ClientSession() as session:
-        async with session.post(request_url, params=data, headers=HEADERS) as posted_vote:
+        async with session.post(request_url, data=json.dumps(data), headers=HEADERS) as posted_vote:
             posted_vote_response = await posted_vote.json()
 
 
@@ -164,9 +161,9 @@ async def skip_sentence(sentence_id, tg_id):
             skipped_sentence_response = await skipped_sentence.json()
 
 
-# ############################################################ 1
-async def report_function(kind, id_to_report, report_type):
+async def report_function(kind, id_to_report, report_type, tg_id):
     HEADERS['Content-Type'] = 'application/json'
+    await authorization_base64(tg_id)
 
     if report_type == 'report_1':
         reason = 'offensive-language'

@@ -59,7 +59,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await AskUserAction.report_type.set()
 
     elif call_data == 'skip':
-        skip_voice(voice_id, chat_id)
+        await skip_voice(voice_id, chat_id)
         await call.message.delete()
     else:
         await call.message.delete_reply_markup()
@@ -92,7 +92,7 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
         voices_info = data['voices_info']
         voice_id = voices_info[list_number]['id']
 
-        await report_function('clip', voice_id, call_data)
+        await report_function('clip', voice_id, call_data, chat_id)
         await call.message.delete()
 
     # If there are no more voice to check, get new list of text
