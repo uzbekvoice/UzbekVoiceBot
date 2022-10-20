@@ -1,5 +1,6 @@
 import asyncio
 import os
+from time import sleep
 
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery
@@ -56,7 +57,9 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
 
     if call_data == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup)
-        await AskUserAction.report_type.set()
+        await skip_voice(voice_id, chat_id)
+        sleep(5)
+        await call.message.delete()
 
     elif call_data == 'skip':
         await skip_voice(voice_id, chat_id)
