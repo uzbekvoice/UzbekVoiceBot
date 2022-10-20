@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY ./requirements.txt /app/requirements.txt
 RUN pip3 install -r requirements.txt
-COPY ./src/ /app
+COPY ./src/ /app/src
 
-CMD python3 -u uzbekvoicebot.py
+CMD python3 -u ./src/uzbekvoicebot.py
