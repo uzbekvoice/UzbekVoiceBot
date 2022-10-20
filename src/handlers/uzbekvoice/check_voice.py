@@ -71,7 +71,12 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     # If there are no more voice to check, get new list of text
     if list_number == 4:
         voices_info = await get_voices_to_check(tg_id=chat_id)
-        await state.update_data(list_number=0, voices_info=voices_info)
+        if len(voices_info) > 0:
+            await state.update_data(list_number=0, voices_info=voices_info)
+        else:
+            await send_message(chat_id, 'no-voices-to-check', markup=start_markup)
+            await state.finish()
+            return
     else:
         await state.update_data(list_number=list_number + 1)
 
