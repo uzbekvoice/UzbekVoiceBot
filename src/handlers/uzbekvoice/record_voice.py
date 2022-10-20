@@ -8,7 +8,7 @@ from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
 from utils.helpers import send_message, edit_reply_markup, send_voice
 from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
-from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice
+from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, skip_sentence
 
 
 # Handler that answers to Record Voice message
@@ -112,6 +112,10 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
     message_id = call.message.message_id
+    data = await state.get_data()
+    list_number = data['list_number']
+    text_info = data['text_info']
+    text_id = text_info[list_number]['id']
 
     if call_data == 'back':
         await edit_reply_markup(chat_id, message_id, skip_report_markup)
@@ -120,12 +124,10 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     elif call_data == 'report':
         await edit_reply_markup(chat_id, message_id, report_text_markup)
         return
+    elif call_data == 'skip':
+        await skip_sentence(text_id, chat_id)
+        await call.message.delete()
     else:
-        data = await state.get_data()
-        list_number = data['list_number']
-        text_info = data['text_info']
-        text_id = text_info[list_number]['id']
-
         if 'report' in call_data:
             await report_function('sentence', text_id, call_data)
         await call.message.delete()
