@@ -181,7 +181,7 @@ async def report_function(kind, id_to_report, report_type, tg_id):
 
 
 async def download_file(download_url, voice_id):
-    file_directory = str(BASE_DIR / "src" / 'downloads' / f"{voice_id}.ogg")
+    file_directory = str(BASE_DIR / 'downloads' / f"{voice_id}.ogg")
     async with aiohttp.ClientSession() as session:
         async with session.get(download_url) as get_voice:
             with open(file_directory, "wb") as file_stream:

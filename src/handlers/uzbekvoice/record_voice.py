@@ -51,7 +51,7 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     text_id = text_info[list_number]['id']
     text_to_read = text_info[list_number]['text']
     # here goes checking audio
-    file_directory = str(BASE_DIR / "src" / 'downloads' / '{}.ogg'.format(text_id))
+    file_directory = str(BASE_DIR / 'downloads' / '{}.ogg'.format(text_id))
     await message.voice.download(destination_file=file_directory)
     result = check_if_audio_human_voice(file_directory)
     # 
