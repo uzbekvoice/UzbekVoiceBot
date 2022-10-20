@@ -57,7 +57,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     if call_data == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup)
         await AskUserAction.report_type.set()
-        return
+
     elif call_data == 'skip':
         skip_voice(voice_id, chat_id)
         await call.message.delete()
