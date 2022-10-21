@@ -1,5 +1,6 @@
 import os
 
+import aiogram.types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery
 
@@ -10,8 +11,8 @@ from utils.helpers import send_message, edit_reply_markup, send_voice, delete_me
 from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, skip_sentence
 
-
 # Handler that answers to Record Voice message
+
 @dp.message_handler(text=RECORD_VOICE)
 async def record_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
@@ -153,8 +154,14 @@ async def ask_to_send_voice(chat_id, state):
     list_number = data['list_number']
     text_info = data['text_info']
 
-    text_to_read = text_info[list_number]['text']
-    message_id = await send_message(chat_id, 'caption', args=text_to_read, markup=skip_report_markup)
+    text_to_read = f'—————\n<b>{text_info[list_number]["text"]}</b>\n—————'
+    message_id = await send_message(
+        chat_id,
+        'caption',
+        args=text_to_read,
+        markup=skip_report_markup,
+        parse=aiogram.types.ParseMode.HTML
+    )
     await state.update_data(reply_message_id=message_id)
 
     await AskUserVoice.ask_voice.set()

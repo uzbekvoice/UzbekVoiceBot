@@ -15,7 +15,7 @@ msg_dict = {
     'ask-recheck-voice': '{}\n\nIltimos matn to\'g\'ri o\'qilganligini tasdiqlang',
 
     'action-rejected': 'Bekor qilindi',
-    'welcome-text': 'Assalomu Aleykum! Sizni qayta ko\'rganimizdan mamnunmiz',
+    'welcome-text': 'Assalomu Alaykum! Sizni qayta ko\'rganimizdan mamnunmiz',
 
     'caption': '{}',
 
