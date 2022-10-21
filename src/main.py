@@ -12,6 +12,9 @@ from os import getenv
 load_dotenv()
 
 from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 loop = asyncio.get_event_loop()
 storage = MemoryStorage()

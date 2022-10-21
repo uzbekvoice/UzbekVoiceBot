@@ -1,24 +1,25 @@
 from sqlalchemy import (
     create_engine,
-    Table,
-    MetaData,
-    Column,
     BigInteger,
+    MetaData,
     Integer,
+    Column,
     String,
     insert,
-    select
+    select,
+    Table
 )
 
 from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy.sql import exists
 from os import getenv
+from dotenv import load_dotenv, find_dotenv
 
-Base = declarative_base()
+load_dotenv(find_dotenv())
 
 
 engine = create_engine(getenv("DATABASE_URL"))
-
+Base = declarative_base()
 metadata_obj = MetaData()
 
 
@@ -38,7 +39,6 @@ class User(Base):
 
 
 Base.metadata.create_all(engine)
-
 user_table = Table('user_account', metadata_obj, autoload_with=engine)
 session = Session(engine)
 

@@ -134,6 +134,7 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
         if 'report' in call_data:
             await report_function('sentence', text_id, call_data, tg_id=chat_id)
             await skip_sentence(text_id, chat_id)
+        await call.message.delete_reply_markup()
         await call.message.delete()
 
     # If there are no more text to read, get new list of text
