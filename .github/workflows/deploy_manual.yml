@@ -14,6 +14,7 @@ jobs:
       - name: Push to system
         uses: dokku/github-action@master
         with:
+          branch: main
           git_push_flags: '--force'
           git_remote_url: 'ssh://dokku@common.uzbekvoice.ai:2003/bot'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
