@@ -1,3 +1,9 @@
+import json
+import pandas
+from main import bot
+from time import sleep
+
+import aiohttp
 from aiogram.types import Message, ReplyKeyboardRemove, Contact
 from aiogram.dispatcher import FSMContext
 
@@ -7,16 +13,16 @@ from keyboards.buttons import (
     accents_markup,
     genders_markup,
     start_markup,
-    register_markup
+    register_markup,
+    age_markup
     )
-from utils.uzbekvoice.helpers import register_user
+from utils.uzbekvoice.helpers import register_user, HEADERS, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL
 from utils.uzbekvoice import db
 from utils.helpers import send_message
 from main import UserRegistration, dp
-from utils.uzbekvoice.helpers import check_if_correct_year, native_language
+from utils.uzbekvoice.helpers import native_language
 
 
-# Answer to all bot commands
 @dp.message_handler(commands=['start'])
 async def start_command(message: Message):
     chat_id = message.chat.id
@@ -93,14 +99,14 @@ async def get_accent_region(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data["accent_region"] = message.text
 
-    await send_message(data["tg_id"], 'ask-birth-year', markup=ReplyKeyboardRemove())
+    await send_message(data["tg_id"], 'ask-birth-year', markup=age_markup)
     await UserRegistration.next()
 
 
 @dp.message_handler(state=UserRegistration.year_of_birth)
 async def get_birth_year(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        if check_if_correct_year(message.text):
+        if message.text in ["12-17", "18-24", "25-34", "35-..."]:
             data["year_of_birth"] = message.text
             await send_message(data["tg_id"], 'ask-native-language', markup=native_languages_markup)
             await UserRegistration.next()
@@ -118,3 +124,39 @@ async def finish(message: Message, state: FSMContext):
     await register_user(data)
     await send_message(data["tg_id"], 'register-success', markup=start_markup)
     await state.finish()
+
+
+@dp.message_handler(commands=['voice_leaderboard'])
+async def leaderboard(message: Message):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
+            leaderboard_dict = await get_request.json()
+    data = {
+        'FIO': [],
+        'Jami Yozilgan Audiolar': []
+    }
+    for leader in leaderboard_dict:
+        data['FIO'].append(f"{leader['username'][:12]}...")
+        data['Jami Yozilgan Audiolar'].append(leader['clips_count'])
+    pandas.DataFrame()
+    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
+
+    await bot.send_message(message.chat.id, leaderboard_text)
+
+
+@dp.message_handler(commands=['vote_leaderboard'])
+async def leaderboard(message: Message):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
+            leaderboard_dict = await get_request.json()
+    data = {
+        'FIO': [],
+        'Tekshirilgan Audiolar': []
+    }
+    for leader in leaderboard_dict:
+        data['FIO'].append(f"{leader['username'][:12]}...")
+        data['Tekshirilgan Audiolar'].append(leader['total'])
+    pandas.DataFrame()
+    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
+
+    await bot.send_message(message.chat.id, leaderboard_text)
