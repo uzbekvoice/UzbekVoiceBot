@@ -11,9 +11,8 @@ from utils.helpers import send_message, edit_reply_markup, send_voice, delete_me
 from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, skip_sentence
 
+
 # Handler that answers to Record Voice message
-
-
 @dp.message_handler(lambda message: message.text == RECORD_VOICE or message.text == '/record')
 async def record_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
