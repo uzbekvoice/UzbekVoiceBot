@@ -1,4 +1,3 @@
-from time import sleep
 from aiogram.types import Message, ReplyKeyboardRemove, Contact
 from aiogram.dispatcher import FSMContext
 
@@ -7,7 +6,8 @@ from keyboards.buttons import (
     share_phone_markup,
     accents_markup,
     genders_markup,
-    start_markup
+    start_markup,
+    register_markup
     )
 from utils.uzbekvoice.helpers import register_user
 from utils.uzbekvoice import db
@@ -25,12 +25,10 @@ async def start_command(message: Message):
         await send_message(chat_id, 'welcome-text', markup=start_markup)
     else:
         await UserRegistration.full_name.set()
-        await send_message(chat_id, 'start')
-        sleep(1)
-        await send_message(chat_id, 'ask-full-name')
+        await send_message(chat_id, 'start', markup=register_markup)
 
 
-@dp.message_handler(commands=['start'], state="*")
+@dp.message_handler(commands=['start'], state='*')
 async def start_command(message: Message):
     chat_id = message.chat.id
 
@@ -38,9 +36,15 @@ async def start_command(message: Message):
         await send_message(chat_id, 'welcome-text', markup=start_markup)
     else:
         await UserRegistration.full_name.set()
-        await send_message(chat_id, 'start')
-        sleep(1)
-        await send_message(chat_id, 'ask-full-name')
+        await send_message(chat_id, 'start', markup=register_markup)
+
+
+# Answer to all bot commands
+@dp.message_handler(text="👤 Ro'yxatdan o'tish")
+async def start_command(message: Message):
+    chat_id = message.chat.id
+    await UserRegistration.full_name.set()
+    await send_message(chat_id, 'ask-full-name')
         
 
 @dp.message_handler(state=UserRegistration.full_name)

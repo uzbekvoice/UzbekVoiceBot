@@ -23,6 +23,11 @@ share_phone_button = KeyboardButton("📱Raqamimni jo'natish", request_contact=T
 share_phone_markup.add(share_phone_button)
 
 
+register_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+register_button = KeyboardButton("👤 Ro'yxatdan o'tish")
+register_markup.add(*[register_button])
+
+
 start_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
 start_button_1 = KeyboardButton(RECORD_VOICE)
 start_button_2 = KeyboardButton(CHECK_VOICE)
