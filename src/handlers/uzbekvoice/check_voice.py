@@ -135,7 +135,6 @@ async def ask_to_check_voice(chat_id, state):
     file_directory = await download_file(voice_url, voice_id)
 
     message_id = await send_voice(chat_id, open(file_directory, 'rb'), 'caption', args=text_to_check)
-    await asyncio.sleep(4)
     await edit_reply_markup(chat_id, message_id, yes_no_markup)
     await state.update_data(reply_message_id=message_id)
 
