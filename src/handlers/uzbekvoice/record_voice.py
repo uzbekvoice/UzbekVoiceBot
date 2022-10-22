@@ -48,6 +48,7 @@ async def ask_voice_message_handler(message: Message, state: FSMContext):
 async def ask_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     audio_id = message.voice.file_id
+    await send_message(chat_id, 'voice-checking')
 
     data = await state.get_data()
     list_number = data['list_number']

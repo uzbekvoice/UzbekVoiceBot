@@ -57,7 +57,7 @@ def check_if_correct_year(year):
         return False
     else:
         current_year = datetime.date.today().year
-        if (current_year - int(year)) < 18:
+        if (current_year - int(year)) < 12:
             return False
         else:
             return True

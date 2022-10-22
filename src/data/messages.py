@@ -16,6 +16,7 @@ msg_dict = {
 
     'action-rejected': 'Bekor qilindi',
     'welcome-text': 'Assalomu Alaykum! Sizni qayta ko\'rganimizdan mamnunmiz',
+    'voice-checking': 'Ovozingiz suniy idrok tekshirmoqda...',
 
     'caption': '{}',
 

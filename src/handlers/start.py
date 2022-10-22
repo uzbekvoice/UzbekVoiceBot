@@ -67,8 +67,8 @@ async def get_name(message: Message, state: FSMContext):
 async def get_phone(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data["phone_number"] = str(message.contact.phone_number)
-        await send_message(data['tg_id'], 'ask-gender', markup=genders_markup)
         await UserRegistration.next()
+        await send_message(data['tg_id'], 'ask-gender', markup=genders_markup)
 
 
 @dp.inline_handler()
@@ -80,8 +80,8 @@ async def get_gender(message: Message, state: FSMContext):
         elif message.text == 'Ayol':
             data["gender"] = "F"
 
-    await send_message(data["tg_id"], 'ask-accent', markup=accents_markup)
     await UserRegistration.next()
+    await send_message(data["tg_id"], 'ask-accent', markup=accents_markup)
 
 
 @dp.message_handler(state=UserRegistration.accent_region)

@@ -19,7 +19,7 @@ reject_button = KeyboardButton('Отменить')
 sure_markup.add(*[send_button, reject_button])
 
 share_phone_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-share_phone_button = KeyboardButton("Raqamni jo'natish", request_contact=True)
+share_phone_button = KeyboardButton("📱Raqamimni jo'natish", request_contact=True)
 share_phone_markup.add(share_phone_button)
 
 
