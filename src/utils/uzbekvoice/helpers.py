@@ -52,18 +52,6 @@ def check_if_audio_human_voice(audio):
     return boundaries
 
 
-def check_if_correct_year(year):
-    x = re.findall("[a-zA-Z]", year)
-    if len(x) > 0:
-        return False
-    else:
-        current_year = datetime.date.today().year
-        if (current_year - int(year)) < 12:
-            return False
-        else:
-            return True
-
-
 def native_language(lang):
     langs = {
         "Rus tili": "Ru",
