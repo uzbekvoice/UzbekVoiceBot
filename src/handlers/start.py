@@ -3,10 +3,11 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext
 
 from keyboards.buttons import (
+    native_languages_markup,
+    share_phone_markup,
     accents_markup,
     genders_markup,
-    native_languages_markup,
-    start_markup,
+    start_markup
     )
 from utils.uzbekvoice.helpers import register_user
 from utils.uzbekvoice import db
@@ -48,7 +49,8 @@ async def get_name(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data["tg_id"] = chat_id
         data["full_name"] = message.text
-        await send_message(chat_id, 'ask-phone', markup=ReplyKeyboardRemove())
+
+        await send_message(chat_id, 'ask-phone', markup=share_phone_markup)
         await UserRegistration.next()
 
 
@@ -58,14 +60,14 @@ async def get_name(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data["tg_id"] = chat_id
         data["full_name"] = message.text
-        await send_message(chat_id, 'ask-phone', markup=ReplyKeyboardRemove())
+        await send_message(chat_id, 'ask-phone', markup=share_phone_markup)
         await UserRegistration.next()
 
 
 @dp.message_handler(state=UserRegistration.phone_number)
 async def get_phone(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        data["phone_number"] = message.text
+        data["phone_number"] = message.contact.phone_number
         await send_message(data['tg_id'], 'ask-gender', markup=genders_markup)
         await UserRegistration.next()
 
