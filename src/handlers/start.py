@@ -1,5 +1,5 @@
 from time import sleep
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove, Contact
 from aiogram.dispatcher import FSMContext
 
 from keyboards.buttons import (
@@ -49,9 +49,8 @@ async def get_name(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data["tg_id"] = chat_id
         data["full_name"] = message.text
-
-        await send_message(chat_id, 'ask-phone', markup=share_phone_markup)
         await UserRegistration.next()
+        await send_message(chat_id, 'ask-phone', markup=share_phone_markup)
 
 
 @dp.message_handler(state=UserRegistration.full_name)
@@ -60,18 +59,19 @@ async def get_name(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data["tg_id"] = chat_id
         data["full_name"] = message.text
-        await send_message(chat_id, 'ask-phone', markup=share_phone_markup)
         await UserRegistration.next()
+        await send_message(chat_id, 'ask-phone', markup=share_phone_markup)
 
 
-@dp.message_handler(state=UserRegistration.phone_number)
+@dp.message_handler(state=UserRegistration.phone_number, content_types=['contact', 'text'])
 async def get_phone(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        data["phone_number"] = message.contact.phone_number
+        data["phone_number"] = str(message.contact.phone_number)
         await send_message(data['tg_id'], 'ask-gender', markup=genders_markup)
         await UserRegistration.next()
 
 
+@dp.inline_handler()
 @dp.message_handler(state=UserRegistration.gender)
 async def get_gender(message: Message, state: FSMContext):
     async with state.proxy() as data:

@@ -23,7 +23,7 @@ share_phone_button = KeyboardButton("Raqamni jo'natish", request_contact=True)
 share_phone_markup.add(share_phone_button)
 
 
-start_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+start_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
 start_button_1 = KeyboardButton(RECORD_VOICE)
 start_button_2 = KeyboardButton(CHECK_VOICE)
 start_markup.add(*[start_button_1, start_button_2])
