@@ -34,7 +34,7 @@ class User(Base):
     sweatshirt_size = Column(String(5))
     gender = Column(String(20))
     accent_region = Column(String(100))
-    year_of_birth = Column(Integer)
+    year_of_birth = Column(String(50), nullable=True)
     native_language = Column(String(100))
 
 
@@ -66,6 +66,7 @@ async def write_user(
             year_of_birth=year_of_birth,
             native_language=native_language
         )
+
         conn.execute(create_user)
         session.commit()
         return uuid, access_token

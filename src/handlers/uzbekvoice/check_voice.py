@@ -1,14 +1,13 @@
-import asyncio
 import os
 from time import sleep
 
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery
 
+from main import dp, AskUserAction
 from data.messages import CHECK_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
-from main import dp, AskUserAction
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
 
