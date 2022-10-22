@@ -2,7 +2,6 @@ import json
 import pandas
 from main import bot
 from time import sleep
-from beautifultable import BeautifulTable
 
 import aiohttp
 from aiogram.types import Message, ReplyKeyboardRemove, Contact
