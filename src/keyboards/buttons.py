@@ -18,6 +18,13 @@ send_button = KeyboardButton('Начать')
 reject_button = KeyboardButton('Отменить')
 sure_markup.add(*[send_button, reject_button])
 
+age_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+age_button_1 = KeyboardButton("12-17")
+age_button_2 = KeyboardButton("18-24")
+age_button_3 = KeyboardButton("25-34")
+age_button_4 = KeyboardButton("35-...")
+age_markup.add(*[age_button_1, age_button_2, age_button_3, age_button_4])
+
 share_phone_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 share_phone_button = KeyboardButton("📱Raqamimni jo'natish", request_contact=True)
 share_phone_markup.add(share_phone_button)
