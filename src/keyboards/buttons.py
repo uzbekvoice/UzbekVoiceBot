@@ -1,7 +1,7 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-from data.messages import RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS, CANCEL_MESSAGE
-
+from data.messages import RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS, CANCEL_MESSAGE, LEADERBOARD, \
+    VOICE_LEADERBOARD, VOTE_LEADERBOARD
 
 admin_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 admin_button_1 = KeyboardButton(SEND_EVERYONE)
@@ -38,7 +38,8 @@ register_markup.add(*[register_button])
 start_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
 start_button_1 = KeyboardButton(RECORD_VOICE)
 start_button_2 = KeyboardButton(CHECK_VOICE)
-start_markup.add(*[start_button_1, start_button_2])
+start_button_3 = KeyboardButton(LEADERBOARD)
+start_markup.add(*[start_button_1, start_button_2, start_button_3])
 
 
 genders_markup = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -52,6 +53,7 @@ andijon = KeyboardButton("Andijon")
 buxoro = KeyboardButton("Buxoro")
 fargona = KeyboardButton("Farg'ona")
 jizzax = KeyboardButton("Jizzax")
+sirdaryo = KeyboardButton("Sirdaryo")
 xorazm = KeyboardButton("Xorazm")
 namangan = KeyboardButton("Namangan")
 navoiy = KeyboardButton("Navoiy")
@@ -61,7 +63,7 @@ samarqand = KeyboardButton("Samarqand")
 surxondaryo = KeyboardButton("Surxondaryo")
 toshkent = KeyboardButton("Toshkent viloyati")
 toshkent_shahri = KeyboardButton("Toshkent shahri")
-accents_markup.add(*[andijon, buxoro, fargona, jizzax, xorazm, namangan, navoiy, qashqadaryo, 
+accents_markup.add(*[andijon, buxoro, fargona, jizzax, sirdaryo, xorazm, namangan, navoiy, qashqadaryo,
                      qoraqalpogiston, samarqand, surxondaryo, toshkent, toshkent_shahri])
 
 
@@ -69,4 +71,11 @@ native_languages_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 uzbek = KeyboardButton("O'zbek tili")
 qoraqalpoq = KeyboardButton("Qoraqalpoq tili")
 russian = KeyboardButton("Rus tili")
-native_languages_markup.add(*[uzbek, qoraqalpoq, russian])
+tajik = KeyboardButton("Tojik tili")
+kazakh = KeyboardButton("Qo'zoq tili")
+native_languages_markup.add(*[uzbek, qoraqalpoq, russian], tajik, kazakh)
+
+leader_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+leader_voice_button = KeyboardButton(VOICE_LEADERBOARD)
+leader_vote_button = KeyboardButton(VOTE_LEADERBOARD)
+leader_markup.add(*[leader_vote_button, leader_voice_button])

@@ -1,5 +1,7 @@
 import json
 import pandas
+
+from data.messages import LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
 from main import bot
 from time import sleep
 
@@ -10,12 +12,13 @@ from aiogram.dispatcher import FSMContext
 from keyboards.buttons import (
     native_languages_markup,
     share_phone_markup,
+    leader_markup,
     accents_markup,
     genders_markup,
     start_markup,
     register_markup,
-    age_markup
-    )
+    age_markup, reject_markup
+)
 from utils.uzbekvoice.helpers import register_user, HEADERS, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL
 from utils.uzbekvoice import db
 from utils.helpers import send_message
@@ -126,8 +129,13 @@ async def finish(message: Message, state: FSMContext):
     await state.finish()
 
 
-@dp.message_handler(commands=['voice_leaderboard'])
+@dp.message_handler(lambda message: message.text == LEADERBOARD or message.text == '/leaderboard')
 async def leaderboard(message: Message):
+    await send_message(message.chat.id, 'leaderboard', markup=leader_markup)
+
+
+@dp.message_handler(lambda message: message.text == '/record_leaderboard' or message.text == VOICE_LEADERBOARD)
+async def voice_leaderboard(message: Message):
     async with aiohttp.ClientSession() as session:
         async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
             leaderboard_dict = await get_request.json()
@@ -141,11 +149,11 @@ async def leaderboard(message: Message):
     pandas.DataFrame()
     leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
 
-    await bot.send_message(message.chat.id, leaderboard_text)
+    await bot.send_message(message.chat.id, leaderboard_text, reply_markup=start_markup)
 
 
-@dp.message_handler(commands=['vote_leaderboard'])
-async def leaderboard(message: Message):
+@dp.message_handler(lambda message: message.text == '/check_leaderboard' or message.text == VOTE_LEADERBOARD)
+async def vote_leaderboard(message: Message):
     async with aiohttp.ClientSession() as session:
         async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
             leaderboard_dict = await get_request.json()
@@ -159,4 +167,4 @@ async def leaderboard(message: Message):
     pandas.DataFrame()
     leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
 
-    await bot.send_message(message.chat.id, leaderboard_text)
+    await bot.send_message(message.chat.id, leaderboard_text, reply_markup=start_markup)

@@ -16,6 +16,7 @@ msg_dict = {
     'action-rejected': 'Bekor qilindi',
     'welcome-text': 'Assalomu Alaykum! Sizni qayta ko\'rganimizdan mamnunmiz',
     'voice-checking': 'Ovozingizni suniy idrok tekshirmoqda...',
+    'leaderboard': 'Leaderlar Ro\'yxati bilan tanishish uchun tugmani birini bo\'sing',
 
     'caption': '{}',
 
@@ -30,8 +31,12 @@ msg_dict = {
     'register-success': 'Siz muvaffaqiyatli ro\'yxatdan o\'tdingiz! 🎉',
 }
 
+VOICE_LEADERBOARD = 'Jami Yozilgan Audiolar liderlari'
+VOTE_LEADERBOARD = 'Tekshirilgan Audiolar liderlari'
+
 RECORD_VOICE = 'Matn o\'qish'
 CHECK_VOICE = 'Ovoz yozuvlarini tekshirish'
+LEADERBOARD = "Liderlar Ro'yxati"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
