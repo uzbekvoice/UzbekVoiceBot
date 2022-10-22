@@ -1,4 +1,3 @@
-
 msg_dict = {
     'admin-bot-start': 'Bot ishga tushurildi',
 
@@ -23,7 +22,7 @@ msg_dict = {
     # register msgs
     'ask-full-name': 'Iltimos to\'liq ism-sharifingizni kiriting kiriting 👇',
     'ask-birth-year': 'Tug\'ilgan yilingizni kiriting 👇\n\nMasalan: 1998, 2000, 2002',
-    'ask-birth-year-again': 'Iltimos yoshingiz oralig\'ini tanlang 👇',
+    'ask-birth-year-again': 'Iltimos tug\'ilgan yilingizni to\'g\'ri kiriting 👇\n\nMasalan: 1998, 2000, 2002',
     'ask-gender': 'Iltimos jinsingizni belgilang 👇',
     'ask-phone': 'Telefon raqamingizni kiriting 👇',
     'ask-accent': 'Shevangiz ko\'proq qaysi hududga tegishli? 👇',
@@ -41,7 +40,7 @@ VOICE_REPORT = 'Xabar berish ❗️'
 
 SEND_EVERYONE = 'Рассылка рекламы'
 BOT_STATISTICS = 'Bot statistikasi'
-CANCEL_MESSAGE = 'Bekor qilish'
+CANCEL_MESSAGE = 'Ortga qaytish'
 
 REPORT_TEXT_1 = 'Haqoratli nutq'
 REPORT_TEXT_2 = 'Grammatik / imlo xatosi'
@@ -51,5 +50,6 @@ REPORT_TEXT_5 = 'Orqaga qaytish'
 
 CONFIRM_VOICE_TEXT = 'To\'g\'ri'
 REJECT_VOICE_TEXT = 'Noto\'g\'ri'
+
 
 

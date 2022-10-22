@@ -13,7 +13,8 @@ from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_f
 
 # Handler that answers to Record Voice message
 
-@dp.message_handler(text=RECORD_VOICE)
+
+@dp.message_handler(lambda message: message.text == RECORD_VOICE or message.text == '/record')
 async def record_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
 

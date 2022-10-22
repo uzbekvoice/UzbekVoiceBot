@@ -14,7 +14,7 @@ from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_vo
 
 
 # Handler that answers to Check Voice message
-@dp.message_handler(text=CHECK_VOICE)
+@dp.message_handler(lambda message: message.text == CHECK_VOICE or message.text == '/check')
 async def check_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
 

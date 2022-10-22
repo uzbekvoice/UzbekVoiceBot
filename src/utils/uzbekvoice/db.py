@@ -1,5 +1,3 @@
-from time import sleep
-
 from sqlalchemy import (
     create_engine,
     BigInteger,
@@ -16,11 +14,6 @@ from sqlalchemy.sql import exists
 
 from dotenv import load_dotenv, find_dotenv
 from os import getenv
-from aiogram.types import Message
-
-from utils.helpers import send_message
-from main import UserRegistration
-
 
 load_dotenv(find_dotenv())
 

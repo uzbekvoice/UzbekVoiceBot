@@ -21,7 +21,8 @@ SKIP_VOICE_URL = 'https://common.uzbekvoice.ai/api/v1/skipped_clips/{}'
 SKIP_SENTENCE_URL = 'https://common.uzbekvoice.ai/api/v1/skipped_sentences/{}'
 GET_VOICES_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
 REPORT_URL = 'https://common.uzbekvoice.ai/api/v1/reports'
-USER_REGISTER_URL = "https://2898-94-158-59-80.in.ngrok.io/api/v1/user"
+CLIPS_LEADERBOARD_URL = 'https://common.uzbekvoice.ai/api/v1/clips/leaderboard'
+VOTES_LEADERBOARD_URL = 'https://common.uzbekvoice.ai/api/v1/clips/votes/leaderboard'
 
 
 HEADERS = {
@@ -189,3 +190,4 @@ async def download_file(download_url, voice_id):
                 file_stream.write(video_url_content)
 
             return file_directory
+
