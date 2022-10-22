@@ -7,7 +7,8 @@ from keyboards.buttons import (
     accents_markup,
     genders_markup,
     start_markup,
-    register_markup
+    register_markup,
+    age_markup
     )
 from utils.uzbekvoice.helpers import register_user
 from utils.uzbekvoice import db
@@ -93,14 +94,14 @@ async def get_accent_region(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data["accent_region"] = message.text
 
-    await send_message(data["tg_id"], 'ask-birth-year', markup=ReplyKeyboardRemove())
+    await send_message(data["tg_id"], 'ask-birth-year', markup=age_markup)
     await UserRegistration.next()
 
 
 @dp.message_handler(state=UserRegistration.year_of_birth)
 async def get_birth_year(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        if check_if_correct_year(message.text):
+        if message.text in ["12-17", "18-24", "25-34", "35-..."]:
             data["year_of_birth"] = message.text
             await send_message(data["tg_id"], 'ask-native-language', markup=native_languages_markup)
             await UserRegistration.next()
