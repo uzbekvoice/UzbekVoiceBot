@@ -1,9 +1,3 @@
-import json
-import pandas
-from main import bot
-from time import sleep
-
-import aiohttp
 from aiogram.types import Message, ReplyKeyboardRemove, Contact
 from aiogram.dispatcher import FSMContext
 
@@ -13,9 +7,9 @@ from keyboards.buttons import (
     accents_markup,
     genders_markup,
     start_markup,
-
+    register_markup
     )
-from utils.uzbekvoice.helpers import register_user, HEADERS, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL
+from utils.uzbekvoice.helpers import register_user
 from utils.uzbekvoice import db
 from utils.helpers import send_message
 from main import UserRegistration, dp
@@ -31,12 +25,10 @@ async def start_command(message: Message):
         await send_message(chat_id, 'welcome-text', markup=start_markup)
     else:
         await UserRegistration.full_name.set()
-        await send_message(chat_id, 'start')
-        sleep(1)
-        await send_message(chat_id, 'ask-full-name')
+        await send_message(chat_id, 'start', markup=register_markup)
 
 
-@dp.message_handler(commands=['start'], state="*")
+@dp.message_handler(commands=['start'], state='*')
 async def start_command(message: Message):
     chat_id = message.chat.id
 
@@ -44,9 +36,15 @@ async def start_command(message: Message):
         await send_message(chat_id, 'welcome-text', markup=start_markup)
     else:
         await UserRegistration.full_name.set()
-        await send_message(chat_id, 'start')
-        sleep(1)
-        await send_message(chat_id, 'ask-full-name')
+        await send_message(chat_id, 'start', markup=register_markup)
+
+
+# Answer to all bot commands
+@dp.message_handler(text="👤 Ro'yxatdan o'tish")
+async def start_command(message: Message):
+    chat_id = message.chat.id
+    await UserRegistration.full_name.set()
+    await send_message(chat_id, 'ask-full-name')
         
 
 @dp.message_handler(state=UserRegistration.full_name)
@@ -120,39 +118,3 @@ async def finish(message: Message, state: FSMContext):
     await register_user(data)
     await send_message(data["tg_id"], 'register-success', markup=start_markup)
     await state.finish()
-
-
-@dp.message_handler(commands=['voice_leaderboard'])
-async def leaderboard(message: Message):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
-            leaderboard_dict = await get_request.json()
-    data = {
-        'FIO': [],
-        'Jami Yozilgan Audiolar': []
-    }
-    for leader in leaderboard_dict:
-        data['FIO'].append(f"{leader['username'][:12]}...")
-        data['Jami Yozilgan Audiolar'].append(leader['clips_count'])
-    pandas.DataFrame()
-    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
-
-    await bot.send_message(message.chat.id, leaderboard_text)
-
-
-@dp.message_handler(commands=['vote_leaderboard'])
-async def leaderboard(message: Message):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
-            leaderboard_dict = await get_request.json()
-    data = {
-        'FIO': [],
-        'Tekshirilgan Audiolar': []
-    }
-    for leader in leaderboard_dict:
-        data['FIO'].append(f"{leader['username'][:12]}...")
-        data['Tekshirilgan Audiolar'].append(leader['total'])
-    pandas.DataFrame()
-    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
-
-    await bot.send_message(message.chat.id, leaderboard_text)

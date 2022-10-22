@@ -21,8 +21,8 @@ msg_dict = {
 
     # register msgs
     'ask-full-name': 'Iltimos to\'liq ism-sharifingizni kiriting kiriting 👇',
-    'ask-birth-year': 'Tug\'ilgan yilingizni kiriting 👇\n\nMasalan: 1998, 2000, 2002',
-    'ask-birth-year-again': 'Iltimos tug\'ilgan yilingizni to\'g\'ri kiriting 👇\n\nMasalan: 1998, 2000, 2002',
+    'ask-birth-year': 'Iltimos yoshingiz oralig\'ini  tanlang 👇',
+    'ask-birth-year-again': 'Iltimos tugmalardan birini tanlang 👇',
     'ask-gender': 'Iltimos jinsingizni belgilang 👇',
     'ask-phone': 'Telefon raqamingizni kiriting 👇',
     'ask-accent': 'Shevangiz ko\'proq qaysi hududga tegishli? 👇',
