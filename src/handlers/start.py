@@ -153,7 +153,7 @@ async def voice_leaderboard(message: Message):
 @dp.message_handler(lambda message: message.text == '/check_leaderboard' or message.text == VOTE_LEADERBOARD)
 async def vote_leaderboard(message: Message):
     async with aiohttp.ClientSession() as session:
-        async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
+        async with session.get(VOTES_LEADERBOARD_URL, headers=HEADERS) as get_request:
             leaderboard_dict = await get_request.json()
     data = {
         'FIO': [],
