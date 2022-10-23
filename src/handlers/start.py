@@ -33,7 +33,6 @@ async def start_command(message: Message):
     if db.user_exists(chat_id):
         await send_message(chat_id, 'welcome-text', markup=start_markup)
     else:
-        await UserRegistration.full_name.set()
         await send_message(chat_id, 'start', markup=register_markup)
 
 
@@ -44,7 +43,6 @@ async def start_command(message: Message):
     if db.user_exists(chat_id):
         await send_message(chat_id, 'welcome-text', markup=start_markup)
     else:
-        await UserRegistration.full_name.set()
         await send_message(chat_id, 'start', markup=register_markup)
 
 
@@ -54,7 +52,7 @@ async def start_command(message: Message):
     chat_id = message.chat.id
     await UserRegistration.full_name.set()
     await send_message(chat_id, 'ask-full-name')
-        
+
 
 @dp.message_handler(state=UserRegistration.full_name)
 async def get_name(message: Message, state: FSMContext):

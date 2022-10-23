@@ -72,7 +72,7 @@ uzbek = KeyboardButton("O'zbek tili")
 qoraqalpoq = KeyboardButton("Qoraqalpoq tili")
 russian = KeyboardButton("Rus tili")
 tajik = KeyboardButton("Tojik tili")
-kazakh = KeyboardButton("Qo'zoq tili")
+kazakh = KeyboardButton("Qozoq tili")
 native_languages_markup.add(*[uzbek, qoraqalpoq, russian], tajik, kazakh)
 
 leader_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
