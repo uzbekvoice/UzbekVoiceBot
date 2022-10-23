@@ -132,30 +132,26 @@ async def leaderboard(message: Message):
 @dp.message_handler(lambda message: message.text == '/record_leaderboard' or message.text == VOICE_LEADERBOARD)
 async def voice_leaderboard(message: Message):
     await authorization_base64(message.chat.id)
+    print(HEADERS)
 
     async with aiohttp.ClientSession() as session:
         async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
             leaderboard_dict = await get_request.json()
             print(leaderboard_dict)
     data = {
-        'FIO': [],
-        'Jami Yozilgan Audiolar': []
-    }
-    you = {
-        'position': [],
+        '№': [],
         'FIO': [],
         'Jami Yozilgan Audiolar': []
     }
 
     for leader in leaderboard_dict:
-        if leader['you'] and int(leader['position']) > 20:
-            you['FIO'].append(f"{leader['username'][:12]}...")
-            you['Jami Yozilgan Audiolar'].append(leader['total'])
+        data['№'].append(leader['position'] + 1)
         data['FIO'].append(f"{leader['username'][:12]}...")
         data['Jami Yozilgan Audiolar'].append(leader['total'])
 
-    data = {**data, **you}
-    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
+    copy_data = data.copy()
+    del data['№']
+    leaderboard_text = pandas.DataFrame(data=data, index=copy_data['№'])
     leaderboard_text.index.name = '№'
     leaderboard_text = '```' + leaderboard_text.to_string() + '```'
 
@@ -174,26 +170,20 @@ async def vote_leaderboard(message: Message):
     async with aiohttp.ClientSession() as session:
         async with session.get(VOTES_LEADERBOARD_URL, headers=HEADERS) as get_request:
             leaderboard_dict = await get_request.json()
-            print(leaderboard_dict)
     data = {
-        'FIO': [],
-        'Tekshirilgan Audiolar': []
-    }
-    you = {
-        'position': [],
+        '№': [],
         'FIO': [],
         'Tekshirilgan Audiolar': []
     }
 
     for leader in leaderboard_dict:
-        if leader['you'] and int(leader['position']) > 20:
-            you['FIO'].append(f"{leader['username'][:12]}...")
-            you['Tekshirilgan Audiolar'].append(leader['total'])
+        data['№'].append(leader['position'] + 1)
         data['FIO'].append(f"{leader['username'][:12]}...")
         data['Tekshirilgan Audiolar'].append(leader['total'])
 
-    data = {**data, **you}
-    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
+    copy_data = data.copy()
+    del data['№']
+    leaderboard_text = pandas.DataFrame(data=data, index=copy_data['№'])
     leaderboard_text.index.name = '№'
     leaderboard_text = '```' + leaderboard_text.to_string() + '```'
 
