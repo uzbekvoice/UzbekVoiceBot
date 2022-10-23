@@ -1,11 +1,9 @@
 import json
-import re
 import uuid
 import random
 import string
 import base64
 import aiohttp
-import datetime
 
 
 from speechbrain.pretrained import VAD
@@ -34,14 +32,14 @@ HEADERS = {
 
 async def authorization_base64(tg_id):
     user = db.get_user(tg_id)
-    print(user)
     uuid = user.uuid
     access_token = user.access_token
     auth = f"{uuid}:{access_token}".encode('ascii')
     base64_bytes = base64.b64encode(auth)
     base64_string = base64_bytes.decode('ascii')
-    HEADERS['Authorization'] = f'Basic {base64_string}'
-    print(base64_string)
+    authorization = f'Basic {base64_string}'
+    HEADERS['Authorization'] = authorization
+    print(authorization)
 
 
 def check_if_audio_human_voice(audio):

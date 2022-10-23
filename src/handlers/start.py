@@ -1,29 +1,26 @@
-import json
 import pandas
-
-from data.messages import LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
-from main import bot
-from time import sleep
-
 import aiohttp
-from aiogram.types import Message, ReplyKeyboardRemove, Contact
+from aiogram.types import Message, ParseMode
 from aiogram.dispatcher import FSMContext
 
+from main import bot
 from keyboards.buttons import (
     native_languages_markup,
     share_phone_markup,
-    leader_markup,
+    register_markup,
     accents_markup,
     genders_markup,
+    leader_markup,
     start_markup,
-    register_markup,
-    age_markup, reject_markup
+    age_markup
 )
-from utils.uzbekvoice.helpers import register_user, HEADERS, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL
 from utils.uzbekvoice import db
-from utils.helpers import send_message
 from main import UserRegistration, dp
+from utils.helpers import send_message
 from utils.uzbekvoice.helpers import native_language
+from data.messages import LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
+from utils.uzbekvoice.helpers import register_user, HEADERS, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL, \
+    authorization_base64
 
 
 @dp.message_handler(commands=['start'])
@@ -134,35 +131,75 @@ async def leaderboard(message: Message):
 
 @dp.message_handler(lambda message: message.text == '/record_leaderboard' or message.text == VOICE_LEADERBOARD)
 async def voice_leaderboard(message: Message):
+    await authorization_base64(message.chat.id)
+
     async with aiohttp.ClientSession() as session:
         async with session.get(CLIPS_LEADERBOARD_URL, headers=HEADERS) as get_request:
             leaderboard_dict = await get_request.json()
+            print(leaderboard_dict)
     data = {
         'FIO': [],
         'Jami Yozilgan Audiolar': []
     }
-    for leader in leaderboard_dict:
-        data['FIO'].append(f"{leader['username'][:12]}...")
-        data['Jami Yozilgan Audiolar'].append(leader['clips_count'])
-    pandas.DataFrame()
-    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
+    you = {
+        'position': [],
+        'FIO': [],
+        'Jami Yozilgan Audiolar': []
+    }
 
-    await bot.send_message(message.chat.id, leaderboard_text, reply_markup=start_markup)
+    for leader in leaderboard_dict:
+        if leader['you'] and int(leader['position']) > 20:
+            you['FIO'].append(f"{leader['username'][:12]}...")
+            you['Jami Yozilgan Audiolar'].append(leader['total'])
+        data['FIO'].append(f"{leader['username'][:12]}...")
+        data['Jami Yozilgan Audiolar'].append(leader['total'])
+
+    data = {**data, **you}
+    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
+    leaderboard_text.index.name = '№'
+    leaderboard_text = '```' + leaderboard_text.to_string() + '```'
+
+    await bot.send_message(
+        message.chat.id,
+        leaderboard_text,
+        reply_markup=start_markup,
+        parse_mode=ParseMode.MARKDOWN
+    )
 
 
 @dp.message_handler(lambda message: message.text == '/check_leaderboard' or message.text == VOTE_LEADERBOARD)
 async def vote_leaderboard(message: Message):
+    await authorization_base64(message.chat.id)
+
     async with aiohttp.ClientSession() as session:
         async with session.get(VOTES_LEADERBOARD_URL, headers=HEADERS) as get_request:
             leaderboard_dict = await get_request.json()
+            print(leaderboard_dict)
     data = {
         'FIO': [],
         'Tekshirilgan Audiolar': []
     }
+    you = {
+        'position': [],
+        'FIO': [],
+        'Tekshirilgan Audiolar': []
+    }
+
     for leader in leaderboard_dict:
+        if leader['you'] and int(leader['position']) > 20:
+            you['FIO'].append(f"{leader['username'][:12]}...")
+            you['Tekshirilgan Audiolar'].append(leader['total'])
         data['FIO'].append(f"{leader['username'][:12]}...")
         data['Tekshirilgan Audiolar'].append(leader['total'])
-    pandas.DataFrame()
-    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
 
-    await bot.send_message(message.chat.id, leaderboard_text, reply_markup=start_markup)
+    data = {**data, **you}
+    leaderboard_text = pandas.DataFrame(data=data, index=list(range(1, 21)))
+    leaderboard_text.index.name = '№'
+    leaderboard_text = '```' + leaderboard_text.to_string() + '```'
+
+    await bot.send_message(
+        message.chat.id,
+        leaderboard_text,
+        reply_markup=start_markup,
+        parse_mode=ParseMode.MARKDOWN
+    )

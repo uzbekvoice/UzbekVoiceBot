@@ -2,7 +2,6 @@ from sqlalchemy import (
     create_engine,
     BigInteger,
     MetaData,
-    Integer,
     Column,
     String,
     insert,
