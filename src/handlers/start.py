@@ -140,14 +140,14 @@ async def voice_leaderboard(message: Message):
             print(leaderboard_dict)
     data = {
         '№': [],
-        'FIO': [],
-        'Jami Yozilgan Audiolar': []
+        '|FIO|': [],
+        '|Yozilgan|': []
     }
 
     for leader in leaderboard_dict:
         data['№'].append(leader['position'] + 1)
-        data['FIO'].append(f"{leader['username'][:12]}...")
-        data['Jami Yozilgan Audiolar'].append(leader['total'])
+        data['|FIO|'].append(f"{leader['username'][:10]}...")
+        data['|Yozilgan|'].append(leader['total'])
 
     copy_data = data.copy()
     del data['№']
@@ -172,14 +172,14 @@ async def vote_leaderboard(message: Message):
             leaderboard_dict = await get_request.json()
     data = {
         '№': [],
-        'FIO': [],
-        'Tekshirilgan Audiolar': []
+        '|FIO|': [],
+        '|Tekshirilgan|': []
     }
 
     for leader in leaderboard_dict:
         data['№'].append(leader['position'] + 1)
-        data['FIO'].append(f"{leader['username'][:12]}...")
-        data['Tekshirilgan Audiolar'].append(leader['total'])
+        data['|FIO|'].append(f"{leader['username'][:10]}...")
+        data['|Tekshirilgan|'].append(leader['total'])
 
     copy_data = data.copy()
     del data['№']
