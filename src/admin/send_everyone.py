@@ -134,7 +134,21 @@ async def send_progress_message(chat_id, count):
 @dp.message_handler(commands=['admin_admin_send'])
 async def send_post_to_user(message: Message):
     telephones = [
-        '998946526622',
+        '+998946526622',
+        '+998935960911',
+        '+998935185488',
+        '+998991110045',
+        '+998332340054',
+        '+998935614220',
+        '+998903379433',
+        '+998909555820',
+        '+998889891800',
+        '+998994717861',
+        '+998997333344',
+        '+998946812030',
+        '+79161050061',
+        '+998334989888',
+        '+998913155212'
     ]
     for telephone in telephones:
         with engine.connect() as conn:
@@ -143,12 +157,12 @@ async def send_post_to_user(message: Message):
                 q = select(user_table).where(user_table.c.phone_number == telephone)
                 user = conn.execute(q).first()
                 text = """
-                Assalomu alaykum, hurmatli foydalanuvchi! 
+Assalomu alaykum, hurmatli foydalanuvchi! 
                 
-                Ba'zi texnik nosozliklar tufayli sizning ismi sharifingiz "Ro'yxatdan o'tish" deb saqlangan. 
-                Iltimos @adamsaido ga to'liq ismi sharifingiz va telefon raqamangizni yozib qoldiring.
+Ba'zi texnik nosozliklar tufayli sizning ismi sharifingiz "Ro'yxatdan o'tish" deb saqlangan. 
+Iltimos @adamsaido ga to'liq ismi sharifingiz va telefon raqamangizni yozib qoldiring.
                 
-                Hurmat bilan UzbekVoice jamoasi
+Hurmat bilan UzbekVoice jamoasi
                 """
                 await bot.send_message(user.tg_id, text)
     print('Done')
