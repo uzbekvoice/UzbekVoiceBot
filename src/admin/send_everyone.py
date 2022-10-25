@@ -134,7 +134,7 @@ async def send_progress_message(chat_id, count):
 @dp.message_handler(commands=['admin_admin_send'])
 async def send_post_to_user(message: Message):
     telephones = [
-        '+998946526622',
+        '998946526622',
     ]
     for telephone in telephones:
         with engine.connect() as conn:
@@ -151,3 +151,4 @@ async def send_post_to_user(message: Message):
                 Hurmat bilan UzbekVoice jamoasi
                 """
                 await bot.send_message(user.tg_id, text)
+    print('Done')
