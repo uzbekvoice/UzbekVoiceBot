@@ -1,11 +1,15 @@
 import asyncio
 
-from aiogram.dispatcher import FSMContext
+from sqlalchemy import select
+from sqlalchemy.sql import exists
 from aiogram.types import Message
+from aiogram.dispatcher import FSMContext
 from aiogram.utils.exceptions import UserDeactivated, BotBlocked
+
 
 from main import users_db, dp, bot, AdminSendEveryOne
 from keyboards.buttons import reject_markup, sure_markup, admin_markup
+from utils.uzbekvoice.db import engine, user_table, session, User
 
 
 # Ask admin to send post
@@ -107,7 +111,7 @@ async def send_post(chat_id, state):
     await sent_message.delete()
 
 
-# Function to send notification to one user
+# Function to send copy message-notification to one user
 async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, buttons):
     try:
         await bot.copy_message(user_id, copy_from_chat_id, message_id, disable_notification=True, reply_markup=buttons)
@@ -124,3 +128,26 @@ async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, butto
 async def send_progress_message(chat_id, count):
     sent_message = await bot.send_message(chat_id, '{0:,} users received the push-notification.'.format(count))
     return sent_message
+
+
+# Function to send message to the list of users
+@dp.message_handler(commands=['admin_admin_send'])
+async def send_post_to_user(message: Message):
+    telephones = [
+        '+998946526622',
+    ]
+    for telephone in telephones:
+        with engine.connect() as conn:
+            q = session.query(exists().where(user_table.c.phone_number == telephone)).scalar()
+            if q:
+                q = select(user_table).where(user_table.c.phone_number == telephone)
+                user = conn.execute(q).first()
+                text = """
+                Assalomu alaykum, hurmatli foydalanuvchi! 
+                
+                Ba'zi texnik nosozliklar tufayli sizning ismi sharifingiz "Ro'yxatdan o'tish" deb saqlangan. 
+                Iltimos @adamsaido ga to'liq ismi sharifingiz va telefon raqamangizni yozib qoldiring.
+                
+                Hurmat bilan UzbekVoice jamoasi
+                """
+                await bot.send_message(user.tg_id, text)
