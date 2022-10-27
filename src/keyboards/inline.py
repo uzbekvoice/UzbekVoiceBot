@@ -34,3 +34,8 @@ confirm_voice_markup = InlineKeyboardMarkup(row_width=2)
 confirm_voice_button_1 = InlineKeyboardButton(CONFIRM_VOICE_TEXT, callback_data='confirm-voice')
 confirm_voice_button_2 = InlineKeyboardButton(REJECT_VOICE_TEXT, callback_data='reject-voice')
 confirm_voice_markup.add(*[confirm_voice_button_1, confirm_voice_button_2])
+
+
+confirm_action_markup = InlineKeyboardMarkup(row_width=2)
+confirm_yes_button = InlineKeyboardButton('Ha', callback_data='accept')
+confirm_yes_button = InlineKeyboardButton('Yo\'q', callback_data='reject')

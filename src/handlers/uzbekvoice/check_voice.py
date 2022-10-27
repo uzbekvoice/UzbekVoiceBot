@@ -7,7 +7,7 @@ from aiogram.types import Message, CallbackQuery
 from main import dp, AskUserAction
 from data.messages import CHECK_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
-from keyboards.inline import yes_no_markup, report_voice_markup
+from keyboards.inline import yes_no_markup, report_voice_markup, confirm_action_markup
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
 
@@ -72,6 +72,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await skip_voice(voice_id, chat_id)
         await call.message.delete()
     else:
+        await send_message(call.chat.id, 'ask-to-confirm', markup=confirm_action_markup)
         await call.message.delete_reply_markup()
         await send_voice_vote(voice_id, call_data, chat_id)
 
@@ -88,6 +89,12 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await state.update_data(list_number=list_number + 1)
 
     await ask_to_check_voice(chat_id, state)
+
+
+@dp.callback_query_handler(state=AskUserAction.confirm_action, text=['accept', 'reject'])
+async def ask_action_handler(call: CallbackQuery, state: FSMContext):
+    await call.message.delete_reply_markup()
+    await send_voice_vote(voice_id, call_data, chat_id)
 
 
 # Handler that receives action on pressed report inline button

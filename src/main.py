@@ -50,4 +50,5 @@ class AskUserVoice(StatesGroup):
 
 class AskUserAction(StatesGroup):
     ask_action = State()
+    confirm_action = State()
     report_type = State()
