@@ -7,7 +7,7 @@ from aiogram.types import Message, CallbackQuery
 from main import dp, AskUserAction
 from data.messages import CHECK_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
-from keyboards.inline import yes_no_markup, report_voice_markup
+from keyboards.inline import yes_no_markup, report_voice_markup, confirm_action_markup
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
 
@@ -71,9 +71,11 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     elif call_data == 'skip':
         await skip_voice(voice_id, chat_id)
         await call.message.delete()
-    else:
-        await call.message.delete_reply_markup()
-        await send_voice_vote(voice_id, call_data, chat_id)
+
+    elif call_data in ['accept', 'reject']:
+        await state.update_data(call_data=call_data)
+        await edit_reply_markup(chat_id, message_id, confirm_action_markup)
+        await AskUserAction.confirm_action.set()
 
     # If there are no more voice to check, get new list of text
     if list_number == 4:
@@ -87,7 +89,28 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     else:
         await state.update_data(list_number=list_number + 1)
 
-    await ask_to_check_voice(chat_id, state)
+
+@dp.callback_query_handler(state=AskUserAction.confirm_action, text=['confirm', 'back'])
+async def ask_action_handler(call: CallbackQuery, state: FSMContext):
+    call_data = str(call.data)
+    chat_id = call.message.chat.id
+    message_id = call.message.message_id
+
+    await call.answer()
+
+    data = await state.get_data()
+    list_number = data['list_number']
+    voices_info = data['voices_info']
+    voice_id = voices_info[list_number]['id']
+    if call_data == 'confirm':
+        await call.message.delete_reply_markup()
+        await send_voice_vote(voice_id, data['call_data'], chat_id)
+        await ask_to_check_voice(chat_id, state)
+
+    elif call_data == 'back':
+        await edit_reply_markup(chat_id, message_id, yes_no_markup)
+        await AskUserAction.ask_action.set()
+        return
 
 
 # Handler that receives action on pressed report inline button
