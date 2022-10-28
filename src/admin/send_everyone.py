@@ -7,9 +7,9 @@ from aiogram.dispatcher import FSMContext
 from aiogram.utils.exceptions import UserDeactivated, BotBlocked
 
 
-from main import users_db, dp, bot, AdminSendEveryOne
-from keyboards.buttons import reject_markup, sure_markup, admin_markup
+from main import dp, bot, AdminSendEveryOne
 from utils.uzbekvoice.db import engine, user_table, session, User
+from keyboards.buttons import reject_markup, sure_markup, admin_markup
 
 
 # Ask admin to send post
@@ -66,41 +66,29 @@ async def send_post(chat_id, state):
     await state.finish()
 
     await bot.send_message(chat_id, 'Push-notification begin!', reply_markup=admin_markup)
-    users_id = users_db.keys()
+    users_id = session.query(User).all()
 
     blocked = 0
     deactivated = 0
     errors = 0
     success = 0
-
     sent_message = await send_progress_message(chat_id, success)
-
-    first_users_to_send = []
+    tasks = []
     for user_id in users_id:
-        if len(first_users_to_send) < 20:
-            first_users_to_send.append(int(user_id))
-            continue
+        tasks.append(asyncio.ensure_future(send_copied_post_to_user(user_id.tg_id, chat_id, message_id, buttons)))
 
-        tasks = []
-        for user_to_send in first_users_to_send:
-            tasks.append(asyncio.ensure_future(send_copied_post_to_user(user_to_send, chat_id, message_id, buttons)))
-
-        gather_results = await asyncio.gather(*tasks)
-        for result in gather_results:
-            if result == 'success':
-                success += 1
-                if success % 500 == 0:
-                    await sent_message.delete()
-                    sent_message = await send_progress_message(chat_id, success)
-            elif result == 'blocked':
-                blocked += 1
-            elif result == 'deactivated':
-                deactivated += 1
-            else:
-                errors += 1
+    gather_results = await asyncio.gather(*tasks)
+    for result in gather_results:
+        if result == 'success':
+            success += 1
+        elif result == 'blocked':
+            blocked += 1
+        elif result == 'deactivated':
+            deactivated += 1
+        else:
+            errors += 1
 
         await asyncio.sleep(1)
-        first_users_to_send = []
 
     admin_stat = "Notification received: {0:,}\n" \
                  "Blocked the bot: {1:,}\n" \
@@ -114,7 +102,14 @@ async def send_post(chat_id, state):
 # Function to send copy message-notification to one user
 async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, buttons):
     try:
-        await bot.copy_message(user_id, copy_from_chat_id, message_id, disable_notification=True, reply_markup=buttons)
+
+        await bot.copy_message(
+            chat_id=user_id,
+            from_chat_id=copy_from_chat_id,
+            message_id=message_id,
+            disable_notification=True,
+            reply_markup=buttons
+        )
         return 'success'
     except BotBlocked:
         return 'blocked'

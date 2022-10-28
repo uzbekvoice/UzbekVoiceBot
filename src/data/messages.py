@@ -30,18 +30,19 @@ msg_dict = {
     'ask-accent': 'Shevangiz ko\'proq qaysi hududga tegishli? 👇',
     'ask-native-language': 'Iltimos ona-tilingizni tanlang 👇',
     'register-success': 'Siz muvaffaqiyatli ro\'yxatdan o\'tdingiz! 🎉',
+    'reported': '_👮Ma\'muriyatga xabar berildi. Qoidabuzarlarga qarshi qo\'shgan hissangiz uchun tashakkur!_'
 }
 
-VOICE_LEADERBOARD = 'Jami Yozilgan Audiolar liderlari'
-VOTE_LEADERBOARD = 'Tekshirilgan Audiolar liderlari'
+VOICE_LEADERBOARD = '🗣Jami Yozilgan Audiolar liderlari'
+VOTE_LEADERBOARD = '🔊 Tekshirilgan Audiolar liderlari'
 
-RECORD_VOICE = 'Matn o\'qish'
-CHECK_VOICE = 'Ovoz yozuvlarini tekshirish'
-LEADERBOARD = "Liderlar Ro'yxati"
+RECORD_VOICE = '🗣Matn o\'qish'
+CHECK_VOICE = '🔊 Ovoz yozuvlarini tekshirish'
+LEADERBOARD = "📃Liderlar Ro'yxati"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
-SKIP_STEP = 'Tashlab ketish'
+SKIP_STEP = 'Tashlab ketish⏭️'
 VOICE_REPORT = 'Xabar berish ❗️'
 
 SEND_EVERYONE = 'Рассылка рекламы'

@@ -9,8 +9,8 @@ accept_button = InlineKeyboardButton(text=VOICE_CORRECT, callback_data='accept')
 reject_button = InlineKeyboardButton(text=VOICE_INCORRECT, callback_data='reject')
 skip_button = InlineKeyboardButton(text=SKIP_STEP, callback_data='skip')
 report_button = InlineKeyboardButton(text=VOICE_REPORT, callback_data='report')
-yes_no_markup.add(*[accept_button, reject_button, skip_button])
-yes_no_markup.add(report_button)
+yes_no_markup.add(*[accept_button, reject_button, report_button])
+yes_no_markup.add(skip_button)
 
 
 report_voice_markup = InlineKeyboardMarkup(row_width=1)
