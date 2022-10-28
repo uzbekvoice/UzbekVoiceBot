@@ -45,7 +45,8 @@ VOICE_INCORRECT = 'Noto\'g\'ri 👎'
 SKIP_STEP = 'Tashlab ketish⏭️'
 VOICE_REPORT = 'Xabar berish ❗️'
 
-SEND_EVERYONE = 'Ommaviy xabar'
+SEND_EVERYONE = 'Рассылка рекламы'
+BOT_STATISTICS = 'Bot statistikasi'
 CANCEL_MESSAGE = 'Ortga qaytish'
 
 REPORT_TEXT_1 = 'Haqoratli nutq'
