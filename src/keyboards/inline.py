@@ -34,3 +34,9 @@ confirm_voice_markup = InlineKeyboardMarkup(row_width=2)
 confirm_voice_button_1 = InlineKeyboardButton(CONFIRM_VOICE_TEXT, callback_data='confirm-voice')
 confirm_voice_button_2 = InlineKeyboardButton(REJECT_VOICE_TEXT, callback_data='reject-voice')
 confirm_voice_markup.add(*[confirm_voice_button_1, confirm_voice_button_2])
+
+
+confirm_action_markup = InlineKeyboardMarkup(row_width=2)
+confirm_yes_button = InlineKeyboardButton('Tasdiqlash ✅', callback_data='confirm')
+confirm_no_button = InlineKeyboardButton('Ortga qaytish 🔙', callback_data='back')
+confirm_action_markup.add(*[confirm_yes_button, confirm_no_button])
