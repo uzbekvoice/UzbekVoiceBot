@@ -162,7 +162,6 @@ async def report_function(kind, id_to_report, report_type, tg_id):
         reason = 'difficult-pronounce'
 
     data = {"kind": kind, "id": id_to_report, "reasons": [reason]}
-    print(data)
     async with aiohttp.ClientSession() as session:
         async with session.post(REPORT_URL, data=json.dumps(data), headers=HEADERS) as post_report:
             posted_report_response = await post_report.json()
