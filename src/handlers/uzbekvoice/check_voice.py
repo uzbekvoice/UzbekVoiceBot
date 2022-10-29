@@ -60,8 +60,8 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         return
 
     elif command == 'skip':
-        await skip_voice(voice_id, chat_id)
         await call.message.delete()
+        await skip_voice(voice_id, chat_id)
         await ask_to_check_new_voice(chat_id, state)
         return
 
@@ -85,8 +85,8 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
         await AskUserAction.ask_action.set()
         return
     else:
-        await report_function('clip', voice_id, command, chat_id)
         await call.message.delete_reply_markup()
+        await report_function('clip', voice_id, command, chat_id)
         await send_message(chat_id, 'reported', parse=ParseMode.MARKDOWN)
         await ask_to_check_new_voice(chat_id, state)
 

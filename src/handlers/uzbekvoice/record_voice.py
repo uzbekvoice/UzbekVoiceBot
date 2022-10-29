@@ -90,9 +90,9 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
 
     # todo delete audio file
     if command == 'confirm-voice':
+        await call.message.delete_reply_markup()
         await send_text_voice(audio_file, text_id, chat_id)
         os.remove(audio_file)
-        await call.message.delete_reply_markup()
         await ask_to_send_new_voice(chat_id, state)
     else:
         await call.message.delete()
@@ -120,13 +120,13 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
         await edit_reply_markup(chat_id, message_id, report_text_markup())
         return
     elif command == 'skip':
-        await skip_sentence(text_id, chat_id)
         await call.message.delete()
+        await skip_sentence(text_id, chat_id)
     else:
+        await call.message.delete()
         if 'report' in command:
             await report_function('sentence', text_id, command, tg_id=chat_id)
             await skip_sentence(text_id, chat_id)
-        await call.message.delete()
 
     await ask_to_send_new_voice(chat_id, state)
 
