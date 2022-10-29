@@ -58,3 +58,4 @@ REPORT_TEXT_5 = 'Orqaga qaytish'
 
 CONFIRM_VOICE_TEXT = 'To\'g\'ri'
 REJECT_VOICE_TEXT = 'Noto\'g\'ri'
+SUBMIT_VOICE_TEXT = 'Yuborish'

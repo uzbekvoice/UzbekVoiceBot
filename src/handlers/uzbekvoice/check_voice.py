@@ -51,6 +51,9 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     command, voice_id = call_data.split('/')
 
     await call.answer()
+    data = await state.get_data()
+    confirm_state = data['confirm_state'] if 'confirm_state' in data else None
+
     last_sent_time = (await state.get_data())['last_sent_time']
     if time.time() - last_sent_time <= 2:
         try:
@@ -62,13 +65,19 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await AskUserAction.report_type.set()
         return
 
-    elif command == 'skip':
+    if confirm_state is None:
+        await state.update_data(confirm_state=command)
+        await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
+        await AskUserAction.confirm_action.set()
+        return
+
+    if command == 'skip':
         await call.message.delete()
         await skip_voice(voice_id, chat_id)
         await ask_to_check_new_voice(chat_id, state)
         return
 
-    elif command in ['accept', 'reject']:
+    if command in ['accept', 'reject']:
         await call.message.delete_reply_markup()
         await send_voice_vote(voice_id, command == 'accept', chat_id)
         await ask_to_check_new_voice(chat_id, state)
@@ -83,8 +92,11 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     message_id = call.message.message_id
     command, voice_id = call_data.split('/')
+    data = await state.get_data()
+    confirm_state = data['confirm_state'] if 'confirm_state' in data else None
+
     if command == 'back':
-        await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id))
+        await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, confirm_state))
         await AskUserAction.ask_action.set()
         return
     else:
@@ -107,7 +119,8 @@ async def ask_to_check_new_voice(chat_id, state):
     voice_file = await download_file(voice_url, '{}_{}'.format(chat_id, voice_id))
     message_id = await send_voice(chat_id, open(voice_file, 'rb'), 'caption', args=text_to_check)
     await state.update_data(last_sent_time=time.time())
-    await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id))
+    await state.update_data(confirm_state=None)
+    await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, None))
     await state.update_data(reply_message_id=message_id)
     await AskUserAction.ask_action.set()
     os.remove(voice_file)

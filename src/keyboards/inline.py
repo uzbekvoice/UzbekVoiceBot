@@ -2,18 +2,25 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STEP, REPORT_TEXT_1, \
     REPORT_TEXT_2, REPORT_TEXT_3, REPORT_TEXT_4, REPORT_TEXT_5, CONFIRM_VOICE_TEXT, REJECT_VOICE_TEXT, \
-    VOICE_LEADERBOARD, VOTE_LEADERBOARD
+    VOICE_LEADERBOARD, VOTE_LEADERBOARD, SUBMIT_VOICE_TEXT
 
 
-def yes_no_markup(voice_id):
+def yes_no_markup(voice_id, confirm_state=None):
     markup = InlineKeyboardMarkup(row_width=2)
-    accept_button = InlineKeyboardButton(text=VOICE_CORRECT, callback_data='accept/{}'.format(voice_id))
-    reject_button = InlineKeyboardButton(text=VOICE_INCORRECT, callback_data='reject/{}'.format(voice_id))
-    skip_button = InlineKeyboardButton(text=SKIP_STEP, callback_data='skip/{}'.format(voice_id))
+    accept_button = InlineKeyboardButton(text='{} {}'.format('☑️' if confirm_state == 'accept' else '', VOICE_CORRECT),
+                                         callback_data='accept/{}'.format(voice_id))
+    reject_button = InlineKeyboardButton(text='{} {}'.format('☑️' if confirm_state == 'reject' else '', VOICE_INCORRECT),
+                                         callback_data='reject/{}'.format(voice_id))
+    skip_button = InlineKeyboardButton(text='{} {}'.format('☑️' if confirm_state == 'skip' else '', SKIP_STEP),
+                                       callback_data='skip/{}'.format(voice_id))
     report_button = InlineKeyboardButton(text=VOICE_REPORT, callback_data='report/{}'.format(voice_id))
     markup.add(*[accept_button, reject_button])
-    markup.add(report_button)
     markup.add(skip_button)
+    markup.add(report_button)
+    if confirm_state is not None:
+        next_button = InlineKeyboardButton(SUBMIT_VOICE_TEXT,
+                                           callback_data='{}/{}'.format(confirm_state, voice_id))
+        markup.add(next_button)
     return markup
 
 
