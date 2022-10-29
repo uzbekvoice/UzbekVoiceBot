@@ -1,6 +1,5 @@
+import time
 import os
-from time import sleep
-
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -9,6 +8,7 @@ from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
+import utils.uzbekvoice.db as db
 
 from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STEP, REPORT_TEXT_1, \
     REPORT_TEXT_2, REPORT_TEXT_3, REPORT_TEXT_4, REPORT_TEXT_5, CONFIRM_VOICE_TEXT, REJECT_VOICE_TEXT, \
@@ -51,7 +51,9 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     command, voice_id = call_data.split('/')
 
     await call.answer()
-
+    last_sent_time = (await state.get_data())['last_sent_time']
+    if time.time() - last_sent_time <= 2:
+        db.increase_user_vote_streak_count(chat_id)
     if command == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
@@ -100,9 +102,8 @@ async def ask_to_check_new_voice(chat_id, state):
     voice_id = voice['id']
     voice_url = voice['audioSrc']
     voice_file = await download_file(voice_url, '{}_{}'.format(chat_id, voice_id))
-
     message_id = await send_voice(chat_id, open(voice_file, 'rb'), 'caption', args=text_to_check)
-
+    await state.update_data(last_sent_time=time.time())
     await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id))
     await state.update_data(reply_message_id=message_id)
     await AskUserAction.ask_action.set()
