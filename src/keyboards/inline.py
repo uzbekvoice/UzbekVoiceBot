@@ -19,7 +19,7 @@ def yes_no_markup(voice_id, confirm_state=None):
     markup.add(report_button)
     if confirm_state is not None:
         next_button = InlineKeyboardButton(SUBMIT_VOICE_TEXT,
-                                           callback_data='submit/{}'.format(confirm_state, voice_id))
+                                           callback_data='submit/{}'.format(voice_id))
         markup.add(next_button)
     else:
         markup.add(InlineKeyboardButton(GO_HOME_TEXT, callback_data='home'))
