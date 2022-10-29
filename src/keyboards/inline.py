@@ -4,13 +4,15 @@ from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STE
     REPORT_TEXT_2, REPORT_TEXT_3, REPORT_TEXT_4, REPORT_TEXT_5, CONFIRM_VOICE_TEXT, REJECT_VOICE_TEXT, \
     VOICE_LEADERBOARD, VOTE_LEADERBOARD
 
-async def yes_no_markup(voice_id):
+
+def yes_no_markup(voice_id):
     markup = InlineKeyboardMarkup(row_width=2)
     accept_button = InlineKeyboardButton(text=VOICE_CORRECT, callback_data='accept/{}'.format(voice_id))
     reject_button = InlineKeyboardButton(text=VOICE_INCORRECT, callback_data='reject/{}'.format(voice_id))
     skip_button = InlineKeyboardButton(text=SKIP_STEP, callback_data='skip/{}'.format(voice_id))
     report_button = InlineKeyboardButton(text=VOICE_REPORT, callback_data='report/{}'.format(voice_id))
-    markup.add(*[accept_button, reject_button, report_button])
+    markup.add(*[accept_button, reject_button])
+    markup.add(report_button)
     markup.add(skip_button)
     return markup
 
