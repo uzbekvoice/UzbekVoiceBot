@@ -1,33 +1,26 @@
 import os
 from time import sleep
 
-from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery, ParseMode
+from aiogram.dispatcher import FSMContext, filters
+from aiogram.types import Message, CallbackQuery, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
 
 from main import dp, AskUserAction
-from data.messages import CHECK_VOICE, CANCEL_MESSAGE
-from keyboards.buttons import start_markup, reject_markup
-from keyboards.inline import yes_no_markup, report_voice_markup, confirm_action_markup
+from keyboards.buttons import start_markup, go_back_markup, SPLIT_CHAR
+from keyboards.inline import yes_no_markup, report_voice_markup
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
+
+from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STEP, REPORT_TEXT_1, \
+    REPORT_TEXT_2, REPORT_TEXT_3, REPORT_TEXT_4, REPORT_TEXT_5, CONFIRM_VOICE_TEXT, REJECT_VOICE_TEXT, \
+    VOICE_LEADERBOARD, VOTE_LEADERBOARD, CHECK_VOICE, CANCEL_MESSAGE
 
 
 # Handler that answers to Check Voice message
 @dp.message_handler(lambda message: message.text == CHECK_VOICE or message.text == '/check')
-async def check_voice_handler(message: Message, state: FSMContext):
+async def initial_check_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
-
-    voices_info = await get_voices_to_check(tg_id=chat_id)
-
-    if len(voices_info) == 0:
-        await send_message(chat_id, 'no-voices-to-check', markup=start_markup)
-        await state.finish()
-        return
-    await send_message(chat_id, 'ask-check-voice', markup=reject_markup)
-
-    await state.update_data(list_number=0, voices_info=voices_info)
-
-    await ask_to_check_voice(chat_id, state)
+    await send_message(chat_id, 'ask-check-voice', markup=go_back_markup)
+    await ask_to_check_new_voice(chat_id, state)
 
 
 # Handler that answers to cancel message
@@ -45,120 +38,70 @@ async def cancel_message_handler(message: Message, state: FSMContext):
 async def ask_action_message_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     reply_message_id = data['reply_message_id']
-    await send_message(message.chat.id, 'ask-check-voice-again', markup=reject_markup, reply=reply_message_id)
+    await send_message(message.chat.id, 'ask-check-voice-again', markup=go_back_markup, reply=reply_message_id)
 
 
 # Handler that receives action on pressed accept, reject, skip and report inline button
-@dp.callback_query_handler(state=AskUserAction.ask_action, text=['accept', 'reject', 'skip', 'report'])
+@dp.callback_query_handler(filters.Regexp(r'(accept|reject|skip|report)\/.+'), state=AskUserAction.ask_action)
 async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
     message_id = call.message.message_id
+    command, voice_id = call_data.split('/')
 
     await call.answer()
 
-    data = await state.get_data()
-    list_number = data['list_number']
-    voices_info = data['voices_info']
-    voice_id = voices_info[list_number]['id']
-
-    if call_data == 'report':
-        await edit_reply_markup(chat_id, message_id, report_voice_markup)
+    if command == 'report':
+        await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
+        return
 
-    elif call_data == 'skip':
+    elif command == 'skip':
         await skip_voice(voice_id, chat_id)
         await call.message.delete()
-        await ask_to_check_voice(chat_id, state)
+        await ask_to_check_new_voice(chat_id, state)
+        return
 
-    elif call_data in ['accept', 'reject']:
-        await state.update_data(call_data=call_data)
-        await edit_reply_markup(chat_id, message_id, confirm_action_markup)
-        await AskUserAction.confirm_action.set()
-
-    # If there are no more voice to check, get new list of text
-    if list_number == 4:
-        voices_info = await get_voices_to_check(tg_id=chat_id)
-        if len(voices_info) > 0:
-            await state.update_data(list_number=0, voices_info=voices_info)
-        else:
-            await send_message(chat_id, 'no-voices-to-check', markup=start_markup)
-            await state.finish()
-            return
-    else:
-        await state.update_data(list_number=list_number + 1)
-
-
-@dp.callback_query_handler(state=AskUserAction.confirm_action, text=['confirm', 'back'])
-async def ask_action_handler(call: CallbackQuery, state: FSMContext):
-    call_data = str(call.data)
-    chat_id = call.message.chat.id
-    message_id = call.message.message_id
-
-    await call.answer()
-
-    data = await state.get_data()
-    list_number = data['list_number']
-    voices_info = data['voices_info']
-    voice_id = voices_info[list_number]['id']
-    if call_data == 'confirm':
+    elif command in ['accept', 'reject']:
         await call.message.delete_reply_markup()
-        await send_voice_vote(voice_id, data['call_data'], chat_id)
-        await ask_to_check_voice(chat_id, state)
-
-    elif call_data == 'back':
-        await edit_reply_markup(chat_id, message_id, yes_no_markup)
-        await AskUserAction.ask_action.set()
+        await send_voice_vote(voice_id, command == 'accept', chat_id)
+        await ask_to_check_new_voice(chat_id, state)
         return
 
 
 # Handler that receives action on pressed report inline button
-@dp.callback_query_handler(state=AskUserAction.report_type, text=['report_1', 'report_2', 'report_3', 'back'])
+@dp.callback_query_handler(filters.Regexp(r'(report|back).*'), state=AskUserAction.report_type)
 async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
     message_id = call.message.message_id
-
-    if call_data == 'back':
-        await edit_reply_markup(chat_id, message_id, yes_no_markup)
+    command, voice_id = call_data.split('/')
+    if command == 'back':
+        await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id))
         await AskUserAction.ask_action.set()
         return
     else:
-        data = await state.get_data()
-        list_number = data['list_number']
-        voices_info = data['voices_info']
-        voice_id = voices_info[list_number]['id']
-        await report_function('clip', voice_id, call_data, chat_id)
+        await report_function('clip', voice_id, command, chat_id)
         await call.message.delete_reply_markup()
-        await call.message.delete()
         await send_message(chat_id, 'reported', parse=ParseMode.MARKDOWN)
-
-    # If there are no more voice to check, get new list of text
-    if list_number == 4:
-        voices_info = await get_voices_to_check(tg_id=chat_id)
-        await state.update_data(list_number=0, voices_info=voices_info)
-    else:
-        await state.update_data(list_number=list_number + 1)
-
-    await ask_to_check_voice(chat_id, state)
+        await ask_to_check_new_voice(chat_id, state)
 
 
-# Function to send voice message with text to user to
-# check if the audio was recorded correctly
-async def ask_to_check_voice(chat_id, state):
-    data = await state.get_data()
-    voices_info = data['voices_info']
-    list_number = data['list_number']
+async def ask_to_check_new_voice(chat_id, state):
+    voices = await get_voices_to_check(tg_id=chat_id)
+    if len(voices) == 0:
+        await send_message(chat_id, 'no-voices-to-check', markup=start_markup)
+        await state.finish()
+        return
+    voice = voices[0]
+    text_to_check = voice['sentence']['text']
+    voice_id = voice['id']
+    voice_url = voice['audioSrc']
+    voice_file = await download_file(voice_url, '{}_{}'.format(chat_id, voice_id))
 
-    text_to_check = voices_info[list_number]['sentence']['text']
-    voice_id = voices_info[list_number]['id']
-    voice_url = voices_info[list_number]['audioSrc']
+    message_id = await send_voice(chat_id, open(voice_file, 'rb'), 'caption', args=text_to_check)
 
-    file_directory = await download_file(voice_url, voice_id)
-
-    message_id = await send_voice(chat_id, open(file_directory, 'rb'), 'caption', args=text_to_check)
-    await edit_reply_markup(chat_id, message_id, yes_no_markup)
+    await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id))
     await state.update_data(reply_message_id=message_id)
-
-    os.remove(file_directory)
     await AskUserAction.ask_action.set()
+    os.remove(voice_file)

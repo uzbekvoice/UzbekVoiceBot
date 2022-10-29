@@ -81,7 +81,7 @@ async def register_user(state):
 
 async def get_text_to_read(tg_id):
     await authorization_base64(tg_id)
-    data = {'count': '5'}
+    data = {'count': '1'}
 
     async with aiohttp.ClientSession() as session:
         async with session.get(GET_TEXT_URL, headers=HEADERS, params=data) as get_request:
@@ -93,7 +93,7 @@ async def get_text_to_read(tg_id):
 async def get_voices_to_check(tg_id):
     HEADERS['Referer'] = 'https://common.uzbekvoice.ai/uz/listen'
     await authorization_base64(tg_id)
-    data = {'count': '5'}
+    data = {'count': '1'}
 
     async with aiohttp.ClientSession() as session:
         async with session.get(GET_VOICES_URL, headers=HEADERS, params=data) as get_request:
@@ -114,12 +114,12 @@ async def send_text_voice(file_directory, text_id, tg_id):
             await sent_voice.json()
 
 
-async def send_voice_vote(voice_id, vote, tg_id):
+async def send_voice_vote(voice_id, is_valid, tg_id):
     HEADERS['Content-Type'] = 'application/json'
     await authorization_base64(tg_id)
 
     data = {'challenge': 'null'}
-    if vote == 'accept':
+    if is_valid:
         data['isValid'] = 'true'
     else:
         data['isValid'] = 'false'

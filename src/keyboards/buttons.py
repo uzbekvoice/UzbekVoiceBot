@@ -8,9 +8,9 @@ admin_button_1 = KeyboardButton(SEND_EVERYONE)
 admin_button_2 = KeyboardButton(BOT_STATISTICS)
 admin_markup.add(*[admin_button_1, admin_button_2])
 
-reject_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+go_back_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 reject_button = KeyboardButton(CANCEL_MESSAGE)
-reject_markup.add(reject_button)
+go_back_markup.add(reject_button)
 
 
 sure_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)

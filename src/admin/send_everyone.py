@@ -9,12 +9,12 @@ from aiogram.utils.exceptions import UserDeactivated, BotBlocked
 
 from main import dp, bot, AdminSendEveryOne
 from utils.uzbekvoice.db import engine, user_table, session, User
-from keyboards.buttons import reject_markup, sure_markup, admin_markup
+from keyboards.buttons import go_back_markup, sure_markup, admin_markup
 
 
 # Ask admin to send post
 async def send_everyone_func(chat_id):
-    await bot.send_message(chat_id, 'Send the post for push-notification.', reply_markup=reject_markup)
+    await bot.send_message(chat_id, 'Send the post for push-notification.', reply_markup=go_back_markup)
     await AdminSendEveryOne.ask_post.set()
 
 
