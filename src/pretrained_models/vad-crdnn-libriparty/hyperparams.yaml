@@ -38,7 +38,7 @@ cnn: !new:speechbrain.nnet.containers.Sequential
     norm1: !name:speechbrain.nnet.normalization.LayerNorm
     cnn1: !name:speechbrain.lobes.models.CRDNN.CNN_Block
         channels: 16
-        kernel_size: (3, 3) 
+        kernel_size: (3, 3)
     cnn2: !name:speechbrain.lobes.models.CRDNN.CNN_Block
         channels: 32
         kernel_size: (3, 3)
@@ -62,7 +62,7 @@ dnn: !new:speechbrain.nnet.containers.Sequential
 
 model: !new:torch.nn.ModuleList
     - [!ref <cnn>, !ref <rnn>, !ref <dnn>]
-      
+
 modules:
     compute_features: !ref <compute_features>
     model: !ref <model>
