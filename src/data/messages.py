@@ -36,14 +36,14 @@ msg_dict = {
 VOICE_LEADERBOARD = '🗣 Jami Yozilgan Audiolar liderlari'
 VOTE_LEADERBOARD = '🔊 Tekshirilgan Audiolar liderlari'
 
-RECORD_VOICE = '🗣Matn o\'qish'
+RECORD_VOICE = '🗣 Matn o\'qish'
 CHECK_VOICE = '🔊 Ovoz yozuvlarini tekshirish'
 LEADERBOARD = "📃Liderlar Ro'yxati"
 INSTRUCTIONS = "📘 Qo'llanma"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
-SKIP_STEP = 'Tashlab ketish⏭️'
+SKIP_STEP = 'Tashlab ketish ⏭️'
 VOICE_REPORT = 'Xabar berish ❗️'
 
 SEND_EVERYONE = 'Рассылка рекламы'
@@ -58,4 +58,4 @@ REPORT_TEXT_5 = 'Orqaga qaytish'
 
 CONFIRM_VOICE_TEXT = 'To\'g\'ri'
 REJECT_VOICE_TEXT = 'Noto\'g\'ri'
-SUBMIT_VOICE_TEXT = 'Yuborish'
+SUBMIT_VOICE_TEXT = 'Yuborish 💾'
