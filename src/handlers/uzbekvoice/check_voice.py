@@ -42,16 +42,19 @@ async def ask_action_message_handler(message: Message, state: FSMContext):
 
 
 # Handler that receives action on pressed accept, reject, skip and report inline button
-@dp.callback_query_handler(state=AskUserAction.ask_action, regexp=r'^(accept|reject|skip|report).*$')
+@dp.callback_query_handler(state=AskUserAction.ask_action, regexp=r'^(accept|reject|skip|report|submit|home).*$')
 async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
-    print(ask_action_handler, call_data)
+    if(call_data == 'home'):
+        await cancel_message_handler(call.message, state)
+        await state.finish()
+        return
+
     chat_id = call.message.chat.id
     message_id = call.message.message_id
     command, voice_id = call_data.split('/')
-
-    await call.answer()
     data = await state.get_data()
+    await call.answer()
     confirm_state = data['confirm_state'] if 'confirm_state' in data else None
 
 
@@ -60,13 +63,14 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await AskUserAction.report_type.set()
         return
 
-    if confirm_state is None or confirm_state != command:
+    if command != 'submit':
         await state.update_data(confirm_state=command)
         await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
         await AskUserAction.ask_action.set()
         return
 
-    last_sent_time = (await state.get_data())['last_sent_time']
+    command = confirm_state
+    last_sent_time = data['last_sent_time']
     if time.time() - last_sent_time <= 2:
         try:
             db.increase_user_vote_streak_count(chat_id)
