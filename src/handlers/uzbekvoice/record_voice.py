@@ -72,7 +72,7 @@ async def ask_confirm_message_handler(message: Message, state: FSMContext):
 
 
 # Handler that receives pressed button, where the users confirm whether voice is correct or not
-@dp.callback_query_handler(filters.Regexp(r'(confirm-voice|reject-voice)\/.+'), state=AskUserVoice.ask_confirm)
+@dp.callback_query_handler(state=AskUserVoice.ask_confirm, regexp=r'(confirm-voice|reject-voice).*')
 async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     call_data = str(call.data)
@@ -97,7 +97,7 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
 
 
 # Handler that receives action on pressed report inline button
-@dp.callback_query_handler(filters.Regexp(r'(report_\d|back|report|skip).*'), state=AskUserVoice.ask_voice)
+@dp.callback_query_handler(state=AskUserVoice.ask_voice, regexp=r'(report_\d+|back|report|skip).*')
 async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
