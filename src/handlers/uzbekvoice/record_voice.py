@@ -83,8 +83,12 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     if text_id != str(text['id']):
         return await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
 
+    audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
+
     # todo delete audio file
     if command == 'confirm-voice':
+        await send_text_voice(audio_file, text_id, chat_id)
+        os.remove(audio_file)
         await call.message.delete_reply_markup()
         await ask_to_send_new_voice(chat_id, state)
     else:
