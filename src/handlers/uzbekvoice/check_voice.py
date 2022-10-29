@@ -53,7 +53,10 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     await call.answer()
     last_sent_time = (await state.get_data())['last_sent_time']
     if time.time() - last_sent_time <= 2:
-        db.increase_user_vote_streak_count(chat_id)
+        try:
+            db.increase_user_vote_streak_count(chat_id)
+        except Exception as e:
+            print(e)
     if command == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
