@@ -68,7 +68,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     if confirm_state is None:
         await state.update_data(confirm_state=command)
         await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
-        await AskUserAction.confirm_action.set()
+        await AskUserAction.ask_action.set()
         return
 
     if command == 'skip':
