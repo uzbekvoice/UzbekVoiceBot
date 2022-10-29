@@ -45,7 +45,7 @@ async def ask_action_message_handler(message: Message, state: FSMContext):
 @dp.callback_query_handler(state=AskUserAction.ask_action, regexp=r'^(accept|reject|skip|report|submit|home).*$')
 async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
-    if(call_data == 'home'):
+    if (call_data == 'home'):
         await cancel_message_handler(call.message, state)
         await state.finish()
         return
@@ -57,7 +57,6 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     await call.answer()
     confirm_state = data['confirm_state'] if 'confirm_state' in data else None
 
-
     if command == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
@@ -65,7 +64,10 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
 
     if command != 'submit':
         await state.update_data(confirm_state=command)
-        await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
+        try:
+            await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
+        except:
+            pass
         await AskUserAction.ask_action.set()
         return
 
