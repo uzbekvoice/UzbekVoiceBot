@@ -24,7 +24,8 @@ from utils.uzbekvoice.helpers import register_user, HEADERS, VOTES_LEADERBOARD_U
 
 
 @dp.message_handler(commands=['start'])
-async def start_command(message: Message):
+async def start_command(message: Message, state: FSMContext):
+    await state.finish()
     chat_id = message.chat.id
 
     if db.user_exists(chat_id):
@@ -34,7 +35,8 @@ async def start_command(message: Message):
 
 
 @dp.message_handler(commands=['start'], state='*')
-async def start_command(message: Message):
+async def start_command(message: Message, state: FSMContext):
+    await state.finish()
     chat_id = message.chat.id
 
     if db.user_exists(chat_id):
