@@ -50,6 +50,7 @@ def text_markup():
     skip_button = InlineKeyboardButton(text=SKIP_STEP, callback_data='skip')
     report_button = InlineKeyboardButton(text=VOICE_REPORT, callback_data='report')
     markup.add(*[skip_button, report_button])
+    return markup
 
 
 def confirm_voice_markup():
