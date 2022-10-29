@@ -65,7 +65,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await AskUserAction.report_type.set()
         return
 
-    if confirm_state is None:
+    if confirm_state is None or confirm_state != command:
         await state.update_data(confirm_state=command)
         await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
         await AskUserAction.ask_action.set()
