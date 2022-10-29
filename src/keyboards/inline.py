@@ -30,33 +30,33 @@ def report_voice_markup(voice_id):
     return markup
 
 
-def report_text_markup(text_id):
+def report_text_markup():
     markup = InlineKeyboardMarkup(row_width=1)
     report_button_1 = InlineKeyboardButton(text=REPORT_TEXT_1,
-                                           callback_data='report_1/{}'.format(text_id))
+                                           callback_data='report_1')
     report_button_2 = InlineKeyboardButton(text=REPORT_TEXT_2,
-                                           callback_data='report_2/{}'.format(text_id))
+                                           callback_data='report_2')
     report_button_3 = InlineKeyboardButton(text=REPORT_TEXT_3,
-                                           callback_data='report_3/{}'.format(text_id))
+                                           callback_data='report_3')
     report_button_4 = InlineKeyboardButton(text=REPORT_TEXT_4,
-                                           callback_data='report_4/{}'.format(text_id))
-    report_button_5 = InlineKeyboardButton(text=REPORT_TEXT_5, callback_data='back/{}'.format(text_id))
+                                           callback_data='report_4')
+    report_button_5 = InlineKeyboardButton(text=REPORT_TEXT_5, callback_data='back')
     markup.add(*[report_button_1, report_button_2, report_button_3, report_button_4, report_button_5])
     return markup
 
 
-def text_markup(text_id):
+def text_markup():
     markup = InlineKeyboardMarkup(row_width=1)
-    skip_button = InlineKeyboardButton(text=SKIP_STEP, callback_data='skip/{}'.format(text_id))
-    report_button = InlineKeyboardButton(text=VOICE_REPORT, callback_data='report/{}'.format(text_id))
+    skip_button = InlineKeyboardButton(text=SKIP_STEP, callback_data='skip')
+    report_button = InlineKeyboardButton(text=VOICE_REPORT, callback_data='report')
     markup.add(*[skip_button, report_button])
 
 
-def confirm_voice_markup(text_id):
+def confirm_voice_markup():
     markup = InlineKeyboardMarkup(row_width=2)
     confirm_button = InlineKeyboardButton(CONFIRM_VOICE_TEXT,
-                                          callback_data='confirm-voice/{}'.format(text_id))
+                                          callback_data='confirm-voice')
     reject_button = InlineKeyboardButton(REJECT_VOICE_TEXT,
-                                         callback_data='reject-voice/{}'.format(text_id))
+                                         callback_data='reject-voice')
     markup.add(*[confirm_button, reject_button])
     return markup
