@@ -54,12 +54,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     confirm_state = data['confirm_state'] if 'confirm_state' in data else None
 
-    last_sent_time = (await state.get_data())['last_sent_time']
-    if time.time() - last_sent_time <= 2:
-        try:
-            db.increase_user_vote_streak_count(chat_id)
-        except Exception as e:
-            print(e)
+
     if command == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
@@ -70,6 +65,13 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
         await AskUserAction.ask_action.set()
         return
+
+    last_sent_time = (await state.get_data())['last_sent_time']
+    if time.time() - last_sent_time <= 2:
+        try:
+            db.increase_user_vote_streak_count(chat_id)
+        except Exception as e:
+            print(e)
 
     if command == 'skip':
         await call.message.delete()
