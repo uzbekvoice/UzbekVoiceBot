@@ -16,7 +16,8 @@ msg_dict = {
     'action-rejected': 'Bekor qilindi',
     'welcome-text': 'Assalomu Alaykum! Sizni qayta ko\'rganimizdan mamnunmiz',
     'voice-checking': 'Ovozingizni suniy idrok tekshirmoqda...',
-    'leaderboard': 'Leaderlar Ro\'yxati bilan tanishish uchun tugmani birini bo\'sing',
+    'leaderboard': 'Leaderlar Ro\'yxati bilan tanishish uchun tugmani birini bosing',
+    'instructions': 'Botdan foydalanish qo\'llanmasi bilan tanishib chiqing 👇\n\nhttps://telegra.ph/Botdan-foydalanish-qollanmasi-10-29',
 
     'caption': '{}',
 
@@ -32,12 +33,13 @@ msg_dict = {
     'reported': '_👮Ma\'muriyatga xabar berildi. Qoidabuzarlarga qarshi qo\'shgan hissangiz uchun tashakkur!_'
 }
 
-VOICE_LEADERBOARD = '🗣Jami Yozilgan Audiolar liderlari'
+VOICE_LEADERBOARD = '🗣 Jami Yozilgan Audiolar liderlari'
 VOTE_LEADERBOARD = '🔊 Tekshirilgan Audiolar liderlari'
 
 RECORD_VOICE = '🗣Matn o\'qish'
 CHECK_VOICE = '🔊 Ovoz yozuvlarini tekshirish'
 LEADERBOARD = "📃Liderlar Ro'yxati"
+INSTRUCTIONS = "📘 Qo'llanma"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'

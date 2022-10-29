@@ -18,7 +18,7 @@ from utils.uzbekvoice import db
 from main import UserRegistration, dp
 from utils.helpers import send_message
 from utils.uzbekvoice.helpers import native_language
-from data.messages import LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
+from data.messages import INSTRUCTIONS, LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
 from utils.uzbekvoice.helpers import register_user, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL, \
     authorization_base64
 
@@ -129,6 +129,11 @@ async def finish(message: Message, state: FSMContext):
 @dp.message_handler(lambda message: message.text == LEADERBOARD or message.text == '/leaderboard')
 async def leaderboard(message: Message):
     await send_message(message.chat.id, 'leaderboard', markup=leader_markup)
+
+
+@dp.message_handler(lambda message: message.text == INSTRUCTIONS or message.text == '/instructions')
+async def instructions(message: Message):
+    await send_message(message.chat.id, 'instructions')
 
 
 @dp.message_handler(lambda message: message.text == '/record_leaderboard' or message.text == VOICE_LEADERBOARD)
