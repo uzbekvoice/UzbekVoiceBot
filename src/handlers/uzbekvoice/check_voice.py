@@ -71,7 +71,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
 
     command = confirm_state
     last_sent_time = data['last_sent_time']
-    if time.time() - last_sent_time <= 2:
+    if time.time() - last_sent_time <= 3:
         try:
             db.increase_user_vote_streak_count(chat_id)
         except Exception as e:
