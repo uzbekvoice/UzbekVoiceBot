@@ -3,7 +3,7 @@ from time import sleep
 
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
-
+import re
 from main import dp, AskUserAction
 from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
@@ -42,7 +42,8 @@ async def ask_action_message_handler(message: Message, state: FSMContext):
 
 
 # Handler that receives action on pressed accept, reject, skip and report inline button
-@dp.callback_query_handler(state=AskUserAction.ask_action, regexp=r'(accept|reject|skip|report).*')
+@dp.callback_query_handler(lambda c: re.match(r'(accept|reject|skip|report).*', str(c.data)) is not None,
+                           state=AskUserAction.ask_action)
 async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
@@ -70,7 +71,8 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
 
 
 # Handler that receives action on pressed report inline button
-@dp.callback_query_handler(state=AskUserAction.report_type, regexp=r'(report|back).*')
+@dp.callback_query_handler(lambda c: re.match(r'(report|back).*', str(c.data)) is not None,
+                           state=AskUserAction.report_type)
 async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id

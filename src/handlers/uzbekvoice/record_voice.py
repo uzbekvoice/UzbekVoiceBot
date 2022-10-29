@@ -1,5 +1,5 @@
 import os
-
+import re
 import aiogram.types
 from aiogram.dispatcher import FSMContext, filters
 from aiogram.types import Message, CallbackQuery
@@ -72,7 +72,8 @@ async def ask_confirm_message_handler(message: Message, state: FSMContext):
 
 
 # Handler that receives pressed button, where the users confirm whether voice is correct or not
-@dp.callback_query_handler(state=AskUserVoice.ask_confirm, regexp=r'(confirm-voice|reject-voice).*')
+@dp.callback_query_handler(lambda c: re.match(r'(confirm-voice|reject-voice).*', str(c.data)) is not None,
+                           state=AskUserVoice.ask_confirm)
 async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     call_data = str(call.data)
@@ -97,7 +98,8 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
 
 
 # Handler that receives action on pressed report inline button
-@dp.callback_query_handler(state=AskUserVoice.ask_voice, regexp=r'(report_\d+|back|report|skip).*')
+@dp.callback_query_handler(lambda c: re.match(r'(report_\d+|back|report|skip).*', str(c.data)) is not None,
+                           state=AskUserVoice.ask_voice)
 async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)
     chat_id = call.message.chat.id
