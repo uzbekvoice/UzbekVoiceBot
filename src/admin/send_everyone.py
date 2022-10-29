@@ -75,12 +75,13 @@ async def send_post(chat_id, state):
     sent_message = await send_progress_message(chat_id, success)
     tasks = []
     for user_id in users_id:
-        tasks.append(asyncio.ensure_future(send_copied_post_to_user(user_id.tg_id, chat_id, message_id, buttons)))
+        tasks.append(asyncio.ensure_future(send_copied_post_to_user(user_id, chat_id, message_id, buttons)))
 
     gather_results = await asyncio.gather(*tasks)
     for result in gather_results:
         if result == 'success':
             success += 1
+
         elif result == 'blocked':
             blocked += 1
         elif result == 'deactivated':
@@ -103,13 +104,15 @@ async def send_post(chat_id, state):
 async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, buttons):
     try:
 
-        await bot.copy_message(
+        print(await bot.copy_message(
             chat_id=user_id,
             from_chat_id=copy_from_chat_id,
             message_id=message_id,
             disable_notification=True,
             reply_markup=buttons
-        )
+        ))
+        print(user_id)
+        print('----------------')
         return 'success'
     except BotBlocked:
         return 'blocked'

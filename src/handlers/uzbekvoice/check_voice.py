@@ -2,7 +2,7 @@ import os
 from time import sleep
 
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, ParseMode
 
 from main import dp, AskUserAction
 from data.messages import CHECK_VOICE, CANCEL_MESSAGE
@@ -30,7 +30,7 @@ async def check_voice_handler(message: Message, state: FSMContext):
     await ask_to_check_voice(chat_id, state)
 
 
-# Handler that answer to cancel message
+# Handler that answers to cancel message
 @dp.message_handler(state=AskUserAction.all_states, text=CANCEL_MESSAGE)
 async def cancel_message_handler(message: Message, state: FSMContext):
     data = await state.get_data()
@@ -64,13 +64,12 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
 
     if call_data == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup)
-        await skip_voice(voice_id, chat_id)
-        sleep(5)
-        await call.message.delete()
+        await AskUserAction.report_type.set()
 
     elif call_data == 'skip':
         await skip_voice(voice_id, chat_id)
         await call.message.delete()
+        await ask_to_check_voice(chat_id, state)
 
     elif call_data in ['accept', 'reject']:
         await state.update_data(call_data=call_data)
@@ -129,9 +128,10 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
         list_number = data['list_number']
         voices_info = data['voices_info']
         voice_id = voices_info[list_number]['id']
-
         await report_function('clip', voice_id, call_data, chat_id)
+        await call.message.delete_reply_markup()
         await call.message.delete()
+        await send_message(chat_id, 'reported', parse=ParseMode.MARKDOWN)
 
     # If there are no more voice to check, get new list of text
     if list_number == 4:

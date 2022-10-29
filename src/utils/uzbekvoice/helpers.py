@@ -133,10 +133,11 @@ async def send_voice_vote(voice_id, vote, tg_id):
 async def skip_voice(voice_id, tg_id):
     await authorization_base64(tg_id)
 
-    request_url = SKIP_VOICE_URL.format(voice_id)
+    request_url = SKIP_VOICE_URL.format(int(voice_id))
     async with aiohttp.ClientSession() as session:
         async with session.post(request_url, headers=HEADERS) as skipped_voice:
             skipped_voice_response = await skipped_voice.json()
+            print(f"----------------------------{voice_id, tg_id, skipped_voice, skipped_voice_response} ----------------------------------")
 
 
 async def skip_sentence(sentence_id, tg_id):
