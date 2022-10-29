@@ -53,15 +53,18 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     await call.answer()
     last_sent_time = (await state.get_data())['last_sent_time']
     if time.time() - last_sent_time <= 2:
-        db.increase_user_vote_streak_count(chat_id)
+        try:
+            db.increase_user_vote_streak_count(chat_id)
+        except Exception as e:
+            print(e)
     if command == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
         return
 
     elif command == 'skip':
-        await skip_voice(voice_id, chat_id)
         await call.message.delete()
+        await skip_voice(voice_id, chat_id)
         await ask_to_check_new_voice(chat_id, state)
         return
 
@@ -85,8 +88,8 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
         await AskUserAction.ask_action.set()
         return
     else:
-        await report_function('clip', voice_id, command, chat_id)
         await call.message.delete_reply_markup()
+        await report_function('clip', voice_id, command, chat_id)
         await send_message(chat_id, 'reported', parse=ParseMode.MARKDOWN)
         await ask_to_check_new_voice(chat_id, state)
 

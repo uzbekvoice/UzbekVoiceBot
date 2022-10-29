@@ -58,7 +58,7 @@ async def ask_voice_handler(message: Message, state: FSMContext):
         await message.answer(text="<b>Odam ovoziga o'xshamadi,\nIltimos qaytadan yuboring!!!</b>")
         return await AskUserVoice.ask_voice.set()
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice', args=text_to_read,
-                                     markup=confirm_voice_markup(text_id))
+                                     markup=confirm_voice_markup())
     await state.update_data(reply_message_id=sent_audio_id)
     await AskUserVoice.ask_confirm.set()
 
@@ -76,20 +76,23 @@ async def ask_confirm_message_handler(message: Message, state: FSMContext):
 async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     call_data = str(call.data)
-    command, text_id = call_data.split('/')
+    command = call_data
     data = await state.get_data()
+    reply_message_id = data['reply_message_id']
+    message_id = call.message.message_id
     text = data['text']
+    text_id = text['id']
     await call.answer()
-    if text_id != str(text['id']):
+    if str(reply_message_id) != str(message_id):
         return await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
 
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
 
     # todo delete audio file
     if command == 'confirm-voice':
+        await call.message.delete_reply_markup()
         await send_text_voice(audio_file, text_id, chat_id)
         os.remove(audio_file)
-        await call.message.delete_reply_markup()
         await ask_to_send_new_voice(chat_id, state)
     else:
         await call.message.delete()
@@ -104,26 +107,26 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     message_id = call.message.message_id
     data = await state.get_data()
     text = data['text']
-    command, text_id = call_data.split('/')
-
-    if text_id != str(text['id']):
+    reply_message_id = data['reply_message_id']
+    command = call_data
+    text_id = text["id"]
+    if str(reply_message_id) != str(message_id):
         return await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
-
     if command == 'back':
-        await edit_reply_markup(chat_id, message_id, text_markup(text_id))
+        await edit_reply_markup(chat_id, message_id, text_markup())
         await AskUserVoice.ask_voice.set()
         return
     elif command == 'report':
-        await edit_reply_markup(chat_id, message_id, report_text_markup(text_id))
+        await edit_reply_markup(chat_id, message_id, report_text_markup())
         return
     elif command == 'skip':
-        await skip_sentence(text_id, chat_id)
         await call.message.delete()
+        await skip_sentence(text_id, chat_id)
     else:
+        await call.message.delete()
         if 'report' in command:
             await report_function('sentence', text_id, command, tg_id=chat_id)
             await skip_sentence(text_id, chat_id)
-        await call.message.delete()
 
     await ask_to_send_new_voice(chat_id, state)
 
@@ -135,7 +138,7 @@ async def ask_to_send_voice(chat_id, text, state):
         chat_id,
         'caption',
         args=text_to_read,
-        markup=text_markup(text["id"]),
+        markup=text_markup(),
         parse=aiogram.types.ParseMode.HTML
     )
     await state.update_data(reply_message_id=message_id)

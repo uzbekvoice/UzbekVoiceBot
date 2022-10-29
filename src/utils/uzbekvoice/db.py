@@ -35,7 +35,7 @@ class User(Base):
     accent_region = Column(String(100))
     year_of_birth = Column(String(50), nullable=True)
     native_language = Column(String(100))
-    vote_streak_count = Column(BigInteger, nullable=False, default=0)
+    vote_streak_count = Column(BigInteger, nullable=True, default=0)
 
 
 Base.metadata.create_all(engine)
@@ -84,7 +84,7 @@ def get_user(tg_id):
         return conn.execute(q).first()
 
 
-async def increase_user_vote_streak_count(
+def increase_user_vote_streak_count(
         tg_id,
 ):
     with engine.connect() as conn:
