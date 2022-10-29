@@ -8,7 +8,7 @@ from main import dp, AskUserVoice, BASE_DIR
 from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, reject_markup
 from utils.helpers import send_message, edit_reply_markup, send_voice, delete_message_markup
-from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup
+from keyboards.inline import skip_report_markup, report_text_markup, confirm_voice_markup, confirm_action_markup
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, skip_sentence
 
 
@@ -87,9 +87,27 @@ async def ask_confirm_message_handler(message: Message, state: FSMContext):
 async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     call_data = call.data
+    message_id = call.message.message_id
 
     await call.answer()
-    await call.message.delete()
+
+    if call_data == 'confirm-voice':
+        await edit_reply_markup(chat_id, message_id, confirm_action_markup)
+        await AskUserVoice.next()
+        
+    else:
+        await call.message.delete()
+        await ask_to_send_voice(chat_id, state)
+
+
+
+@dp.callback_query_handler(state=AskUserVoice.confirm_action, text=['confirm', 'back'])
+async def ask_action_handler(call: CallbackQuery, state: FSMContext):
+    chat_id = call.message.chat.id
+    call_data = call.data
+    message_id = call.message.message_id
+
+    await call.answer()
 
     data = await state.get_data()
     list_number = data['list_number']
@@ -97,8 +115,10 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     file_directory = data['file_directory']
     text_id = text_info[list_number]['id']
 
-    if call_data == 'confirm-voice':
+    if call_data == 'confirm':
         await send_text_voice(file_directory, text_id, chat_id)
+        await call.message.delete_reply_markup()
+        await ask_to_send_voice(chat_id, state)
         os.remove(file_directory)
 
         # If there are no more text to read, get new list of text
@@ -108,7 +128,10 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
         else:
             await state.update_data(list_number=list_number + 1)
 
-    await ask_to_send_voice(chat_id, state)
+    elif call_data == 'back':
+        await edit_reply_markup(chat_id, message_id, confirm_voice_markup)
+        await AskUserVoice.ask_confirm.set()
+        return
 
 
 # Handler that receives action on pressed report inline button

@@ -45,6 +45,7 @@ class AdminSendEveryOne(StatesGroup):
 class AskUserVoice(StatesGroup):
     ask_voice = State()
     ask_confirm = State()
+    confirm_action = State()
     report_type = State()
 
 

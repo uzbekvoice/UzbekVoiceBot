@@ -44,6 +44,7 @@ VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
 SKIP_STEP = 'Tashlab ketish⏭️'
 VOICE_REPORT = 'Xabar berish ❗️'
+BOT_STATISTICS = 'Statistika'
 
 SEND_EVERYONE = 'Ommaviy xabar'
 CANCEL_MESSAGE = 'Ortga qaytish'
