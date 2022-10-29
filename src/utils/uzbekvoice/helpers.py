@@ -27,10 +27,10 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
                   'AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/95.0.4638.69 Safari/537.36',
-           }
+}
 
 
-async def authorization_base64(tg_id):
+async def authorization_base64(tg_id, additional_headers):
     user = db.get_user(tg_id)
     uuid = user.uuid
     access_token = user.access_token
@@ -38,8 +38,11 @@ async def authorization_base64(tg_id):
     base64_bytes = base64.b64encode(auth)
     base64_string = base64_bytes.decode('ascii')
     authorization = f'Basic {base64_string}'
-    HEADERS['Authorization'] = authorization
-    print(authorization)
+    return {
+        'Authorization': authorization,
+        **HEADERS,
+        **additional_headers
+    }
 
 
 def check_if_audio_human_voice(audio):
@@ -76,47 +79,42 @@ async def register_user(state):
         accent_region=state['accent_region'],
         year_of_birth=state['year_of_birth'],
         native_language=state['native_language']
-        )
+    )
 
 
 async def get_text_to_read(tg_id):
-    await authorization_base64(tg_id)
+    headers = await authorization_base64(tg_id, {})
     data = {'count': '1'}
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(GET_TEXT_URL, headers=HEADERS, params=data) as get_request:
+        async with session.get(GET_TEXT_URL, headers=headers, params=data) as get_request:
             response_json = await get_request.json()
 
             return response_json
 
 
 async def get_voices_to_check(tg_id):
-    HEADERS['Referer'] = 'https://common.uzbekvoice.ai/uz/listen'
-    await authorization_base64(tg_id)
+    headers = await authorization_base64(tg_id, {'Referer': 'https://common.uzbekvoice.ai/uz/listen'})
     data = {'count': '1'}
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(GET_VOICES_URL, headers=HEADERS, params=data) as get_request:
+        async with session.get(GET_VOICES_URL, headers=headers, params=data) as get_request:
             response_json = await get_request.json()
 
             return response_json
 
 
 async def send_text_voice(file_directory, text_id, tg_id):
-    HEADERS['sentence_id'] = text_id
-    HEADERS['Content-Type'] = 'audio/ogg'
-
-    await authorization_base64(tg_id)
+    headers = await authorization_base64(tg_id, {'sentence_id': text_id, 'Content-Type': 'audio/ogg'})
     data = open(file_directory, 'rb')
 
     async with aiohttp.ClientSession() as session:
-        async with session.post(SEND_VOICE_URL, headers=HEADERS, data=data) as sent_voice:
+        async with session.post(SEND_VOICE_URL, headers=headers, data=data) as sent_voice:
             await sent_voice.json()
 
 
 async def send_voice_vote(voice_id, is_valid, tg_id):
-    HEADERS['Content-Type'] = 'application/json'
-    await authorization_base64(tg_id)
+    headers = await authorization_base64(tg_id, {'Content-Type': 'application/json'})
 
     data = {'challenge': 'null'}
     if is_valid:
@@ -126,32 +124,32 @@ async def send_voice_vote(voice_id, is_valid, tg_id):
 
     request_url = VOICE_VOTE_URL.format(voice_id)
     async with aiohttp.ClientSession() as session:
-        async with session.post(request_url, data=json.dumps(data), headers=HEADERS) as posted_vote:
+        async with session.post(request_url, data=json.dumps(data), headers=headers) as posted_vote:
             posted_vote_response = await posted_vote.json()
 
 
 async def skip_voice(voice_id, tg_id):
-    await authorization_base64(tg_id)
+    headers = await authorization_base64(tg_id, {})
 
     request_url = SKIP_VOICE_URL.format(int(voice_id))
     async with aiohttp.ClientSession() as session:
-        async with session.post(request_url, headers=HEADERS) as skipped_voice:
+        async with session.post(request_url, headers=headers) as skipped_voice:
             skipped_voice_response = await skipped_voice.json()
-            print(f"----------------------------{voice_id, tg_id, skipped_voice, skipped_voice_response} ----------------------------------")
+            print(
+                f"----------------------------{voice_id, tg_id, skipped_voice, skipped_voice_response} ----------------------------------")
 
 
 async def skip_sentence(sentence_id, tg_id):
-    await authorization_base64(tg_id)
+    headers = await authorization_base64(tg_id, {})
 
     request_url = SKIP_SENTENCE_URL.format(sentence_id)
     async with aiohttp.ClientSession() as session:
-        async with session.post(request_url, headers=HEADERS) as skipped_sentence:
+        async with session.post(request_url, headers=headers) as skipped_sentence:
             skipped_sentence_response = await skipped_sentence.json()
 
 
 async def report_function(kind, id_to_report, report_type, tg_id):
-    HEADERS['Content-Type'] = 'application/json'
-    await authorization_base64(tg_id)
+    headers = await authorization_base64(tg_id, {'Content-Type': 'application/json'})
 
     if report_type == 'report_1':
         reason = 'offensive-language'
@@ -165,7 +163,7 @@ async def report_function(kind, id_to_report, report_type, tg_id):
     data = {"kind": kind, "id": id_to_report, "reasons": [reason]}
     print(data)
     async with aiohttp.ClientSession() as session:
-        async with session.post(REPORT_URL, data=json.dumps(data), headers=HEADERS) as post_report:
+        async with session.post(REPORT_URL, data=json.dumps(data), headers=headers) as post_report:
             posted_report_response = await post_report.json()
 
 
@@ -178,4 +176,3 @@ async def download_file(download_url, voice_id):
                 file_stream.write(video_url_content)
 
             return file_directory
-
