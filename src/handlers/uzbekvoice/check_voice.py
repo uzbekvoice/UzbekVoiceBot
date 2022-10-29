@@ -68,6 +68,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         await send_voice_vote(voice_id, command == 'accept', chat_id)
         await ask_to_check_new_voice(chat_id, state)
         return
+    print("Error in ask_action_handler", command, voice_id, call_data)
 
 
 # Handler that receives action on pressed report inline button
