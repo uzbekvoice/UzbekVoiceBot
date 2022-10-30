@@ -34,9 +34,9 @@ async def delete_message(chat_id, message_id):
         print('Error in delete_message', err)
 
 
-async def send_voice(chat_id, file_to_send, caption, args=None, markup=None):
+async def send_voice(chat_id, file_to_send, caption, args=None, markup=None, parse=None):
     msg_to_send = await user_msg(caption, args)
-    sent_voice = await bot.send_voice(chat_id, file_to_send, caption=msg_to_send, reply_markup=markup)
+    sent_voice = await bot.send_voice(chat_id, file_to_send, caption=msg_to_send, reply_markup=markup, parse_mode=parse)
     return sent_voice.message_id
 
 
