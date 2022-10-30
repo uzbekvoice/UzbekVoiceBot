@@ -1,9 +1,9 @@
 import os
-
+from datetime import datetime, timedelta
 import aiogram.types
 from aiogram.dispatcher import FSMContext, filters
 from aiogram.types import Message, CallbackQuery
-
+from utils.uzbekvoice import db
 from main import dp, AskUserVoice, BASE_DIR
 from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, go_back_markup
@@ -51,11 +51,12 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     text = data['text']
     text_id = text['id']
     text_to_read = text['text']
-    # here goes checking audio
+    user = db.get_user(chat_id)
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
     await message.voice.download(destination_file=audio_file)
-    result = check_if_audio_human_voice(audio_file)
-    if len(result) == 0:
+    validation_required = user["last_validated_at"] is None or user["last_validated_at"] < (datetime.now() - timedelta(minutes=20))
+    is_valid = len(check_if_audio_human_voice(audio_file)) != 0 if validation_required else True
+    if is_valid:
         os.remove(audio_file)
         await message.answer(text="<b>Odam ovoziga o'xshamadi,\nIltimos qaytadan yuboring!!!</b>")
         return await AskUserVoice.ask_voice.set()

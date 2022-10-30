@@ -41,6 +41,7 @@ class User(Base):
     is_banned = Column(Boolean, nullable=True, default=False)
     ban_reason = Column(String(300), nullable=True)
     banned_time = Column(DATETIME, nullable=True)
+    last_validated_at = Column(DATETIME, nullable=True)
 
 
 Base.metadata.create_all(engine)
