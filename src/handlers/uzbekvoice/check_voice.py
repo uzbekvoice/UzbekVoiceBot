@@ -16,7 +16,8 @@ from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STE
 
 
 # Handler that answers to Check Voice message
-@dp.message_handler(lambda message: message.text == CHECK_VOICE or message.text == '/check')
+@dp.message_handler(text=CHECK_VOICE)
+@dp.message_handler(commands=['check'])
 async def initial_check_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     await send_message(chat_id, 'ask-check-voice', markup=go_back_markup)
