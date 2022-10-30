@@ -135,8 +135,6 @@ async def skip_voice(voice_id, tg_id):
     async with aiohttp.ClientSession() as session:
         async with session.post(request_url, headers=headers) as skipped_voice:
             skipped_voice_response = await skipped_voice.json()
-            print(
-                f"----------------------------{voice_id, tg_id, skipped_voice, skipped_voice_response} ----------------------------------")
 
 
 async def skip_sentence(sentence_id, tg_id):

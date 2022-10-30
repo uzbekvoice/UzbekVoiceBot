@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery, ParseMode, InlineKeyboardButto
 from main import dp, AskUserAction
 from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
-from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup
+from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup, IsRegistered
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
 import utils.uzbekvoice.db as db
 
@@ -16,8 +16,8 @@ from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STE
 
 
 # Handler that answers to Check Voice message
-@dp.message_handler(text=CHECK_VOICE)
-@dp.message_handler(commands=['check'])
+@dp.message_handler(IsRegistered(), text=CHECK_VOICE)
+@dp.message_handler(IsRegistered(), commands=['check'])
 async def initial_check_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     await send_message(chat_id, 'ask-check-voice', markup=go_back_markup)
