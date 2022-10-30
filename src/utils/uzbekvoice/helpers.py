@@ -118,9 +118,9 @@ async def send_voice_vote(voice_id, is_valid, tg_id):
 
     data = {'challenge': 'null'}
     if is_valid:
-        data['isValid'] = 'true'
+        data['isValid'] = True
     else:
-        data['isValid'] = 'false'
+        data['isValid'] = False
 
     request_url = VOICE_VOTE_URL.format(voice_id)
     async with aiohttp.ClientSession() as session:
