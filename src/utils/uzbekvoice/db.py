@@ -2,6 +2,7 @@ from sqlalchemy import (
     create_engine,
     BigInteger,
     MetaData,
+    Boolean,
     Column,
     String,
     insert,
@@ -36,6 +37,7 @@ class User(Base):
     year_of_birth = Column(String(50), nullable=True)
     native_language = Column(String(100))
     vote_streak_count = Column(BigInteger, nullable=True, default=0)
+    is_banned = Column(Boolean, nullable=True, default=False)
 
 
 Base.metadata.create_all(engine)
@@ -64,7 +66,7 @@ async def write_user(
             gender=gender,
             accent_region=accent_region,
             year_of_birth=year_of_birth,
-            native_language=native_language
+            native_language=native_language,
         )
 
         conn.execute(create_user)
@@ -76,6 +78,13 @@ def user_exists(tg_id):
     with engine.connect() as conn:
         q = session.query(exists().where(User.tg_id == tg_id)).scalar()
         return q
+
+
+def user_banned(tg_id):
+    with engine.connect() as conn:
+        q = select(user_table).where(user_table.c.tg_id == tg_id)
+        user = conn.execute(q).first()
+        return user.is_banned
 
 
 def get_user(tg_id):

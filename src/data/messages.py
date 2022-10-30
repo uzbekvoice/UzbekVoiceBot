@@ -32,7 +32,8 @@ msg_dict = {
     'ask-accent': 'Shevangiz ko\'proq qaysi hududga tegishli? 👇',
     'ask-native-language': 'Iltimos ona-tilingizni tanlang 👇',
     'register-success': 'Siz muvaffaqiyatli ro\'yxatdan o\'tdingiz! 🎉',
-    'reported': '_👮Ma\'muriyatga xabar berildi. Qoidabuzarlarga qarshi qo\'shgan hissangiz uchun tashakkur!_'
+    'reported': '_👮 Ma\'muriyatga xabar berildi. Qoidabuzarlarga qarshi qo\'shgan hissangiz uchun tashakkur!_',
+    'banned': "⛔ Siz takroriy qoidabuzarliklar sababli qora ro'yxatdasiz."
 }
 
 VOICE_LEADERBOARD = '🗣 Jami Yozilgan Audiolar liderlari'
@@ -40,7 +41,7 @@ VOTE_LEADERBOARD = '🔊 Tekshirilgan Audiolar liderlari'
 
 RECORD_VOICE = '🗣 Matn o\'qish'
 CHECK_VOICE = '🔊 Ovoz yozuvlarini tekshirish'
-LEADERBOARD = "📃Liderlar Ro'yxati"
+LEADERBOARD = "📃 Liderlar Ro'yxati"
 INSTRUCTIONS = "📘 Qo'llanma"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
@@ -50,7 +51,7 @@ VOICE_REPORT = 'Xabar berish ❗️'
 
 SEND_EVERYONE = 'Рассылка рекламы'
 BOT_STATISTICS = 'Bot statistikasi'
-CANCEL_MESSAGE = 'Ortga qaytish'
+CANCEL_MESSAGE = 'Ortga qaytish ↩'
 
 REPORT_TEXT_1 = 'Haqoratli nutq'
 REPORT_TEXT_2 = 'Grammatik / imlo xatosi'
@@ -58,7 +59,7 @@ REPORT_TEXT_3 = 'Boshqa tillar'
 REPORT_TEXT_4 = 'Talaffuz qilish qiyin'
 REPORT_TEXT_5 = 'Orqaga qaytish'
 
-CONFIRM_VOICE_TEXT = 'To\'g\'ri'
-REJECT_VOICE_TEXT = 'Noto\'g\'ri'
+CONFIRM_VOICE_TEXT = 'To\'g\'ri 👍'
+REJECT_VOICE_TEXT = 'Noto\'g\'ri 👎'
 SUBMIT_VOICE_TEXT = 'Yuborish 💾'
 GO_HOME_TEXT = 'Bosh menyu 🏠'

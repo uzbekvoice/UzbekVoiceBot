@@ -23,17 +23,6 @@ from utils.uzbekvoice.helpers import register_user, VOTES_LEADERBOARD_URL, CLIPS
     authorization_base64
 
 
-@dp.message_handler(commands=['start'])
-async def start_command(message: Message, state: FSMContext):
-    await state.finish()
-    chat_id = message.chat.id
-
-    if db.user_exists(chat_id):
-        await send_message(chat_id, 'welcome-text', markup=start_markup)
-    else:
-        await send_message(chat_id, 'start', markup=register_markup)
-
-
 @dp.message_handler(commands=['start'], state='*')
 async def start_command(message: Message, state: FSMContext):
     await state.finish()

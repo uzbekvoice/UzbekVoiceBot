@@ -1,5 +1,5 @@
 from aiogram.dispatcher.filters import Filter
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardRemove
 
 from data.messages import msg_dict
 from main import bot, ADMINS_ID, dp
@@ -57,6 +57,7 @@ async def on_startup(args):
     dp.bind_filter(IsRegistered)
 
 
+# Filter for checking registration of user
 class IsRegistered(Filter):
     key = "is_registered"
 
@@ -68,6 +69,21 @@ class IsRegistered(Filter):
             await send_message(chat_id, 'register', markup=register_markup)
 
 
+# Filter for checking whether user is banned
+class IsBlockedUser(Filter):
+    key = "is_blocked_user"
+
+    async def check(self, message: Message):
+        chat_id = message.chat.id
+        if db.user_banned(chat_id):
+            await send_message(chat_id, 'banned', markup=ReplyKeyboardRemove())
+            return False
+        else:
+            return True
+
+
 dp.filters_factory.bind(IsRegistered)
+dp.filters_factory.bind(IsBlockedUser)
+
 
 
