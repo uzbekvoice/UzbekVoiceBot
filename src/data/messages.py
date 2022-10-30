@@ -2,6 +2,9 @@ msg_dict = {
     'admin-bot-start': 'Bot ishga tushurildi',
 
     'start': 'Assalomu alaykum, @UzbekVoiceBot\'dan foydalanish uchun ro\'yxatdan o\'ting',
+    'register': '@UzbekVoiceBot\'dan foydalanish uchun ro\'yxatdan o\'ting',
+
+    'welcome-text': 'Assalomu Alaykum! Sizni qayta ko\'rganimizdan mamnunmiz',
 
     'ask-record-voice': 'Iltimos, quyida berilgan matnlarni o\'qing, ovozli xabar sifatida yuboring.',
     'ask-record-voice-again': 'Iltimos, ushbu tepadagi matnni o\'qing, ovozli xabar sifatida yuboring.',
@@ -14,7 +17,6 @@ msg_dict = {
     'ask-recheck-voice': '{}\n\nIltimos matn to\'g\'ri o\'qilganligini tasdiqlang',
 
     'action-rejected': 'Bekor qilindi',
-    'welcome-text': 'Assalomu Alaykum! Sizni qayta ko\'rganimizdan mamnunmiz',
     'voice-checking': 'Ovozingizni suniy idrok tekshirmoqda...',
     'leaderboard': 'Leaderlar Ro\'yxati bilan tanishish uchun tugmani birini bosing',
     'instructions': 'Botdan foydalanish qo\'llanmasi bilan tanishib chiqing 👇\n\nhttps://telegra.ph/Botdan-foydalanish-qollanmasi-10-29',

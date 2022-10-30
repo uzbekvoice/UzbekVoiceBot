@@ -1,10 +1,10 @@
-import json
+from aiogram.dispatcher.filters import Filter
+from aiogram.types import Message
 
-from main import ADMINS_ID
 from data.messages import msg_dict
-
-from main import bot, users_db
-from keyboards.buttons import start_markup
+from main import bot, ADMINS_ID, dp
+from keyboards.buttons import start_markup, register_markup
+from .uzbekvoice import db
 
 
 # Function to send waiting message
@@ -17,6 +17,7 @@ async def send_message(chat_id, msg, args=None, markup=None, parse=None, reply=N
         return sent_message.message_id
     except Exception as err:
         print('Error in send_message', err)
+
 
 async def delete_message_markup(chat_id, message_id):
     try:
@@ -53,4 +54,20 @@ async def user_msg(message_str, args):
 async def on_startup(args):
     for one_admin_id in ADMINS_ID:
         await send_message(one_admin_id, 'admin-bot-start', markup=start_markup)
+    dp.bind_filter(IsRegistered)
+
+
+class IsRegistered(Filter):
+    key = "is_registered"
+
+    async def check(self, message: Message):
+        chat_id = message.chat.id
+        if db.user_exists(chat_id):
+            return True
+        else:
+            await send_message(chat_id, 'register', markup=register_markup)
+
+
+dp.filters_factory.bind(IsRegistered)
+
 
