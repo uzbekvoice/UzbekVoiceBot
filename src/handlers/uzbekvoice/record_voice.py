@@ -53,8 +53,10 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     text_to_read = text['text']
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
     await message.voice.download(destination_file=audio_file)
-    sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice', args=text_to_read,
-                                     markup=confirm_voice_markup())
+    sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice',
+                                     args=f'—————<br><b>{text_to_read}</b><br>—————',
+                                     markup=confirm_voice_markup(),
+                                     parse=aiogram.types.ParseMode.HTML)
     await state.update_data(reply_message_id=sent_audio_id)
     await AskUserVoice.ask_confirm.set()
 
