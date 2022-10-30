@@ -44,7 +44,7 @@ async def ask_action_message_handler(message: Message, state: FSMContext):
 
 
 # Handler that receives action on pressed accept, reject, skip and report inline button
-@dp.callback_query_handler(IsRegistered(), IsBlockedUser(), state=AskUserAction.ask_action,
+@dp.callback_query_handler(state=AskUserAction.ask_action,
                            regexp=r'^(accept|reject|skip|report|submit|home).*$')
 async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     call_data = str(call.data)

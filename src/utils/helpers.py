@@ -73,6 +73,7 @@ class IsRegistered(Filter):
     key = "is_registered"
 
     async def check(self, message: Message):
+
         chat_id = message.chat.id
         if db.user_exists(chat_id):
             return True
