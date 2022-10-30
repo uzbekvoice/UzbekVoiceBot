@@ -8,7 +8,8 @@ from main import dp, AskUserVoice, BASE_DIR
 from data.messages import RECORD_VOICE, CANCEL_MESSAGE
 from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import text_markup, report_text_markup, confirm_voice_markup
-from utils.helpers import send_message, edit_reply_markup, send_voice, delete_message_markup, IsRegistered, \
+from utils.helpers import send_message, edit_reply_markup, send_voice, delete_message_markup, delete_message, \
+    IsRegistered, \
     IsBlockedUser
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, \
     skip_sentence
@@ -46,25 +47,12 @@ async def ask_voice_message_handler(message: Message, state: FSMContext):
 async def ask_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     audio_id = message.voice.file_id
-    await send_message(chat_id, 'voice-checking')
     data = await state.get_data()
     text = data['text']
     text_id = text['id']
     text_to_read = text['text']
-    user = db.get_user(chat_id)
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
     await message.voice.download(destination_file=audio_file)
-    validation_required = user["last_validated_at"] is None or user["last_validated_at"] < (datetime.now() - timedelta(minutes=20))
-    is_valid = len(check_if_audio_human_voice(audio_file)) != 0 if validation_required else True
-    if not is_valid:
-        os.remove(audio_file)
-        await message.answer(text="<b>Odam ovoziga o'xshamadi,\nIltimos qaytadan yuboring!!!</b>")
-        return await AskUserVoice.ask_voice.set()
-
-    # if user passed validation, save current time
-    if validation_required:
-        db.user_validated_now(chat_id)
-
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice', args=text_to_read,
                                      markup=confirm_voice_markup())
     await state.update_data(reply_message_id=sent_audio_id)
@@ -96,15 +84,30 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
 
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
 
-    # todo delete audio file
     if command == 'confirm-voice':
+        voice_checking_message_id = await send_message(chat_id, 'voice-checking')
+        user = db.get_user(chat_id)
+        validation_required = user["last_validated_at"] is None or user["last_validated_at"] < (
+                datetime.now() - timedelta(minutes=20))
+        is_valid = len(check_if_audio_human_voice(audio_file)) != 0 if validation_required else True
+        if not is_valid:
+            await delete_message(chat_id, voice_checking_message_id)
+            await delete_message_markup(chat_id, reply_message_id)
+            await send_message(chat_id, 'wrong-audio-text', reply=reply_message_id, parse='html')
+            await AskUserVoice.ask_voice.set()
+            os.remove(audio_file)
+            return
+        # if user passed validation, save current time
+        if validation_required:
+            db.user_validated_now(chat_id)
         await call.message.delete_reply_markup()
         await send_text_voice(audio_file, text_id, chat_id)
-        os.remove(audio_file)
         await ask_to_send_new_voice(chat_id, state)
+        os.remove(audio_file)
     else:
         await call.message.delete()
         await ask_to_send_voice(chat_id, text, state)
+        os.remove(audio_file)
 
 
 # Handler that receives action on pressed report inline button
