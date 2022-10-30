@@ -116,12 +116,7 @@ async def send_text_voice(file_directory, text_id, tg_id):
 async def send_voice_vote(voice_id, is_valid, tg_id):
     headers = await authorization_base64(tg_id, {'Content-Type': 'application/json'})
 
-    data = {'challenge': 'null'}
-    if is_valid:
-        data['isValid'] = True
-    else:
-        data['isValid'] = False
-
+    data = {'challenge': 'null', "isValid": is_valid}
     request_url = VOICE_VOTE_URL.format(voice_id)
     async with aiohttp.ClientSession() as session:
         async with session.post(request_url, data=json.dumps(data), headers=headers) as posted_vote:
