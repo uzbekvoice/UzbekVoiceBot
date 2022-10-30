@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import (
     create_engine,
     BigInteger,
@@ -103,6 +104,17 @@ def increase_user_vote_streak_count(
     with engine.connect() as conn:
         q = update(user_table).where(user_table.c.tg_id == tg_id).values(
             vote_streak_count=user_table.c.vote_streak_count + 1
+        )
+        conn.execute(q)
+        session.commit()
+
+
+def user_validated_now(
+        tg_id,
+):
+    with engine.connect() as conn:
+        q = update(user_table).where(user_table.c.tg_id == tg_id).values(
+            last_validated_at=datetime.now()
         )
         conn.execute(q)
         session.commit()

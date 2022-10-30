@@ -60,6 +60,11 @@ async def ask_voice_handler(message: Message, state: FSMContext):
         os.remove(audio_file)
         await message.answer(text="<b>Odam ovoziga o'xshamadi,\nIltimos qaytadan yuboring!!!</b>")
         return await AskUserVoice.ask_voice.set()
+
+    # if user passed validation, save current time
+    if validation_required:
+        db.user_validated_now(chat_id)
+
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice', args=text_to_read,
                                      markup=confirm_voice_markup())
     await state.update_data(reply_message_id=sent_audio_id)
