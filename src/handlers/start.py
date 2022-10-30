@@ -126,17 +126,20 @@ async def finish(message: Message, state: FSMContext):
     await state.finish()
 
 
-@dp.message_handler(lambda message: message.text == LEADERBOARD or message.text == '/leaderboard')
+@dp.message_handler(text=LEADERBOARD)
+@dp.message_handler(commands=['leaderboard'])
 async def leaderboard(message: Message):
     await send_message(message.chat.id, 'leaderboard', markup=leader_markup)
 
 
-@dp.message_handler(lambda message: message.text == INSTRUCTIONS or message.text == '/instructions')
+@dp.message_handler(text=INSTRUCTIONS)
+@dp.message_handler(commands=['instructions'])
 async def instructions(message: Message):
     await send_message(message.chat.id, 'instructions')
 
 
-@dp.message_handler(lambda message: message.text == '/record_leaderboard' or message.text == VOICE_LEADERBOARD)
+@dp.message_handler(text=VOICE_LEADERBOARD)
+@dp.message_handler(commands=['record_leaderboard'])
 async def voice_leaderboard(message: Message):
     headers = await authorization_base64(message.chat.id, {})
     async with aiohttp.ClientSession() as session:
@@ -168,7 +171,8 @@ async def voice_leaderboard(message: Message):
     )
 
 
-@dp.message_handler(lambda message: message.text == '/check_leaderboard' or message.text == VOTE_LEADERBOARD)
+@dp.message_handler(text=VOTE_LEADERBOARD)
+@dp.message_handler(commands=['check_leaderboard'])
 async def vote_leaderboard(message: Message):
     headers = await authorization_base64(message.chat.id, {})
 
