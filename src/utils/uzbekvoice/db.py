@@ -8,7 +8,8 @@ from sqlalchemy import (
     insert,
     select,
     Table,
-    update
+    update,
+    DATETIME
 )
 from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy.sql import exists
@@ -38,6 +39,8 @@ class User(Base):
     native_language = Column(String(100))
     vote_streak_count = Column(BigInteger, nullable=True, default=0)
     is_banned = Column(Boolean, nullable=True, default=False)
+    ban_reason = Column(String(300), nullable=True)
+    banned_time = Column(DATETIME, nullable=True)
 
 
 Base.metadata.create_all(engine)

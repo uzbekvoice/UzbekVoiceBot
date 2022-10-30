@@ -42,7 +42,7 @@ async def ask_voice_message_handler(message: Message, state: FSMContext):
 
 
 # Handler that receives user sent voices
-@dp.message_handler(state=AskUserVoice.ask_voice, content_types=['voice'])
+@dp.message_handler(IsRegistered(), IsBlockedUser(), state=AskUserVoice.ask_voice, content_types=['voice'])
 async def ask_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     audio_id = message.voice.file_id
