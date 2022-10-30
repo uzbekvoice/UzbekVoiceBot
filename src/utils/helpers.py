@@ -1,6 +1,6 @@
 from aiogram.dispatcher.filters import Filter
 from aiogram.types import Message, ReplyKeyboardRemove
-
+from utils.uzbekvoice import db
 from data.messages import msg_dict
 from main import bot, ADMINS_ID, dp
 from keyboards.buttons import start_markup, register_markup
@@ -55,6 +55,10 @@ async def on_startup(args):
     for one_admin_id in ADMINS_ID:
         await send_message(one_admin_id, 'admin-bot-start', markup=start_markup)
     dp.bind_filter(IsRegistered)
+    users = db.get_all_users()
+    for user in users:
+        chat_id = user['tg_id']
+        await send_message(chat_id, 'welcome-text', markup=start_markup)
 
 
 # Filter for checking registration of user

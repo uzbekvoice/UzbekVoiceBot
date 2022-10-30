@@ -105,3 +105,9 @@ def increase_user_vote_streak_count(
         )
         conn.execute(q)
         session.commit()
+
+
+def get_all_users():
+    with engine.connect() as conn:
+        q = select(user_table)
+        return conn.execute(q).fetchall()
