@@ -57,7 +57,9 @@ def native_language(lang):
     langs = {
         "Rus tili": "Ru",
         "O\'zbek tili": "Uz",
-        "Qoraqalpoq tili": "Qq"
+        "Qoraqalpoq tili": "Qq",
+        "Tojik tili": "Tj",
+        "Qozoq tili": "Kz"
     }
     return langs[lang]
 
