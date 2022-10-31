@@ -45,8 +45,8 @@ start_markup.add(*[start_button_1, start_button_2, start_button_3, start_button_
 
 
 genders_markup = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-female = KeyboardButton('👩 Ayol')
-male = KeyboardButton('👨 Erkak')
+female = KeyboardButton('Ayol')
+male = KeyboardButton('Erkak')
 genders_markup.add(*[female, male])
 
 

@@ -89,7 +89,7 @@ def user_banned(tg_id):
     with engine.connect() as conn:
         q = select(user_table).where(user_table.c.tg_id == tg_id)
         user = conn.execute(q).first()
-        return user.is_banned
+        return user is not None and user.is_banned
 
 
 def get_user(tg_id):
