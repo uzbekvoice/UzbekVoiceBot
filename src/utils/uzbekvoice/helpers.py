@@ -5,12 +5,10 @@ import string
 import base64
 import aiohttp
 
-
 from speechbrain.pretrained import VAD
 
 from . import db
 from main import BASE_DIR
-
 
 GET_TEXT_URL = 'https://common.uzbekvoice.ai/api/v1/uz/sentences'
 SEND_VOICE_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
@@ -21,7 +19,6 @@ GET_VOICES_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
 REPORT_URL = 'https://common.uzbekvoice.ai/api/v1/reports'
 CLIPS_LEADERBOARD_URL = 'https://common.uzbekvoice.ai/api/v1/clips/leaderboard'
 VOTES_LEADERBOARD_URL = 'https://common.uzbekvoice.ai/api/v1/clips/votes/leaderboard'
-
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
@@ -53,24 +50,14 @@ def check_if_audio_human_voice(audio):
     return boundaries
 
 
-def native_language(lang):
-    langs = {
-        "Rus tili": "Ru",
-        "O\'zbek tili": "Uz",
-        "Qoraqalpoq tili": "Qq"
-    }
-    return langs[lang]
-
-
-async def register_user(state):
-
+async def register_user(state, tg_id):
     user_uid = uuid.uuid4()
     access_token = ''.join(
         random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(40)
     )
 
     await db.write_user(
-        tg_id=state['tg_id'],
+        tg_id=tg_id,
         uuid=user_uid,
         access_token=access_token,
         full_name=state['full_name'],
