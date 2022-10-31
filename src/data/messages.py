@@ -24,8 +24,9 @@ msg_dict = {
 
     'caption': '{}',
 
+    'wrong-phone': 'Iltimos, telefon raqamingizni to\'g\'ri kiriting',
     # register msgs
-    'ask-full-name': 'Iltimos to\'liq ism-sharifingizni kiriting kiriting 👇',
+    'ask-full-name': 'Iltimos to\'liq ism-sharifingizni kiriting 👇',
     'ask-birth-year': 'Iltimos yoshingiz oralig\'ini  tanlang 👇',
     'ask-birth-year-again': 'Iltimos tugmalardan birini tanlang 👇',
     'ask-gender': 'Iltimos jinsingizni belgilang 👇',

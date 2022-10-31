@@ -2,7 +2,7 @@ import pandas
 import aiohttp
 from aiogram.types import Message, ParseMode
 from aiogram.dispatcher import FSMContext
-
+import re
 from main import bot
 from keyboards.buttons import (
     native_languages_markup,
@@ -26,70 +26,81 @@ from utils.uzbekvoice.helpers import register_user, VOTES_LEADERBOARD_URL, CLIPS
 @dp.message_handler(commands=['start'], state='*')
 async def start_command(message: Message, state: FSMContext):
     await state.finish()
-    chat_id = message.chat.id
-
-    if db.user_exists(chat_id):
-        await send_message(chat_id, 'welcome-text', markup=start_markup)
+    if db.user_exists(message.chat.id):
+        await send_message(message.chat.id, 'welcome-text', markup=start_markup)
     else:
-        await send_message(chat_id, 'start', markup=register_markup)
+        await send_message(message.chat.id, 'start', markup=register_markup)
 
 
 # Answer to all bot commands
 @dp.message_handler(text="👤 Ro'yxatdan o'tish")
 async def start_command(message: Message):
-    chat_id = message.chat.id
-    await UserRegistration.full_name.set()
-    await send_message(chat_id, 'ask-full-name')
+    if not db.user_exists(message.chat.id):
+        await UserRegistration.full_name.set()
+        await send_message(message.chat.id, 'ask-full-name')
 
 
 @dp.message_handler(state=UserRegistration.full_name)
 async def get_name(message: Message, state: FSMContext):
-    chat_id = message.chat.id
-    async with state.proxy() as data:
-        data["tg_id"] = chat_id
-        data["full_name"] = message.text
-        await UserRegistration.next()
-        await send_message(chat_id, 'ask-phone', markup=share_phone_markup)
-
-
-@dp.message_handler(state=UserRegistration.full_name)
-async def get_name(message: Message, state: FSMContext):
-    chat_id = message.chat.id
-    async with state.proxy() as data:
-        data["tg_id"] = chat_id
-        data["full_name"] = message.text
-        await UserRegistration.next()
-        await send_message(chat_id, 'ask-phone', markup=share_phone_markup)
+    if message.text == "👤 Ro'yxatdan o'tish":
+        await UserRegistration.full_name.set()
+        await send_message(message.chat.id, 'ask-full-name')
+    else:
+        async with state.proxy() as data:
+            data["full_name"] = message.text
+            await UserRegistration.next()
+            await send_message(message.chat.id, 'ask-phone', markup=share_phone_markup)
 
 
 @dp.message_handler(state=UserRegistration.phone_number, content_types=['contact', 'text'])
 async def get_phone(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        data["phone_number"] = str(message.contact.phone_number)
-        await UserRegistration.next()
-        await send_message(data['tg_id'], 'ask-gender', markup=genders_markup)
+        phone = str(message.contact.phone_number)
+        if re.match(r'^\+998\d{9}$', phone) is None:
+            await send_message(message.chat.id, 'wrong-phone')
+        else:
+            data["phone_number"] = str(message.contact.phone_number)
+            await UserRegistration.next()
+            await send_message(message.chat.id, 'ask-gender', markup=genders_markup)
 
 
 @dp.inline_handler()
 @dp.message_handler(state=UserRegistration.gender)
 async def get_gender(message: Message, state: FSMContext):
-    async with state.proxy() as data:
-        if message.text == 'Erkak':
-            data["gender"] = "M"
-        elif message.text == 'Ayol':
-            data["gender"] = "F"
-
-    await UserRegistration.next()
-    await send_message(data["tg_id"], 'ask-accent', markup=accents_markup)
+    if message.text in ['👨 Erkak', '👩 Ayol']:
+        async with state.proxy() as data:
+            if message.text == '👨 Erkak':
+                data["gender"] = "M"
+            elif message.text == '👩 Ayol':
+                data["gender"] = "F"
+        await UserRegistration.next()
+        await send_message(message.chat.id, 'ask-accent', markup=accents_markup)
+    else:
+        await send_message(message.chat.id, 'ask-gender', markup=genders_markup)
 
 
 @dp.message_handler(state=UserRegistration.accent_region)
 async def get_accent_region(message: Message, state: FSMContext):
-    async with state.proxy() as data:
-        data["accent_region"] = message.text
-
-    await send_message(data["tg_id"], 'ask-birth-year', markup=age_markup)
-    await UserRegistration.next()
+    if (message.text in ["Andijon",
+                         "Buxoro",
+                         "Farg'ona",
+                         "Jizzax",
+                         "Sirdaryo",
+                         "Xorazm",
+                         "Namangan",
+                         "Navoiy",
+                         "Qashqadaryo",
+                         "Qoraqalpog'iston",
+                         "Samarqand",
+                         "Surxondaryo",
+                         "Toshkent viloyati",
+                         "Toshkent shahri"]):
+        async with state.proxy() as data:
+            data["accent_region"] = message.text
+        await send_message(message.chat.id, 'ask-birth-year', markup=age_markup)
+        await UserRegistration.next()
+    else:
+        await send_message(message.chat.id, 'ask-accent', markup=accents_markup)
 
 
 @dp.message_handler(state=UserRegistration.year_of_birth)
@@ -97,10 +108,10 @@ async def get_birth_year(message: Message, state: FSMContext):
     async with state.proxy() as data:
         if message.text in ["12-17", "18-24", "25-34", "35-..."]:
             data["year_of_birth"] = message.text
-            await send_message(data["tg_id"], 'ask-native-language', markup=native_languages_markup)
+            await send_message(message.chat.id, 'ask-native-language', markup=native_languages_markup)
             await UserRegistration.next()
         else:
-            await send_message(data["tg_id"], 'ask-birth-year-again')
+            await send_message(message.chat.id, 'ask-birth-year-again')
             return await UserRegistration.year_of_birth.set()
         await UserRegistration.next()
 
@@ -111,7 +122,7 @@ async def finish(message: Message, state: FSMContext):
         data["native_language"] = native_language(message.text)
 
     await register_user(data)
-    await send_message(data["tg_id"], 'register-success', markup=start_markup)
+    await send_message(message.chat.id, 'register-success', markup=start_markup)
     await state.finish()
 
 
