@@ -33,7 +33,7 @@ async def start_command(message: Message, state: FSMContext):
 
 # Answer to all bot commands
 @dp.message_handler(text="👤 Ro'yxatdan o'tish")
-async def start_command(message: Message):
+async def register_command(message: Message):
     if not db.user_exists(message.chat.id):
         await UserRegistration.full_name.set()
         await send_message(message.chat.id, 'ask-full-name')
@@ -55,7 +55,7 @@ async def get_name(message: Message, state: FSMContext):
 async def get_phone(message: Message, state: FSMContext):
     async with state.proxy() as data:
         phone = str(message.contact.phone_number)
-        if re.match(r'^\+998\d{9}$', phone) is None:
+        if re.match(r'^\+?998\d{9}$', phone) is None:
             await send_message(message.chat.id, 'wrong-phone')
         else:
             data["phone_number"] = str(message.contact.phone_number)
