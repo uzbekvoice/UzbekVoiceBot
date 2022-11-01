@@ -47,7 +47,10 @@ async def edit_reply_markup(chat_id, message_id, markup):
 # Get user message
 async def user_msg(message_str, args):
     if args is None:
-        user_message = msg_dict[message_str]
+        if not (message_str in msg_dict):
+            return message_str
+        else:
+            user_message = msg_dict[message_str]
     else:
         if type(args) != tuple:
             user_message = msg_dict[message_str].format(args)

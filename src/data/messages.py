@@ -14,6 +14,7 @@ msg_dict = {
     'ask-check-voice-again': 'Iltimos ushbu tepadagi ovozli xabarni eshitib ko\'rib to\'g\'ri yozilganini tekshiring,'
                              'va kerakli tugmani bosing - To\'g\'ri/Noto\'g\'ri.',
 
+    'audio-is-short-please-try-slower': 'Jumla juda tez o’qilgan. Sal sekin o’qishga urinib ko’ring',
     'ask-recheck-voice': '{}\nIltimos matn to\'g\'ri o\'qilganligini tasdiqlang',
 
     'action-rejected': 'Bekor qilindi',
