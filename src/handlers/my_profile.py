@@ -6,11 +6,6 @@ from aiogram.types import Message
 from data.messages import MY_PROFILE, MY_RATING
 from utils.uzbekvoice.helpers import CLIPS_LEADERBOARD_URL, VOTES_LEADERBOARD_URL, authorization_base64
 
-# Telefon raqam: +998902646366
-# Yosh oralig'i: 16-24
-# Jinsi: Erkak
-# Shevasi: Jizzax
-# Ona-tili: O'zbek tili
 
 languages = [
     "O'zbek tili",
