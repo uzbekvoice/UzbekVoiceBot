@@ -29,8 +29,9 @@ async def initial_check_voice_handler(message: Message, state: FSMContext):
 @dp.message_handler(state=AskUserAction.all_states, text=CANCEL_MESSAGE)
 async def cancel_message_handler(message: Message, state: FSMContext):
     data = await state.get_data()
-    reply_message_id = data['reply_message_id']
-    await delete_message_markup(message.chat.id, reply_message_id)
+    if 'reply_message_id' in data:
+        reply_message_id = data['reply_message_id']
+        await delete_message_markup(message.chat.id, reply_message_id)
     await send_message(message.chat.id, 'action-rejected', markup=start_markup)
     await state.finish()
 
@@ -39,8 +40,11 @@ async def cancel_message_handler(message: Message, state: FSMContext):
 @dp.message_handler(state=AskUserAction.ask_action, content_types=['text'])
 async def ask_action_message_handler(message: Message, state: FSMContext):
     data = await state.get_data()
-    reply_message_id = data['reply_message_id']
-    await send_message(message.chat.id, 'ask-check-voice-again', markup=go_back_markup, reply=reply_message_id)
+    if 'reply_message_id' in data:
+        reply_message_id = data['reply_message_id']
+        await send_message(message.chat.id, 'ask-check-voice-again', markup=go_back_markup, reply=reply_message_id)
+    else:
+        await cancel_message_handler(message, state)
 
 
 # Handler that receives action on pressed accept, reject, skip and report inline button
