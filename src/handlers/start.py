@@ -17,7 +17,6 @@ from keyboards.buttons import (
 from utils.uzbekvoice import db
 from main import UserRegistration, dp
 from utils.helpers import send_message
-from utils.uzbekvoice.helpers import native_language
 from data.messages import INSTRUCTIONS, LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
 from utils.uzbekvoice.helpers import register_user, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL, \
     authorization_base64
@@ -34,7 +33,7 @@ async def start_command(message: Message, state: FSMContext):
 
 # Answer to all bot commands
 @dp.message_handler(text="👤 Ro'yxatdan o'tish")
-async def start_command(message: Message):
+async def register_command(message: Message):
     if not db.user_exists(message.chat.id):
         await UserRegistration.full_name.set()
         await send_message(message.chat.id, 'ask-full-name')
@@ -56,7 +55,7 @@ async def get_name(message: Message, state: FSMContext):
 async def get_phone(message: Message, state: FSMContext):
     async with state.proxy() as data:
         phone = str(message.contact.phone_number)
-        if re.match(r'^\+998\d{9}$', phone) is None:
+        if re.match(r'^\+?998\d{9}$', phone) is None:
             await send_message(message.chat.id, 'wrong-phone')
         else:
             data["phone_number"] = str(message.contact.phone_number)
@@ -67,12 +66,9 @@ async def get_phone(message: Message, state: FSMContext):
 @dp.inline_handler()
 @dp.message_handler(state=UserRegistration.gender)
 async def get_gender(message: Message, state: FSMContext):
-    if message.text in ['👨 Erkak', '👩 Ayol']:
+    if message.text in ['Erkak', 'Ayol']:
         async with state.proxy() as data:
-            if message.text == '👨 Erkak':
-                data["gender"] = "M"
-            elif message.text == '👩 Ayol':
-                data["gender"] = "F"
+            data["gender"] = message.text
         await UserRegistration.next()
         await send_message(message.chat.id, 'ask-accent', markup=accents_markup)
     else:
@@ -118,12 +114,22 @@ async def get_birth_year(message: Message, state: FSMContext):
 
 @dp.message_handler(state=UserRegistration.finish)
 async def finish(message: Message, state: FSMContext):
-    async with state.proxy() as data:
-        data["native_language"] = native_language(message.text)
+    if message.text in [
+        "O'zbek tili",
+        "Qoraqalpoq tili",
+        "Rus tili",
+        "Tojik tili",
+        "Qozoq tili"
+    ]:
+        async with state.proxy() as data:
+            data["native_language"] = message.text
 
-    await register_user(data)
-    await send_message(message.chat.id, 'register-success', markup=start_markup)
-    await state.finish()
+        await register_user(data, message.chat.id)
+        await send_message(message.chat.id, 'register-success', markup=start_markup)
+        await state.finish()
+    else:
+        await send_message(message.chat.id, 'ask-native-language', markup=native_languages_markup)
+        return await UserRegistration.finish.set()
 
 
 @dp.message_handler(text=LEADERBOARD)
