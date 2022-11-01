@@ -64,11 +64,6 @@ async def user_msg(message_str, args):
 async def on_startup(args):
     for one_admin_id in ADMINS_ID:
         await send_message(one_admin_id, 'admin-bot-start', markup=start_markup)
-    dp.bind_filter(IsRegistered)
-    # users = db.get_all_users()
-    # for user in users:
-    #     chat_id = user['tg_id']
-    #     await send_message(chat_id, 'welcome-text', markup=start_markup)
 
 
 # Filter for checking registration of user
@@ -97,8 +92,24 @@ class IsBlockedUser(Filter):
             return True
 
 
+# Filter for checking whether user is banned
+class IsSubscribedChannel(Filter):
+    key = "is_subscribed_channel"
+
+    async def check(self, message: Message):
+        chat_id = message.chat.id
+        check_member = await bot.get_chat_member(-1001798621689, chat_id)
+        if check_member.status not in ["member", "creator"]:
+            await send_message(chat_id, 'channel')
+            return False
+        else:
+            return True
+
+
 dp.filters_factory.bind(IsRegistered)
 dp.filters_factory.bind(IsBlockedUser)
+dp.filters_factory.bind(IsSubscribedChannel)
+
 
 
 

@@ -108,17 +108,10 @@ async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, butto
             disable_notification=True,
             reply_markup=buttons
         )
-        print(user_id)
-        print('success')
-        print('----------------')
         return 'success'
     except BotBlocked:
-        print('blocked')
-        print('----------------')
         return 'blocked'
     except UserDeactivated:
-        print('deactivated')
-        print('----------------')
         return 'deactivated'
     except Exception as err:
         print(err, 'send_copied_post_to_user')

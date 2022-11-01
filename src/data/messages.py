@@ -36,7 +36,8 @@ msg_dict = {
     'ask-native-language': 'Iltimos ona-tilingizni tanlang 👇',
     'register-success': 'Siz muvaffaqiyatli ro\'yxatdan o\'tdingiz! 🎉',
     'reported': '_👮 Ma\'muriyatga xabar berildi. Qoidabuzarlarga qarshi qo\'shgan hissangiz uchun tashakkur!_',
-    'banned': "⛔ Siz takroriy qoidabuzarliklar sababli qora ro'yxatdasiz."
+    'channel': "📢 Birinchi bo'lib bizning kanalimizga obuna bo'ling:\nKanal: @UzbekVoiceai",
+    'banned': "⛔ Siz takroriy qoidabuzarliklar sababli qora ro'yxatdasiz.",
 }
 
 VOICE_LEADERBOARD = '🗣 Jami Yozilgan Audiolar liderlari'

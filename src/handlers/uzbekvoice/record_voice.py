@@ -10,14 +10,14 @@ from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import text_markup, report_text_markup, confirm_voice_markup
 from utils.helpers import send_message, edit_reply_markup, send_voice, delete_message_markup, delete_message, \
     IsRegistered, \
-    IsBlockedUser
+    IsBlockedUser, IsSubscribedChannel
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, \
     skip_sentence, check_if_audio_is_short
 
 
 # Handler that answers to Record Voice message
-@dp.message_handler(IsRegistered(), IsBlockedUser(), text=RECORD_VOICE)
-@dp.message_handler(IsRegistered(), IsBlockedUser(), commands=['record'])
+@dp.message_handler(IsRegistered(), IsBlockedUser(), IsSubscribedChannel(), text=RECORD_VOICE)
+@dp.message_handler(IsRegistered(), IsBlockedUser(), IsSubscribedChannel(), commands=['record'])
 async def record_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     await send_message(chat_id, 'ask-record-voice', markup=go_back_markup)

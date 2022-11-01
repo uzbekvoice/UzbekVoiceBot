@@ -1,13 +1,15 @@
 import time
 import os
-from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
 
-from main import dp, AskUserAction
+from aiogram.dispatcher import FSMContext
+from aiogram.types import Message, CallbackQuery, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup, \
+    ReplyKeyboardRemove
+
+from main import dp, AskUserAction, bot
 from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup, IsRegistered, \
-    IsBlockedUser
+    IsBlockedUser, IsSubscribedChannel
 from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
 import utils.uzbekvoice.db as db
 
@@ -17,10 +19,11 @@ from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STE
 
 
 # Handler that answers to Check Voice message
-@dp.message_handler(IsRegistered(), IsBlockedUser(), text=CHECK_VOICE)
-@dp.message_handler(IsRegistered(), IsBlockedUser(), commands=['check'])
+@dp.message_handler(IsRegistered(), IsBlockedUser(), IsSubscribedChannel(), text=CHECK_VOICE)
+@dp.message_handler(IsRegistered(), IsBlockedUser(), IsSubscribedChannel(), commands=['check'])
 async def initial_check_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
+
     await send_message(chat_id, 'ask-check-voice', markup=go_back_markup)
     await ask_to_check_new_voice(chat_id, state)
 

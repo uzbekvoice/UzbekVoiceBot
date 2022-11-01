@@ -1,4 +1,6 @@
 import aiohttp
+
+from utils.helpers import IsRegistered, IsSubscribedChannel
 from utils.uzbekvoice.db import get_user
 from main import dp, bot
 from aiogram.types import Message
@@ -15,8 +17,9 @@ languages = [
     "Qozoq tili"
 ]
 
-@dp.message_handler(text=MY_PROFILE)
-@dp.message_handler(commands=['my_profile'])
+
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=MY_PROFILE)
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['my_profile'])
 async def my_profile(message: Message):
     user = get_user(message.chat.id)
     my_profile = [
@@ -31,8 +34,8 @@ async def my_profile(message: Message):
     await bot.send_message(message.chat.id, '\n'.join(my_profile), parse_mode='HTML')
 
 
-@dp.message_handler(text=MY_RATING)
-@dp.message_handler(commands=['my_stats'])
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=MY_RATING)
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['my_stats'])
 async def vote_leaderboard(message: Message):
     headers = await authorization_base64(message.chat.id, {})
 

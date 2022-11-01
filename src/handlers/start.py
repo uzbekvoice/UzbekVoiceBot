@@ -16,7 +16,7 @@ from keyboards.buttons import (
 )
 from utils.uzbekvoice import db
 from main import UserRegistration, dp
-from utils.helpers import send_message
+from utils.helpers import send_message, IsSubscribedChannel
 from data.messages import INSTRUCTIONS, LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
 from utils.uzbekvoice.helpers import register_user, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL, \
     authorization_base64
@@ -54,13 +54,9 @@ async def get_name(message: Message, state: FSMContext):
 @dp.message_handler(state=UserRegistration.phone_number, content_types=['contact', 'text'])
 async def get_phone(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        phone = str(message.contact.phone_number)
-        if re.match(r'^\+?998\d{9}$', phone) is None:
-            await send_message(message.chat.id, 'wrong-phone')
-        else:
-            data["phone_number"] = str(message.contact.phone_number)
-            await UserRegistration.next()
-            await send_message(message.chat.id, 'ask-gender', markup=genders_markup)
+        data["phone_number"] = str(message.contact.phone_number)
+        await UserRegistration.next()
+        await send_message(message.chat.id, 'ask-gender', markup=genders_markup)
 
 
 @dp.inline_handler()
@@ -132,20 +128,20 @@ async def finish(message: Message, state: FSMContext):
         return await UserRegistration.finish.set()
 
 
-@dp.message_handler(text=LEADERBOARD)
-@dp.message_handler(commands=['leaderboard'])
+@dp.message_handler(IsSubscribedChannel(), text=LEADERBOARD)
+@dp.message_handler(IsSubscribedChannel(), commands=['leaderboard'])
 async def leaderboard(message: Message):
     await send_message(message.chat.id, 'leaderboard', markup=leader_markup)
 
 
-@dp.message_handler(text=INSTRUCTIONS)
-@dp.message_handler(commands=['instructions'])
+@dp.message_handler(IsSubscribedChannel(), text=INSTRUCTIONS)
+@dp.message_handler(IsSubscribedChannel(), commands=['instructions'])
 async def instructions(message: Message):
     await send_message(message.chat.id, 'instructions')
 
 
-@dp.message_handler(text=VOICE_LEADERBOARD)
-@dp.message_handler(commands=['record_leaderboard'])
+@dp.message_handler(IsSubscribedChannel(), text=VOICE_LEADERBOARD)
+@dp.message_handler(IsSubscribedChannel(), commands=['record_leaderboard'])
 async def voice_leaderboard(message: Message):
     headers = await authorization_base64(message.chat.id, {})
     async with aiohttp.ClientSession() as session:
@@ -177,8 +173,8 @@ async def voice_leaderboard(message: Message):
     )
 
 
-@dp.message_handler(text=VOTE_LEADERBOARD)
-@dp.message_handler(commands=['check_leaderboard'])
+@dp.message_handler(IsSubscribedChannel(), text=VOTE_LEADERBOARD)
+@dp.message_handler(IsSubscribedChannel(), commands=['check_leaderboard'])
 async def vote_leaderboard(message: Message):
     headers = await authorization_base64(message.chat.id, {})
 
