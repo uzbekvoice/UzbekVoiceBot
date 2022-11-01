@@ -44,7 +44,7 @@ async def vote_leaderboard(message: Message):
             for i in votes_leaderboard:
                 if i['you'] == True:
                     given_votes = i['total']
-                    votes_position = i['position']
+                    votes_position = i['position'] + 1
 
     async with aiohttp.ClientSession() as session:
         async with session.get(CLIPS_LEADERBOARD_URL, headers=headers) as get_request:
