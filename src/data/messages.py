@@ -68,3 +68,6 @@ CONFIRM_VOICE_TEXT = 'To\'g\'ri 👍'
 REJECT_VOICE_TEXT = 'Noto\'g\'ri 👎'
 SUBMIT_VOICE_TEXT = 'Yuborish 💾'
 GO_HOME_TEXT = 'Bosh menyu 🏠'
+
+DO_NOT_BREAK_RULES = 'Qoidalarni buzganingiz uchun qora roʻyxatga tushishingiz mumkin‼️'
+LISTEN_AUDIO_FIRST = f'🎧 Iltimos, avval ovozli xabarni eshitib ko\'ring\n\n{DO_NOT_BREAK_RULES}'

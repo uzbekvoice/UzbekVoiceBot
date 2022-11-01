@@ -8,12 +8,12 @@ from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup, IsRegistered, \
     IsBlockedUser
-from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice
+from utils.uzbekvoice.helpers import get_voices_to_check, download_file, send_voice_vote, report_function, skip_voice, get_audio_duration
 import utils.uzbekvoice.db as db
 
 from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STEP, REPORT_TEXT_1, \
     REPORT_TEXT_2, REPORT_TEXT_3, REPORT_TEXT_4, REPORT_TEXT_5, CONFIRM_VOICE_TEXT, REJECT_VOICE_TEXT, \
-    VOICE_LEADERBOARD, VOTE_LEADERBOARD, CHECK_VOICE, CANCEL_MESSAGE
+    VOICE_LEADERBOARD, VOTE_LEADERBOARD, CHECK_VOICE, CANCEL_MESSAGE, LISTEN_AUDIO_FIRST
 
 
 # Handler that answers to Check Voice message
@@ -57,15 +57,16 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     message_id = call.message.message_id
     command, voice_id = call_data.split('/')
     data = await state.get_data()
-    await call.answer()
     confirm_state = data['confirm_state'] if 'confirm_state' in data else None
-
+    clip_duration = data['clip_duration'] if 'clip_duration' in data else 0
     if command == 'report':
+        await call.answer()
         await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
         return
 
     if command != 'submit':
+        await call.answer()
         await state.update_data(confirm_state=command)
         try:
             await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
@@ -76,11 +77,14 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
 
     command = confirm_state
     last_sent_time = data['last_sent_time']
-    if time.time() - last_sent_time <= 3:
+    if time.time() - last_sent_time < clip_duration + 0.3:
         try:
             db.increase_user_vote_streak_count(chat_id)
         except Exception as e:
             print(e)
+        return await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+    else:
+        await call.answer()
 
     if command == 'skip':
         await call.message.delete()
@@ -129,7 +133,9 @@ async def ask_to_check_new_voice(chat_id, state):
     voice_url = voice['audioSrc']
     voice_file = await download_file(voice_url, '{}_{}'.format(chat_id, voice_id))
     message_id = await send_voice(chat_id, open(voice_file, 'rb'), 'caption', args=text_to_check)
+    clip_duration = get_audio_duration(voice_file)
     await state.update_data(last_sent_time=time.time())
+    await state.update_data(clip_duration=clip_duration)
     await state.update_data(confirm_state=None)
     await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, None))
     await state.update_data(reply_message_id=message_id)
