@@ -6,15 +6,14 @@ from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.exceptions import UserDeactivated, BotBlocked
 
-
 from main import dp, bot, AdminSendEveryOne
 from utils.uzbekvoice.db import engine, user_table, session, User
-from keyboards.buttons import go_back_markup, sure_markup, admin_markup
+from keyboards.buttons import sure_markup, admin_markup
 
 
 # Ask admin to send post
 async def send_everyone_func(chat_id):
-    await bot.send_message(chat_id, 'Send the post for push-notification.', reply_markup=go_back_markup)
+    await bot.send_message(chat_id, 'Send the post for push-notification.', reply_markup=sure_markup)
     await AdminSendEveryOne.ask_post.set()
 
 
@@ -75,21 +74,20 @@ async def send_post(chat_id, state):
     sent_message = await send_progress_message(chat_id, success)
     tasks = []
     for user_id in users_id:
-        tasks.append(asyncio.ensure_future(send_copied_post_to_user(user_id, chat_id, message_id, buttons)))
+        tg_id = user_id.tg_id
+        tasks.append(asyncio.ensure_future(send_copied_post_to_user(tg_id, chat_id, message_id, buttons)))
+
 
     gather_results = await asyncio.gather(*tasks)
     for result in gather_results:
         if result == 'success':
             success += 1
-
         elif result == 'blocked':
             blocked += 1
         elif result == 'deactivated':
             deactivated += 1
         else:
             errors += 1
-
-        await asyncio.sleep(1)
 
     admin_stat = "Notification received: {0:,}\n" \
                  "Blocked the bot: {1:,}\n" \
@@ -103,20 +101,24 @@ async def send_post(chat_id, state):
 # Function to send copy message-notification to one user
 async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, buttons):
     try:
-
-        print(await bot.copy_message(
+        await bot.copy_message(
             chat_id=user_id,
             from_chat_id=copy_from_chat_id,
             message_id=message_id,
             disable_notification=True,
             reply_markup=buttons
-        ))
+        )
         print(user_id)
+        print('success')
         print('----------------')
         return 'success'
     except BotBlocked:
+        print('blocked')
+        print('----------------')
         return 'blocked'
     except UserDeactivated:
+        print('deactivated')
+        print('----------------')
         return 'deactivated'
     except Exception as err:
         print(err, 'send_copied_post_to_user')
@@ -142,10 +144,10 @@ async def send_post_to_user(message: Message):
                 user = conn.execute(q).first()
                 text = """
 Assalomu alaykum, hurmatli foydalanuvchi! 
-                
+
 Ba'zi texnik nosozliklar tufayli sizning ismi sharifingiz "Ro'yxatdan o'tish" deb saqlangan. 
 Iltimos @adamsaido ga to'liq ismi sharifingiz va telefon raqamangizni yozib qoldiring.
-                
+
 Hurmat bilan UzbekVoice jamoasi
                 """
                 await bot.send_message(user.tg_id, text)
