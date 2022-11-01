@@ -13,7 +13,6 @@ msg_dict = {
     'ask-check-voice': 'Iltimos, quyidagi ovozli xabarlarni eshitib, to\'g\'ri o\'qilganligini tekshiring.',
     'ask-check-voice-again': 'Iltimos ushbu tepadagi ovozli xabarni eshitib ko\'rib to\'g\'ri yozilganini tekshiring,'
                              'va kerakli tugmani bosing - To\'g\'ri/Noto\'g\'ri.',
-    'audio-is-short-please-try-slower': 'Jumla juda tez o’qilgan. Sal sekin o’qishga urinib ko’ring',
 
     'ask-recheck-voice': '{}\nIltimos matn to\'g\'ri o\'qilganligini tasdiqlang',
 
@@ -47,6 +46,7 @@ CHECK_VOICE = '🔊 Ovoz yozuvlarini tekshirish'
 LEADERBOARD = "📃 Liderlar Ro'yxati"
 INSTRUCTIONS = "📘 Qo'llanma"
 MY_PROFILE = "👤 Mening profilim"
+MY_RATING = "📊 Mening statistikam"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
