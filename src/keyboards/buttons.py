@@ -1,6 +1,6 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-from data.messages import INSTRUCTIONS, MY_PROFILE, RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS, CANCEL_MESSAGE, LEADERBOARD, \
+from data.messages import INSTRUCTIONS, MY_PROFILE, MY_RATING, RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS, CANCEL_MESSAGE, LEADERBOARD, \
     VOICE_LEADERBOARD, VOTE_LEADERBOARD
 
 admin_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
@@ -41,7 +41,8 @@ start_button_2 = KeyboardButton(CHECK_VOICE)
 start_button_3 = KeyboardButton(LEADERBOARD)
 start_button_4 = KeyboardButton(INSTRUCTIONS)
 start_button_5 = KeyboardButton(MY_PROFILE)
-start_markup.add(*[start_button_1, start_button_2, start_button_3, start_button_4, start_button_5])
+start_button_6 = KeyboardButton(MY_RATING)
+start_markup.add(*[start_button_1, start_button_2, start_button_3, start_button_4, start_button_5, start_button_6])
 
 
 genders_markup = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)

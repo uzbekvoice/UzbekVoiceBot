@@ -46,6 +46,7 @@ CHECK_VOICE = '🔊 Ovoz yozuvlarini tekshirish'
 LEADERBOARD = "📃 Liderlar Ro'yxati"
 INSTRUCTIONS = "📘 Qo'llanma"
 MY_PROFILE = "👤 Mening profilim"
+MY_RATING = "📊 Mening statistikam"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
