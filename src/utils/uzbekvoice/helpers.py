@@ -4,7 +4,8 @@ import random
 import string
 import base64
 import aiohttp
-
+import librosa
+import re
 from speechbrain.pretrained import VAD
 
 from . import db
@@ -48,6 +49,24 @@ def check_if_audio_human_voice(audio):
     boundaries = aaa.get_speech_segments(audio)
 
     return boundaries
+
+
+def replace(text):
+    return re.sub(
+        r'(ch|sh)',
+        'c',
+        # replace spaces and punctuation
+        re.sub(r'[^\w\s]', '',
+               re.sub(r'([a-zA-Z])\1+', r'\1', text))
+    )
+
+
+# gets audio duration in seconds
+def check_if_audio_is_short(audio_path, text):
+    characters_per_second = 36 / 2.35
+    audio_duration = librosa.get_duration(filename=audio_path)
+    text_duration = len(replace(text)) / characters_per_second
+    return audio_duration < text_duration
 
 
 async def register_user(state, tg_id):

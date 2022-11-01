@@ -12,7 +12,7 @@ from utils.helpers import send_message, edit_reply_markup, send_voice, delete_me
     IsRegistered, \
     IsBlockedUser
 from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, \
-    skip_sentence
+    skip_sentence, check_if_audio_is_short
 
 
 # Handler that answers to Record Voice message
@@ -53,6 +53,14 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     text_to_read = text['text']
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
     await message.voice.download(destination_file=audio_file)
+
+    if check_if_audio_is_short(audio_file, text_to_read):
+        await send_message(chat_id, 'audio-is-short-please-try-slower', reply=audio_id)
+        await AskUserVoice.ask_voice.set()
+        os.remove(audio_file)
+        return
+
+
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice',
                                      args=f'—————\n<b>{text_to_read}</b>\n—————',
                                      markup=confirm_voice_markup(),
