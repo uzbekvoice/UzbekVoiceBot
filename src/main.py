@@ -13,12 +13,14 @@ load_dotenv()
 
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
+from aiogram.bot.api import TelegramAPIServer
 
 load_dotenv(find_dotenv())
 
 loop = asyncio.get_event_loop()
 storage = MemoryStorage()
-bot = Bot(getenv("BOT_TOKEN"), parse_mode="HTML")
+
+bot = Bot(getenv("BOT_TOKEN"), parse_mode="HTML", server=TelegramAPIServer.from_base('https://telegram.yhxx.uz'))
 dp = Dispatcher(bot, storage=storage, loop=loop)
 
 users_db = redis.StrictRedis(host='localhost', port=6379, db=1)
