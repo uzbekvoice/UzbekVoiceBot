@@ -57,7 +57,7 @@ async def vote_leaderboard(message: Message):
             for i in clips_leaderboard:
                 if i['you'] == True:
                     recorded_clips = i['total']
-                    clips_position = i['position']
+                    clips_position = i['position'] + 1
 
     my_stats = [
         f"<b>🏆 Sizning yutuqlaringiz:</b>\n",
