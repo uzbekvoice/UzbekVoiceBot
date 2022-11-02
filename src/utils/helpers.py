@@ -1,8 +1,9 @@
+import os
 from aiogram.dispatcher.filters import Filter
 from aiogram.types import Message, ReplyKeyboardRemove
 from utils.uzbekvoice import db
 from data.messages import msg_dict
-from main import bot, ADMINS_ID, dp
+from main import bot, ADMINS_ID, dp, WEBHOOK_URL
 from keyboards.buttons import start_markup, register_markup
 from .uzbekvoice import db
 
@@ -62,8 +63,10 @@ async def user_msg(message_str, args):
 
 # Send notification to admin that bot started working
 async def on_startup(args):
-    for one_admin_id in ADMINS_ID:
-        await send_message(one_admin_id, 'admin-bot-start', markup=start_markup)
+    # for one_admin_id in ADMINS_ID:
+    #     await send_message(one_admin_id, 'admin-bot-start', markup=start_markup)
+    if os.getenv('WEBHOOK_HOST') is not None:
+        await bot.set_webhook(WEBHOOK_URL)
     dp.bind_filter(IsRegistered)
     # users = db.get_all_users()
     # for user in users:

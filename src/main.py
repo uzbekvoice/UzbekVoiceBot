@@ -20,6 +20,15 @@ load_dotenv(find_dotenv())
 loop = asyncio.get_event_loop()
 storage = MemoryStorage()
 
+
+WEBHOOK_HOST = getenv('WEBHOOK_HOST')
+WEBHOOK_PATH = '/'
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+# webserver settings
+WEBAPP_HOST = '0.0.0.0'  # or ip
+WEBAPP_PORT = 80
+
 bot = Bot(getenv("BOT_TOKEN"), parse_mode="HTML", server=TelegramAPIServer.from_base('https://telegram.yhxx.uz'))
 dp = Dispatcher(bot, storage=storage, loop=loop)
 
