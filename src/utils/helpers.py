@@ -99,7 +99,7 @@ class IsSubscribedChannel(Filter):
     async def check(self, message: Message):
         chat_id = message.chat.id
         check_member = await bot.get_chat_member(-1001798621689, chat_id)
-        if check_member.status not in ["member", "creator"]:
+        if check_member.status not in ["member", "creator", "administrator"]:
             await send_message(chat_id, 'channel')
             return False
         else:
