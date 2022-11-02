@@ -351,6 +351,7 @@ async def download_file(download_url, voice_id):
 async def enqueue_operation(operation, chat_id):
     # if queue is not open
     if queue is None:
+        print('Queue is not open')
         return handle_operation(operation, chat_id)
     else:
         queue.enqueue(

@@ -52,6 +52,14 @@ services:
       BOT_TOKEN: BOT_TOKEN
       DATABASE_URL: "mysql+pymysql://bot:password@db:3306/bot"
       ADMINS_ID: 1
+  rq-dashboard:
+    image: eoranged/rq-dashboard
+    ports:
+      - 9181:9181
+    environment:
+      RQ_DASHBOARD_PASSWORD: admin
+      RQ_DASHBOARD_REDIS_URL: redis://redis:6379
+      RQ_DASHBOARD_USERNAME: admin
 
 volumes:
     db_data:
