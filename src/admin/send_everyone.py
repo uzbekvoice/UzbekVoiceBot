@@ -67,6 +67,7 @@ async def send_post(chat_id, state):
     await bot.send_message(chat_id, 'Push-notification begin!', reply_markup=admin_markup)
     users_id = session.query(User).all()
 
+    send_count = 0
     blocked = 0
     deactivated = 0
     errors = 0
@@ -76,7 +77,10 @@ async def send_post(chat_id, state):
     for user_id in users_id:
         tg_id = user_id.tg_id
         tasks.append(asyncio.ensure_future(send_copied_post_to_user(tg_id, chat_id, message_id, buttons)))
-
+        send_count += 1
+        if send_count >= 30:
+            send_count = 0
+            await asyncio.sleep(1)
 
     gather_results = await asyncio.gather(*tasks)
     for result in gather_results:
