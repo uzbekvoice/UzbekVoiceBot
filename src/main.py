@@ -29,7 +29,9 @@ users_db = redis.StrictRedis(host='localhost', port=6379, db=1)
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
 ADMINS_ID: list = list(map(int, getenv("ADMINS_ID").split()))
 
-queue = Queue(connection=Redis.from_url(getenv("REDIS_URL")), name="high")
+REDIS_URL = getenv("REDIS_URL")
+queue = Queue(connection=Redis.from_url(REDIS_URL), name="high") if REDIS_URL else None
+
 
 class UserRegistration(StatesGroup):
     full_name = State()

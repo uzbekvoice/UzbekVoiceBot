@@ -1,5 +1,3 @@
-import json
-import asyncio
 import uuid
 import random
 import string
@@ -11,7 +9,7 @@ from speechbrain.pretrained import VAD
 from rq import Retry
 from . import db
 from main import BASE_DIR, queue
-from .common_voice import HEADERS, GET_TEXT_URL, GET_VOICES_URL
+from .common_voice import HEADERS, GET_TEXT_URL, GET_VOICES_URL, handle_operation
 
 
 async def authorization_token(tg_id):
@@ -124,10 +122,13 @@ async def download_file(download_url, voice_id):
 
 
 async def enqueue_operation(operation, chat_id):
-    # todo check if queue is available
-    queue.enqueue(
-        'utils.uzbekvoice.common_voice.handle_operation',
-        await authorization_token(chat_id),
-        operation,
-        retry=Retry(max=100, interval=30)
-    )
+    # if queue is not open
+    if queue is None:
+        return handle_operation(operation, chat_id)
+    else:
+        queue.enqueue(
+            'utils.uzbekvoice.common_voice.handle_operation',
+            await authorization_token(chat_id),
+            operation,
+            retry=Retry(max=100, interval=30)
+        )
