@@ -13,14 +13,15 @@ load_dotenv()
 
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
-from aiogram.bot.api import TelegramAPIServer
+from redis import Redis
+from rq import Queue
 
 load_dotenv(find_dotenv())
 
 loop = asyncio.get_event_loop()
 storage = MemoryStorage()
 
-bot = Bot(getenv("BOT_TOKEN"), parse_mode="HTML", server=TelegramAPIServer.from_base('https://telegram.yhxx.uz'))
+bot = Bot(getenv("BOT_TOKEN"), parse_mode="HTML")
 dp = Dispatcher(bot, storage=storage, loop=loop)
 
 users_db = redis.StrictRedis(host='localhost', port=6379, db=1)
@@ -28,6 +29,7 @@ users_db = redis.StrictRedis(host='localhost', port=6379, db=1)
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
 ADMINS_ID: list = list(map(int, getenv("ADMINS_ID").split()))
 
+queue = Queue(connection=Redis.from_url(getenv("REDIS_URL")), name="high")
 
 class UserRegistration(StatesGroup):
     full_name = State()

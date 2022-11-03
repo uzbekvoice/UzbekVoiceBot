@@ -18,8 +18,8 @@ from utils.uzbekvoice import db
 from main import UserRegistration, dp
 from utils.helpers import send_message, IsSubscribedChannel
 from data.messages import INSTRUCTIONS, LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
-from utils.uzbekvoice.helpers import register_user, VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL, \
-    authorization_base64
+from utils.uzbekvoice.helpers import register_user, authorization_token
+from utils.uzbekvoice.common_voice import VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL
 
 
 @dp.message_handler(commands=['start'], state='*')
@@ -143,7 +143,9 @@ async def instructions(message: Message):
 @dp.message_handler(IsSubscribedChannel(), text=VOICE_LEADERBOARD)
 @dp.message_handler(IsSubscribedChannel(), commands=['record_leaderboard'])
 async def voice_leaderboard(message: Message):
-    headers = await authorization_base64(message.chat.id, {})
+    headers = {
+        'Authorization': authorization_token(message.chat.id)
+    }
     async with aiohttp.ClientSession() as session:
         async with session.get(CLIPS_LEADERBOARD_URL, headers=headers) as get_request:
             leaderboard_dict = await get_request.json()
@@ -176,7 +178,9 @@ async def voice_leaderboard(message: Message):
 @dp.message_handler(IsSubscribedChannel(), text=VOTE_LEADERBOARD)
 @dp.message_handler(IsSubscribedChannel(), commands=['check_leaderboard'])
 async def vote_leaderboard(message: Message):
-    headers = await authorization_base64(message.chat.id, {})
+    headers = {
+        'Authorization': authorization_token(message.chat.id)
+    }
 
     async with aiohttp.ClientSession() as session:
         async with session.get(VOTES_LEADERBOARD_URL, headers=headers) as get_request:

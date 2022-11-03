@@ -6,8 +6,8 @@ from main import dp, bot
 from aiogram.types import Message
 
 from data.messages import MY_PROFILE, MY_RATING
-from utils.uzbekvoice.helpers import CLIPS_LEADERBOARD_URL, VOTES_LEADERBOARD_URL, authorization_base64
-
+from utils.uzbekvoice.common_voice import CLIPS_LEADERBOARD_URL, VOTES_LEADERBOARD_URL
+from utils.uzbekvoice.helpers import authorization_token
 
 languages = [
     "O'zbek tili",
@@ -37,7 +37,9 @@ async def my_profile(message: Message):
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=MY_RATING)
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['my_stats'])
 async def vote_leaderboard(message: Message):
-    headers = await authorization_base64(message.chat.id, {})
+    headers = {
+        'Authorization': await authorization_token(message.chat.id),
+    }
 
     async with aiohttp.ClientSession() as session:
         async with session.get(VOTES_LEADERBOARD_URL, headers=headers) as get_request:

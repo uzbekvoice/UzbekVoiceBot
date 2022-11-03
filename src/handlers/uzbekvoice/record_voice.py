@@ -11,8 +11,8 @@ from keyboards.inline import text_markup, report_text_markup, confirm_voice_mark
 from utils.helpers import send_message, edit_reply_markup, send_voice, delete_message_markup, delete_message, \
     IsRegistered, \
     IsBlockedUser, IsSubscribedChannel
-from utils.uzbekvoice.helpers import get_text_to_read, send_text_voice, report_function, check_if_audio_human_voice, \
-    skip_sentence, check_if_audio_is_short
+from utils.uzbekvoice.helpers import get_text_to_read, check_if_audio_human_voice, check_if_audio_is_short, \
+    enqueue_operation
 
 
 # Handler that answers to Record Voice message
@@ -111,9 +111,8 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
         if validation_required:
             db.user_validated_now(chat_id)
         await call.message.delete_reply_markup()
-        await send_text_voice(audio_file, text_id, chat_id)
+        await enqueue_operation({'type': 'send_voice', 'file_directory': audio_file, 'sentence_id': text_id})
         await ask_to_send_new_voice(chat_id, state)
-        os.remove(audio_file)
     else:
         await call.message.delete()
         await ask_to_send_voice(chat_id, text, state)
@@ -142,13 +141,12 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
         return
     elif command == 'skip':
         await call.message.delete()
-        await skip_sentence(text_id, chat_id)
+        await enqueue_operation({'type': 'skip_sentence', 'sentence_id': text_id})
     else:
         await call.message.delete()
         if 'report' in command:
-            await report_function('sentence', text_id, command, tg_id=chat_id)
-            await skip_sentence(text_id, chat_id)
-
+            await enqueue_operation({'type': 'skip_sentence', 'sentence_id': text_id})
+            await enqueue_operation({'type': 'report_sentence', 'sentence_id': text_id, 'command': command})
     await ask_to_send_new_voice(chat_id, state)
 
 
