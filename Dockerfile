@@ -8,4 +8,5 @@ COPY ./src/ /app/src
 
 RUN apt-get update -y
 RUN apt-get install libsndfile-dev -y
+COPY Procfile /app/Procfile
 CMD python3 -u ./src/uzbekvoicebot.py
