@@ -1,3 +1,4 @@
+import os
 from aiogram.dispatcher.filters import Filter
 from aiogram.types import Message, ReplyKeyboardRemove
 from utils.uzbekvoice import db
@@ -92,17 +93,26 @@ class IsBlockedUser(Filter):
             return True
 
 
+JOIN_CHANNEL_ID = os.getenv("JOIN_CHANNEL_ID")
+
+
 # Filter for checking whether user is banned
 class IsSubscribedChannel(Filter):
     key = "is_subscribed_channel"
 
     async def check(self, message: Message):
-        chat_id = message.chat.id
-        check_member = await bot.get_chat_member(-1001798621689, chat_id)
-        if check_member.status not in ["member", "creator", "administrator"]:
-            await send_message(chat_id, 'channel')
-            return False
-        else:
+        try:
+            if JOIN_CHANNEL_ID is None:
+                return True
+            chat_id = message.chat.id
+            check_member = await bot.get_chat_member(JOIN_CHANNEL_ID, chat_id)
+            if check_member.status not in ["member", "creator", "administrator"]:
+                await send_message(chat_id, 'channel')
+                return False
+            else:
+                return True
+        except Exception as err:
+            print('Error in IsSubscribedChannel', err)
             return True
 
 
