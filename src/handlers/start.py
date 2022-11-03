@@ -144,7 +144,7 @@ async def instructions(message: Message):
 @dp.message_handler(IsSubscribedChannel(), commands=['record_leaderboard'])
 async def voice_leaderboard(message: Message):
     headers = {
-        'Authorization': authorization_token(message.chat.id)
+        'Authorization': await authorization_token(message.chat.id)
     }
     async with aiohttp.ClientSession() as session:
         async with session.get(CLIPS_LEADERBOARD_URL, headers=headers) as get_request:
@@ -179,7 +179,7 @@ async def voice_leaderboard(message: Message):
 @dp.message_handler(IsSubscribedChannel(), commands=['check_leaderboard'])
 async def vote_leaderboard(message: Message):
     headers = {
-        'Authorization': authorization_token(message.chat.id)
+        'Authorization': await authorization_token(message.chat.id)
     }
 
     async with aiohttp.ClientSession() as session:
