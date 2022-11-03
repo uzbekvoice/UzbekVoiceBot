@@ -98,7 +98,8 @@ async def get_accent_region(message: Message, state: FSMContext):
 @dp.message_handler(state=UserRegistration.year_of_birth)
 async def get_birth_year(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        if message.text in ["12-17", "18-24", "25-34", "35-..."]:
+        if message.text in ["< 19", "19-29", "30-39", "40-49", "50-59", 
+                            "60-69", "70-79", "80-89", "> 89"]:
             data["year_of_birth"] = message.text
             await send_message(message.chat.id, 'ask-native-language', markup=native_languages_markup)
             await UserRegistration.next()
