@@ -11,7 +11,7 @@ from keyboards.inline import text_markup, report_text_markup, confirm_voice_mark
 from utils.helpers import send_message, edit_reply_markup, send_voice, delete_message_markup, delete_message, \
     IsRegistered, \
     IsBlockedUser, IsSubscribedChannel
-from utils.uzbekvoice.helpers import get_text_to_read, check_if_audio_human_voice, check_if_audio_is_short, \
+from utils.uzbekvoice.helpers import get_sentence_to_read, check_if_audio_human_voice, check_if_audio_is_short, \
     enqueue_operation
 
 
@@ -111,7 +111,7 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
         if validation_required:
             db.user_validated_now(chat_id)
         await call.message.delete_reply_markup()
-        await enqueue_operation({'type': 'send_voice', 'file_directory': audio_file, 'sentence_id': text_id})
+        await enqueue_operation({'type': 'send_voice', 'file_directory': audio_file, 'sentence_id': text_id}, chat_id)
         await ask_to_send_new_voice(chat_id, state)
     else:
         await call.message.delete()
@@ -141,12 +141,12 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
         return
     elif command == 'skip':
         await call.message.delete()
-        await enqueue_operation({'type': 'skip_sentence', 'sentence_id': text_id})
+        await enqueue_operation({'type': 'skip_sentence', 'sentence_id': text_id}, chat_id)
     else:
         await call.message.delete()
         if 'report' in command:
-            await enqueue_operation({'type': 'skip_sentence', 'sentence_id': text_id})
-            await enqueue_operation({'type': 'report_sentence', 'sentence_id': text_id, 'command': command})
+            await enqueue_operation({'type': 'skip_sentence', 'sentence_id': text_id}, chat_id)
+            await enqueue_operation({'type': 'report_sentence', 'sentence_id': text_id, 'command': command}, chat_id)
     await ask_to_send_new_voice(chat_id, state)
 
 
@@ -167,6 +167,5 @@ async def ask_to_send_voice(chat_id, text, state):
 
 
 async def ask_to_send_new_voice(chat_id, state):
-    texts = await get_text_to_read(chat_id)
-    text = texts[0]
+    text = await get_sentence_to_read(chat_id, state)
     await ask_to_send_voice(chat_id, text, state)

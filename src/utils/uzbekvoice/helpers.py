@@ -73,18 +73,23 @@ async def register_user(state, tg_id):
     )
 
 
-async def get_text_to_read(tg_id):
-    headers = {
-        'Authorization': await authorization_token(tg_id),
-        **HEADERS,
-    }
-    data = {'count': '1'}
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(GET_TEXT_URL, headers=headers, params=data) as get_request:
-            response_json = await get_request.json()
-
-            return response_json
+async def get_sentence_to_read(tg_id, state):
+    data = await state.get_data()
+    if "sentences" not in data or len(data["sentences"]) == 0:
+        headers = {
+            'Authorization': await authorization_token(tg_id),
+            **HEADERS,
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get(GET_TEXT_URL, headers=headers, params={'count': '30'}) as get_request:
+                response_json = await get_request.json()
+                await state.update_data(sentences=response_json)
+                return None if len(response_json) == 0 else response_json[0]
+    else:
+        sentences = data["sentences"]
+        sentence = sentences.pop()
+        await state.update_data(sentences=sentences)
+        return sentence
 
 
 async def get_voice_to_check(tg_id, state):
