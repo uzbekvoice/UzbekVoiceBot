@@ -130,14 +130,23 @@ async def send_progress_message(chat_id, count):
 # Function to send message to the list of users
 @dp.message_handler(commands=['admin_admin_send'])
 async def send_post_to_user(message: Message):
-    telephones = [
-        '998946526622',
+    tg_ids = [
+        '1051399400',
+        '5116651974',
+        '5457999176',
+        '763752896',
+        '1138312847',
+        '1656654353',
+        '5190212874',
+        '1820873768',
+        '5608807162',
+        '5183948751',
     ]
-    for telephone in telephones:
+    for tg_id in tg_ids:
         with engine.connect() as conn:
-            q = session.query(exists().where(user_table.c.phone_number == telephone)).scalar()
+            q = session.query(exists().where(user_table.c.tg_id == tg_id)).scalar()
             if q:
-                q = select(user_table).where(user_table.c.phone_number == telephone)
+                q = select(user_table).where(user_table.c.tg_id == tg_id)
                 user = conn.execute(q).first()
                 text = """
 Assalomu alaykum, hurmatli foydalanuvchi! 

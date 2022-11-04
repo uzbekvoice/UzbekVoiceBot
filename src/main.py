@@ -37,9 +37,9 @@ class UserRegistration(StatesGroup):
     full_name = State()
     phone_number = State()
     gender = State()
+    native_language = State()
     accent_region = State()
     year_of_birth = State()
-    native_language = State()
     finish = State()
 
 

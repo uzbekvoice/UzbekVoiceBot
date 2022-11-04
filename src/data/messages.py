@@ -63,7 +63,7 @@ REPORT_TEXT_1 = 'Haqoratli nutq'
 REPORT_TEXT_2 = 'Grammatik / imlo xatosi'
 REPORT_TEXT_3 = 'Boshqa tillar'
 REPORT_TEXT_4 = 'Talaffuz qilish qiyin'
-REPORT_TEXT_5 = 'Orqaga qaytish'
+REPORT_TEXT_5 = '↩ Orqaga qaytish'
 
 CONFIRM_VOICE_TEXT = 'To\'g\'ri 👍'
 REJECT_VOICE_TEXT = 'Noto\'g\'ri 👎'
