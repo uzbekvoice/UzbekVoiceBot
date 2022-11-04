@@ -54,7 +54,7 @@ async def get_name(message: Message, state: FSMContext):
 @dp.message_handler(state=UserRegistration.phone_number, content_types=['contact', 'text'])
 async def get_phone(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        data["phone_number"] = str(message.contact.phone_number)
+        data["phone_number"] = str(message.contact.phone_number if message.contact else message.text)
         await UserRegistration.next()
         await send_message(message.chat.id, 'ask-gender', markup=genders_markup)
 
