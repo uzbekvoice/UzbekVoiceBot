@@ -55,8 +55,9 @@ VOICE_INCORRECT = 'Noto\'g\'ri 👎'
 SKIP_STEP = 'Tashlab ketish ⏭️'
 VOICE_REPORT = 'Xabar berish ❗️'
 
-SEND_EVERYONE = 'Рассылка рекламы'
-BOT_STATISTICS = 'Bot statistikasi'
+SEND_EVERYONE = '🔊 Push notification'
+SEND_CERTAIN = '🧑 Send to certain users'
+BOT_STATISTICS = '📃 Bot statistics'
 CANCEL_MESSAGE = 'Ortga qaytish ↩'
 
 REPORT_TEXT_1 = 'Haqoratli nutq'

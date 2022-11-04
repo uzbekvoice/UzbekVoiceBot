@@ -162,6 +162,7 @@ async def voice_leaderboard(message: Message):
         data['|FIO|'].append(f"{leader['username'][:10]}...")
         data['|Yozilgan|'].append(leader['total'])
 
+
     copy_data = data.copy()
     del data['№']
     leaderboard_text = pandas.DataFrame(data=data, index=copy_data['№'])

@@ -1,12 +1,15 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-from data.messages import INSTRUCTIONS, MY_PROFILE, MY_RATING, RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS, CANCEL_MESSAGE, LEADERBOARD, \
-    VOICE_LEADERBOARD, VOTE_LEADERBOARD
+from data.messages import INSTRUCTIONS, MY_PROFILE, MY_RATING, RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS, \
+    CANCEL_MESSAGE, LEADERBOARD, \
+    VOICE_LEADERBOARD, VOTE_LEADERBOARD, SEND_CERTAIN
 
 admin_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 admin_button_1 = KeyboardButton(SEND_EVERYONE)
-admin_button_2 = KeyboardButton(BOT_STATISTICS)
-admin_markup.add(*[admin_button_1, admin_button_2])
+admin_button_2 = KeyboardButton(SEND_CERTAIN)
+admin_button_3 = KeyboardButton(BOT_STATISTICS)
+admin_markup.add(*[admin_button_1, admin_button_2, admin_button_3])
+
 
 go_back_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 reject_button = KeyboardButton(CANCEL_MESSAGE)
@@ -14,9 +17,14 @@ go_back_markup.add(reject_button)
 
 
 sure_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-send_button = KeyboardButton('Начать')
-reject_button = KeyboardButton('Отменить')
+send_button = KeyboardButton('✅ Start')
+reject_button = KeyboardButton('🚫 Cancel')
 sure_markup.add(*[send_button, reject_button])
+
+yes_no_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+yes_button = KeyboardButton('✅ Yes')
+no_button = KeyboardButton('🚫 No')
+yes_no_markup.add(*[yes_button, no_button])
 
 age_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
 age_button_1 = KeyboardButton("< 19")

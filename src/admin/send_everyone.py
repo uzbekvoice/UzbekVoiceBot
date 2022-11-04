@@ -2,7 +2,7 @@ import asyncio
 
 from sqlalchemy import select
 from sqlalchemy.sql import exists
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.exceptions import UserDeactivated, BotBlocked
 
@@ -13,14 +13,14 @@ from keyboards.buttons import sure_markup, admin_markup
 
 # Ask admin to send post
 async def send_everyone_func(chat_id):
-    await bot.send_message(chat_id, 'Send the post for push-notification.', reply_markup=sure_markup)
+    await bot.send_message(chat_id, 'Send the post for push-notification 👇', reply_markup=ReplyKeyboardRemove())
     await AdminSendEveryOne.ask_post.set()
 
 
 # Show post sample
 @dp.message_handler(state=AdminSendEveryOne.all_states, text='Cancel')
 async def admin_reject_handler(message: Message, state: FSMContext):
-    await bot.send_message(message.chat.id, 'You have canceled push-notification.', reply_markup=admin_markup)
+    await bot.send_message(message.chat.id, 'You have canceled push-notification  ✅', reply_markup=admin_markup)
     await state.finish()
 
 
@@ -48,10 +48,13 @@ async def admin_ask_send(message: Message, state: FSMContext):
     chat_id = message.chat.id
     admin_message = message.text
 
-    if admin_message == 'Начать':
+    if admin_message == '✅ Start':
         await send_post(chat_id, state)
         return
-
+    elif admin_message == '🚫 Cancel':
+        await state.finish()
+        await bot.send_message(chat_id, 'Message canceled ✅', reply_markup=admin_markup)
+        return
     await bot.send_message(chat_id, 'Begin push-notification or cancel?', reply_markup=sure_markup)
     await AdminSendEveryOne.ask_send.set()
 
@@ -125,36 +128,3 @@ async def send_copied_post_to_user(user_id, copy_from_chat_id, message_id, butto
 async def send_progress_message(chat_id, count):
     sent_message = await bot.send_message(chat_id, '{0:,} users received the push-notification.'.format(count))
     return sent_message
-
-
-# Function to send message to the list of users
-@dp.message_handler(commands=['admin_admin_send'])
-async def send_post_to_user(message: Message):
-    tg_ids = [
-        '949218602',
-        '1051399400',
-        '5116651974',
-        '5457999176',
-        '763752896',
-        '1138312847',
-        '1656654353',
-        '5190212874',
-        '1820873768',
-        '5608807162',
-        '5183948751',
-    ]
-    for tg_id in tg_ids:
-        with engine.connect() as conn:
-            q = session.query(exists().where(user_table.c.tg_id == tg_id)).scalar()
-            if q:
-                q = select(user_table).where(user_table.c.tg_id == tg_id)
-                user = conn.execute(q).first()
-                text = """
-Assalomu alaykum, hurmatli foydalanuvchi! 💬
-
-Akkauntingizni shartli ravishda blokdan chiqardik. Ovozlarni tekshirish va qayd etish qoidalarini e'tiborsiz qoldirish holati yana takrorlansa, biz o'z navbatida sizning akkauntingizni abadiy blokirovka qilishga va natijalaringizni bekor qilishga majbur bo'lamiz. ☝️
-
-Ona tilimiz – o‘zbek tilini rivojlantirish yo‘lida hamkorligingizga umid qilamiz. Katta rahmat! 🇺🇿
-                """
-                await bot.send_message(user.tg_id, text)
-    print('Done')
