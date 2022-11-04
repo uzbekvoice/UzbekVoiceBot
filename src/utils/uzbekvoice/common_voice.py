@@ -44,7 +44,12 @@ async def send_voice_vote(token, voice_id, is_valid):
     request_url = VOICE_VOTE_URL.format(voice_id)
     async with aiohttp.ClientSession() as session:
         async with session.post(request_url, data=json.dumps(data), headers=headers) as posted_vote:
-            posted_vote_response = await posted_vote.json()
+            status = posted_vote.status
+            if status == 200:
+                return
+            else:
+                raise Exception("Error sending vote")
+
 
 
 async def skip_voice(token, voice_id):
