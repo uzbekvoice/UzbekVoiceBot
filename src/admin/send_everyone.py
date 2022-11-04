@@ -150,12 +150,11 @@ async def send_post_to_user(message: Message):
                 q = select(user_table).where(user_table.c.tg_id == tg_id)
                 user = conn.execute(q).first()
                 text = """
-Assalomu alaykum, hurmatli foydalanuvchi! 
+Assalomu alaykum, hurmatli foydalanuvchi! 💬
 
-Ba'zi texnik nosozliklar tufayli sizning ismi sharifingiz "Ro'yxatdan o'tish" deb saqlangan. 
-Iltimos @adamsaido ga to'liq ismi sharifingiz va telefon raqamangizni yozib qoldiring.
+Akkauntingizni shartli ravishda blokdan chiqardik. Ovozlarni tekshirish va qayd etish qoidalarini e'tiborsiz qoldirish holati yana takrorlansa, biz o'z navbatida sizning akkauntingizni abadiy blokirovka qilishga va natijalaringizni bekor qilishga majbur bo'lamiz. ☝️
 
-Hurmat bilan UzbekVoice jamoasi
+Ona tilimiz – o‘zbek tilini rivojlantirish yo‘lida hamkorligingizga umid qilamiz. Katta rahmat! 🇺🇿
                 """
                 await bot.send_message(user.tg_id, text)
     print('Done')
