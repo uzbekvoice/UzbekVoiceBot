@@ -131,6 +131,7 @@ async def send_progress_message(chat_id, count):
 @dp.message_handler(commands=['admin_admin_send'])
 async def send_post_to_user(message: Message):
     tg_ids = [
+        '949218602',
         '1051399400',
         '5116651974',
         '5457999176',
