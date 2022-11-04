@@ -12,6 +12,7 @@ from sqlalchemy import (
     update,
     DATETIME
 )
+from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy.sql import exists
 
@@ -45,8 +46,17 @@ class User(Base):
     last_validated_at = Column(DATETIME, nullable=True)
 
 
+class Violations(Base):
+    __tablename__ = 'user_violations'
+    id = Column(BigInteger, primary_key=True)
+    created_at = Column(DATETIME, nullable=False, server_default=func.now())
+    type = Column(String(255))
+    client_id = Column(String(36))
+
+
 Base.metadata.create_all(engine)
 user_table = Table('user_account', metadata_obj, autoload_with=engine)
+violation_table = Table('user_violations', metadata_obj, autoload_with=engine)
 session = Session(engine)
 
 
@@ -98,16 +108,19 @@ def get_user(tg_id):
         return conn.execute(q).first()
 
 
-def increase_user_vote_streak_count(
+def add_user_violation(
         tg_id,
+        violation_type
 ):
     with engine.connect() as conn:
-        q = update(user_table).where(user_table.c.tg_id == tg_id).values(
-            vote_streak_count=user_table.c.vote_streak_count + 1
+        user = get_user(tg_id)
+        conn.execute(
+            insert(violation_table).values(
+                type=violation_type,
+                client_id=user.uuid
+            )
         )
-        conn.execute(q)
         session.commit()
-
 
 def user_validated_now(
         tg_id,

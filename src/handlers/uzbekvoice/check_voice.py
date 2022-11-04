@@ -82,9 +82,9 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
 
     command = confirm_state
     last_sent_time = data['last_sent_time']
-    if time.time() - last_sent_time < clip_duration + 0.3:
+    if time.time() - last_sent_time < clip_duration + 0.3 and command in ['accept', 'reject']:
         try:
-            db.increase_user_vote_streak_count(chat_id)
+            db.add_user_violation(chat_id, 'vote_streak')
         except Exception as e:
             print(e)
         return await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
