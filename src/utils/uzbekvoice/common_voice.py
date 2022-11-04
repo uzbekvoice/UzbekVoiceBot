@@ -31,10 +31,10 @@ async def send_text_voice(token, file_directory, text_id):
     async with aiohttp.ClientSession() as session:
         async with session.post(SEND_VOICE_URL, headers=headers, data=data) as sent_voice:
             status = sent_voice.status
-            if status == 200:
+            if status == 204:
                 return
             else:
-                raise Exception("Error sending vote")
+                raise Exception("Error sending voice")
 
 
 
