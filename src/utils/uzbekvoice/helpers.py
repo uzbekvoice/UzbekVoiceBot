@@ -79,7 +79,7 @@ async def get_sentence_to_read(tg_id, state):
             **HEADERS,
         }
         async with aiohttp.ClientSession() as session:
-            async with session.get(GET_TEXT_URL, headers=headers, params={'count': '30'}) as get_request:
+            async with session.get(GET_TEXT_URL, headers=headers, params={'count': '50'}) as get_request:
                 response_json = await get_request.json()
                 await state.update_data(sentences=response_json)
                 return None if len(response_json) == 0 else response_json[0]
@@ -99,7 +99,7 @@ async def get_voice_to_check(tg_id, state):
             **HEADERS
         }
         async with aiohttp.ClientSession() as session:
-            async with session.get(GET_VOICES_URL, headers=headers, params={'count': '30'}) as get_request:
+            async with session.get(GET_VOICES_URL, headers=headers, params={'count': '50'}) as get_request:
                 response_json = await get_request.json()
                 await state.update_data(voices=response_json)
                 return None if len(response_json) == 0 else response_json[0]
