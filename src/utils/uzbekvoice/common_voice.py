@@ -17,6 +17,8 @@ GET_VOICES_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips'
 REPORT_URL = 'https://common.uzbekvoice.ai/api/v1/reports'
 CLIPS_LEADERBOARD_URL = 'https://common.uzbekvoice.ai/api/v1/clips/leaderboard'
 VOTES_LEADERBOARD_URL = 'https://common.uzbekvoice.ai/api/v1/clips/votes/leaderboard'
+RECORDS_STAT_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips/stats'
+ACTIVITY_STAT_URL = 'https://common.uzbekvoice.ai/api/v1/uz/clips/voices'
 
 
 async def send_text_voice(token, file_directory, text_id):

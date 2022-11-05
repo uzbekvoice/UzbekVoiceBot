@@ -49,6 +49,7 @@ LEADERBOARD = "📃 Liderlar Ro'yxati"
 INSTRUCTIONS = "📘 Qo'llanma"
 MY_PROFILE = "👤 Mening profilim"
 MY_RATING = "📊 Mening statistikam"
+OVERALL_STATS = "📈 Loyiha statistikasi"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'

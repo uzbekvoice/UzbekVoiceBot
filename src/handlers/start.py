@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pandas
 import aiohttp
 from aiogram.types import Message, ParseMode
@@ -12,14 +14,15 @@ from keyboards.buttons import (
     genders_markup,
     leader_markup,
     start_markup,
-    age_markup
+    age_markup, go_back_markup
 )
 from utils.uzbekvoice import db
 from main import UserRegistration, dp
-from utils.helpers import send_message, IsSubscribedChannel
-from data.messages import INSTRUCTIONS, LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD
+from utils.helpers import send_message, IsSubscribedChannel, IsRegistered
+from data.messages import INSTRUCTIONS, LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD, OVERALL_STATS
 from utils.uzbekvoice.helpers import register_user, authorization_token
-from utils.uzbekvoice.common_voice import VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL
+from utils.uzbekvoice.common_voice import VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL, RECORDS_STAT_URL, \
+    ACTIVITY_STAT_URL
 
 
 @dp.message_handler(commands=['start'], state='*')
@@ -118,7 +121,7 @@ async def get_accent_region(message: Message, state: FSMContext):
 @dp.message_handler(state=UserRegistration.year_of_birth)
 async def finish(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        if message.text in ["< 19", "19-29", "30-39", "40-49", "50-59", 
+        if message.text in ["< 19", "19-29", "30-39", "40-49", "50-59",
                             "60-69", "70-79", "80-89", "> 89"]:
             data["year_of_birth"] = message.text
             await register_user(data, message.chat.id)
@@ -141,8 +144,8 @@ async def instructions(message: Message):
     await send_message(message.chat.id, 'instructions')
 
 
-@dp.message_handler(IsSubscribedChannel(), text=VOICE_LEADERBOARD)
-@dp.message_handler(IsSubscribedChannel(), commands=['record_leaderboard'])
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=VOICE_LEADERBOARD)
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['record_leaderboard'])
 async def voice_leaderboard(message: Message):
     headers = {
         'Authorization': await authorization_token(message.chat.id)
@@ -162,7 +165,6 @@ async def voice_leaderboard(message: Message):
         data['|FIO|'].append(f"{leader['username'][:10]}...")
         data['|Yozilgan|'].append(leader['total'])
 
-
     copy_data = data.copy()
     del data['№']
     leaderboard_text = pandas.DataFrame(data=data, index=copy_data['№'])
@@ -172,13 +174,13 @@ async def voice_leaderboard(message: Message):
     await bot.send_message(
         message.chat.id,
         leaderboard_text,
-        reply_markup=start_markup,
+        reply_markup=go_back_markup,
         parse_mode=ParseMode.MARKDOWN
     )
 
 
-@dp.message_handler(IsSubscribedChannel(), text=VOTE_LEADERBOARD)
-@dp.message_handler(IsSubscribedChannel(), commands=['check_leaderboard'])
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=VOTE_LEADERBOARD)
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['check_leaderboard'])
 async def vote_leaderboard(message: Message):
     headers = {
         'Authorization': await authorization_token(message.chat.id)
@@ -207,6 +209,42 @@ async def vote_leaderboard(message: Message):
     await bot.send_message(
         message.chat.id,
         leaderboard_text,
-        reply_markup=start_markup,
+        reply_markup=go_back_markup,
+        parse_mode=ParseMode.MARKDOWN
+    )
+
+
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=OVERALL_STATS)
+@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['stats'])
+async def stats(message: Message):
+    headers = {
+        'Authorization': await authorization_token(message.chat.id)
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(RECORDS_STAT_URL, headers=headers) as get_request:
+            stats_dict = await get_request.json()
+        async with session.get(ACTIVITY_STAT_URL, headers=headers) as get_request:
+            activity_dict = await get_request.json()
+
+    latest_records = stats_dict[-1]
+    latest_activity = activity_dict[-1]
+
+    overall_records = int(int(latest_records['total']) / 3600)  # 1 hour = 3600 seconds
+    checked_records = int(int(latest_records['valid']) / 3600)
+    stats_hour = latest_activity['date']
+    stats_hour = datetime.strptime(stats_hour, '%Y-%m-%dT%H:%M:%S.%fZ').hour
+    users_count = latest_activity['value']
+
+    stat_message = f"""
+🗣️ Umumiy yozilgan: {overall_records} soat
+✅ Tekshirilgan yozuvlar: {checked_records} soat
+⌛ Bugun {stats_hour}:00da aktivlar soni: {users_count}
+    """
+
+    await bot.send_message(
+        message.chat.id,
+        text=stat_message,
+        reply_markup=go_back_markup,
         parse_mode=ParseMode.MARKDOWN
     )

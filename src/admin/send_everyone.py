@@ -1,13 +1,11 @@
 import asyncio
 
-from sqlalchemy import select
-from sqlalchemy.sql import exists
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.exceptions import UserDeactivated, BotBlocked
 
 from main import dp, bot, AdminSendEveryOne
-from utils.uzbekvoice.db import engine, user_table, session, User
+from utils.uzbekvoice.db import session, User
 from keyboards.buttons import sure_markup, admin_markup
 
 

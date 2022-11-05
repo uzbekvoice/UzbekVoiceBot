@@ -1,5 +1,6 @@
 import aiohttp
 
+from keyboards.buttons import go_back_markup
 from utils.helpers import IsRegistered, IsSubscribedChannel
 from utils.uzbekvoice.db import get_user
 from main import dp, bot
@@ -31,7 +32,7 @@ async def my_profile(message: Message):
         f"Ona-tili: <code>{user['native_language']}</code>",
         f"Shevasi: <code>{user['accent_region']}</code>",
     ]
-    await bot.send_message(message.chat.id, '\n'.join(my_profile), parse_mode='HTML')
+    await bot.send_message(message.chat.id, '\n'.join(my_profile), parse_mode='HTML', reply_markup=go_back_markup)
 
 
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=MY_RATING)
@@ -69,4 +70,4 @@ async def vote_leaderboard(message: Message):
         f"📊 Ovoz tekshirishdagi o'rningiz: {votes_position}"
     ]
 
-    await bot.send_message(message.chat.id, "\n".join(my_stats), parse_mode="HTML")
+    await bot.send_message(message.chat.id, "\n".join(my_stats), parse_mode="HTML", reply_markup=go_back_markup)
