@@ -48,6 +48,13 @@ class AdminSendEveryOne(StatesGroup):
     ask_send = State()
 
 
+class AdminSendCertain(StatesGroup):
+    ask_post = State()
+    ask_correct = State()
+    ask_users = State()
+    ask_send = State()
+
+
 class AskUserVoice(StatesGroup):
     ask_voice = State()
     ask_confirm = State()
