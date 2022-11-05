@@ -133,19 +133,16 @@ async def finish(message: Message, state: FSMContext):
 
 
 @dp.message_handler(IsSubscribedChannel(), text=LEADERBOARD)
-@dp.message_handler(IsSubscribedChannel(), commands=['leaderboard'])
 async def leaderboard(message: Message):
     await send_message(message.chat.id, 'leaderboard', markup=leader_markup)
 
 
 @dp.message_handler(IsSubscribedChannel(), text=INSTRUCTIONS)
-@dp.message_handler(IsSubscribedChannel(), commands=['instructions'])
 async def instructions(message: Message):
     await send_message(message.chat.id, 'instructions')
 
 
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=VOICE_LEADERBOARD)
-@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['record_leaderboard'])
 async def voice_leaderboard(message: Message):
     headers = {
         'Authorization': await authorization_token(message.chat.id)
@@ -180,7 +177,6 @@ async def voice_leaderboard(message: Message):
 
 
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=VOTE_LEADERBOARD)
-@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['check_leaderboard'])
 async def vote_leaderboard(message: Message):
     headers = {
         'Authorization': await authorization_token(message.chat.id)
@@ -215,7 +211,6 @@ async def vote_leaderboard(message: Message):
 
 
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=OVERALL_STATS)
-@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['stats'])
 async def stats(message: Message):
     headers = {
         'Authorization': await authorization_token(message.chat.id)

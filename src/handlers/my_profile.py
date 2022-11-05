@@ -20,7 +20,6 @@ languages = [
 
 
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=MY_PROFILE)
-@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['my_profile'])
 async def my_profile(message: Message):
     user = get_user(message.chat.id)
     my_profile = [
@@ -36,7 +35,6 @@ async def my_profile(message: Message):
 
 
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=MY_RATING)
-@dp.message_handler(IsRegistered(), IsSubscribedChannel(), commands=['my_stats'])
 async def vote_leaderboard(message: Message):
     headers = {
         'Authorization': await authorization_token(message.chat.id),

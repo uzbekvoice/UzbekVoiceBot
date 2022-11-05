@@ -17,7 +17,6 @@ from utils.uzbekvoice.helpers import get_sentence_to_read, check_if_audio_human_
 
 # Handler that answers to Record Voice message
 @dp.message_handler(IsRegistered(), IsBlockedUser(), IsSubscribedChannel(), text=RECORD_VOICE)
-@dp.message_handler(IsRegistered(), IsBlockedUser(), IsSubscribedChannel(), commands=['record'])
 async def record_voice_handler(message: Message, state: FSMContext):
     chat_id = message.chat.id
     await send_message(chat_id, 'ask-record-voice', markup=go_back_markup)
