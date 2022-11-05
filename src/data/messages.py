@@ -45,7 +45,7 @@ VOTE_LEADERBOARD = '🔊 Tekshirilgan Audiolar liderlari'
 
 RECORD_VOICE = '🗣 Matn o\'qish'
 CHECK_VOICE = '🔊 Ovoz yozuvlarini tekshirish'
-LEADERBOARD = "📃 Liderlar Ro'yxati"
+LEADERBOARD = "📃 Liderlar ro'yxati"
 INSTRUCTIONS = "📘 Qo'llanma"
 MY_PROFILE = "👤 Mening profilim"
 MY_RATING = "📊 Mening statistikam"
