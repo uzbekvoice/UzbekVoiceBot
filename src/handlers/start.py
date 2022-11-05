@@ -238,7 +238,9 @@ async def stats(message: Message):
 
     stat_message = f"""
 🗣️ Umumiy yozilgan: {overall_records} soat
+
 ✅ Tekshirilgan yozuvlar: {checked_records} soat
+
 ⌛ Bugun {stats_hour}:00da aktivlar soni: {users_count}
     """
 
