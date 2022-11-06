@@ -139,7 +139,7 @@ async def leaderboard(message: Message):
 
 @dp.message_handler(IsSubscribedChannel(), text=INSTRUCTIONS)
 async def instructions(message: Message):
-    await send_message(message.chat.id, 'instructions')
+    await send_message(message.chat.id, 'instructions', markup=start_markup)
 
 
 @dp.message_handler(IsRegistered(), IsSubscribedChannel(), text=VOICE_LEADERBOARD)
@@ -171,7 +171,7 @@ async def voice_leaderboard(message: Message):
     await bot.send_message(
         message.chat.id,
         leaderboard_text,
-        reply_markup=go_back_markup,
+        reply_markup=start_markup,
         parse_mode=ParseMode.MARKDOWN
     )
 
@@ -205,7 +205,7 @@ async def vote_leaderboard(message: Message):
     await bot.send_message(
         message.chat.id,
         leaderboard_text,
-        reply_markup=go_back_markup,
+        reply_markup=start_markup,
         parse_mode=ParseMode.MARKDOWN
     )
 
@@ -244,7 +244,7 @@ async def stats(message: Message):
     await bot.send_message(
         message.chat.id,
         text=stat_message,
-        reply_markup=go_back_markup,
+        reply_markup=start_markup,
         parse_mode=ParseMode.MARKDOWN
     )
 
