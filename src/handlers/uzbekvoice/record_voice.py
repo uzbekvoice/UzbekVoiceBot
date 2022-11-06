@@ -107,7 +107,6 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
         # if user passed validation, save current time
         if validation_required:
             db.user_validated_now(chat_id)
-        await call.message.delete_reply_markup()
         await enqueue_operation({'type': 'send_voice', 'file_directory': audio_file, 'sentence_id': text_id}, chat_id)
         await ask_to_send_new_voice(chat_id, state)
     else:
