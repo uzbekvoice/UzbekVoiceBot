@@ -140,6 +140,7 @@ async def send_my_profile(tg_id):
     my_profile = [
         f"👤 Mening profilim:\n\n"
         f"Ism: *{user['full_name']}*",
+        f"Telegram ID: *{tg_id}*",
         f"Telefon raqam: *{user['phone_number']}*",
         f"Yosh oralig'i: *{str(user['year_of_birth'])}*",
         f"Jinsi: *{user['gender']}*",
