@@ -56,9 +56,8 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     if check_if_audio_is_short(audio_file, text_to_read):
         await send_message(chat_id, 'audio-is-short-please-try-slower', reply=audio_id)
         await AskUserVoice.ask_voice.set()
-        os.remove(audio_file)
+        # os.remove(audio_file)
         return
-
 
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice',
                                      args=f'—————\n<b>{text_to_read}</b>\n—————',
@@ -87,12 +86,12 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     message_id = call.message.message_id
     text = data['text']
     text_id = text['id']
-    await call.answer()
     if str(reply_message_id) != str(message_id):
         return await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
+    await call.answer()
 
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
-
+    await call.message.delete_reply_markup()
     if command == 'confirm-voice':
         voice_checking_message_id = await send_message(chat_id, 'voice-checking')
         user = db.get_user(chat_id)
@@ -101,21 +100,19 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
         is_valid = len(check_if_audio_human_voice(audio_file)) != 0 if validation_required else True
         if not is_valid:
             await delete_message(chat_id, voice_checking_message_id)
-            await delete_message_markup(chat_id, reply_message_id)
             await send_message(chat_id, 'wrong-audio-text', reply=reply_message_id, parse='html')
             await AskUserVoice.ask_voice.set()
-            os.remove(audio_file)
+            # os.remove(audio_file)
             return
         # if user passed validation, save current time
         if validation_required:
             db.user_validated_now(chat_id)
-        await call.message.delete_reply_markup()
         await enqueue_operation({'type': 'send_voice', 'file_directory': audio_file, 'sentence_id': text_id}, chat_id)
         await ask_to_send_new_voice(chat_id, state)
     else:
         await call.message.delete()
         await ask_to_send_voice(chat_id, text, state)
-        os.remove(audio_file)
+        # os.remove(audio_file)
 
 
 # Handler that receives action on pressed report inline button

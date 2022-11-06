@@ -19,7 +19,7 @@ from keyboards.buttons import (
 from utils.uzbekvoice import db
 from main import UserRegistration, dp
 from utils.helpers import send_message, IsSubscribedChannel, IsRegistered
-from data.messages import INSTRUCTIONS, LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD, OVERALL_STATS
+from data.messages import INSTRUCTIONS, LEADERBOARD, VOTE_LEADERBOARD, VOICE_LEADERBOARD, OVERALL_STATS, CANCEL_MESSAGE
 from utils.uzbekvoice.helpers import register_user, authorization_token
 from utils.uzbekvoice.common_voice import VOTES_LEADERBOARD_URL, CLIPS_LEADERBOARD_URL, RECORDS_STAT_URL, \
     ACTIVITY_STAT_URL
@@ -236,6 +236,8 @@ async def stats(message: Message):
 
 ✅ Tekshirilgan yozuvlar: {checked_records} soat
 
+☑️ 2-bosqich maqsadi: 2000 soat tekshirilgan yozvular
+
 ⌛ Bugun {stats_hour}:00da aktivlar soni: {users_count}
     """
 
@@ -245,3 +247,8 @@ async def stats(message: Message):
         reply_markup=go_back_markup,
         parse_mode=ParseMode.MARKDOWN
     )
+
+
+@dp.message_handler(text=CANCEL_MESSAGE)
+async def go_back(message: Message):
+    await bot.send_message(message.chat.id, 'Bosh menyu: ', reply_markup=start_markup)
