@@ -8,7 +8,8 @@ import re
 from speechbrain.pretrained import VAD
 from rq import Retry
 from . import db
-from main import BASE_DIR, queue
+from main import BASE_DIR, queue, bot
+from keyboards.inline import my_profile_markup
 from .common_voice import HEADERS, GET_TEXT_URL, GET_VOICES_URL, handle_operation
 
 
@@ -132,3 +133,17 @@ async def enqueue_operation(operation, chat_id):
             operation,
             retry=Retry(max=100, interval=30)
         )
+
+
+async def send_my_profile(tg_id):
+    user = db.get_user(tg_id)
+    my_profile = [
+        f"👤 Mening profilim:\n\n"
+        f"Ism: *{user['full_name']}*",
+        f"Telefon raqam: *{user['phone_number']}*",
+        f"Yosh oralig'i: *{str(user['year_of_birth'])}*",
+        f"Jinsi: *{user['gender']}*",
+        f"Ona-tili: *{user['native_language']}*",
+        f"Shevasi: *{user['accent_region']}*",
+    ]
+    await bot.send_message(tg_id, '\n'.join(my_profile), parse_mode='MARKDOWN', reply_markup=my_profile_markup())

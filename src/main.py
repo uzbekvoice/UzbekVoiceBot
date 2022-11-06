@@ -66,3 +66,10 @@ class AskUserAction(StatesGroup):
     ask_action = State()
     confirm_action = State()
     report_type = State()
+
+
+class EditProfile(StatesGroup):
+    choose_field_to_edit = State()
+    edit_age = State()
+    edit_language = State()
+    edit_accent = State()
