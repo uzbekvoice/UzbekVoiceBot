@@ -15,7 +15,7 @@ services:
       - 8080:80
     environment:
       WEBHOOK_HOST: "https://58e0-146-158-18-165.ngrok.io"
-      REDIS_URL: "redis://redis:6379"
+#      REDIS_URL: "redis://redis:6379"
       BOT_TOKEN: 1416252712:AAF7sZtj9NH7N3XjIB_nxvQDEMuVS38PQSQ
       DATABASE_URL: "mysql+pymysql://bot:password@db:3306/bot"
       ADMINS_ID: 1
@@ -34,24 +34,24 @@ services:
     image: redis
     volumes:
       - redis:/data
-  rq-worker:
-    depends_on:
-      - db
-      - redis
-    build:
-      context: .
-      dockerfile: Dockerfile
-    working_dir: /app
-    command: rq worker high default --with-scheduler --path 'src'
-    restart: unless-stopped
-    volumes:
-      - ./src:/app/src
-      - ./assets:/app/downloads
-    environment:
-      REDIS_URL: "redis://redis:6379"
-      BOT_TOKEN: BOT_TOKEN
-      DATABASE_URL: "mysql+pymysql://bot:password@db:3306/bot"
-      ADMINS_ID: 1
+#  rq-worker:
+#    depends_on:
+#      - db
+#      - redis
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    working_dir: /app
+#    command: rq worker high default --with-scheduler --path 'src'
+#    restart: unless-stopped
+#    volumes:
+#      - ./src:/app/src
+#      - ./assets:/app/downloads
+#    environment:
+#      REDIS_URL: "redis://redis:6379"
+#      BOT_TOKEN: BOT_TOKEN
+#      DATABASE_URL: "mysql+pymysql://bot:password@db:3306/bot"
+#      ADMINS_ID: 1
 
 volumes:
     db_data:
