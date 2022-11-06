@@ -59,7 +59,6 @@ async def ask_voice_handler(message: Message, state: FSMContext):
         os.remove(audio_file)
         return
 
-
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice',
                                      args=f'—————\n<b>{text_to_read}</b>\n—————',
                                      markup=confirm_voice_markup(),
@@ -87,12 +86,12 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     message_id = call.message.message_id
     text = data['text']
     text_id = text['id']
-    await call.answer()
     if str(reply_message_id) != str(message_id):
         return await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
+    await call.answer()
 
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
-
+    await call.message.delete_reply_markup()
     if command == 'confirm-voice':
         voice_checking_message_id = await send_message(chat_id, 'voice-checking')
         user = db.get_user(chat_id)
@@ -101,7 +100,6 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
         is_valid = len(check_if_audio_human_voice(audio_file)) != 0 if validation_required else True
         if not is_valid:
             await delete_message(chat_id, voice_checking_message_id)
-            await delete_message_markup(chat_id, reply_message_id)
             await send_message(chat_id, 'wrong-audio-text', reply=reply_message_id, parse='html')
             await AskUserVoice.ask_voice.set()
             os.remove(audio_file)
