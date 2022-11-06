@@ -228,7 +228,7 @@ async def stats(message: Message):
     overall_records = int(int(latest_records['total']) / 3600)  # 1 hour = 3600 seconds
     checked_records = int(int(latest_records['valid']) / 3600)
     stats_hour = latest_activity['date']
-    stats_hour = datetime.strptime(stats_hour, '%Y-%m-%dT%H:%M:%S.%fZ').hour
+    stats_hour = datetime.strptime(stats_hour, '%Y-%m-%dT%H:%M:%S.%fZ').hour + 5
     users_count = latest_activity['value']
 
     stat_message = f"""
