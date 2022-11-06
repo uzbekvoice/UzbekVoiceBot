@@ -22,6 +22,7 @@ msg_dict = {
     'wrong-audio-text': "<b>Odam ovoziga o'xshamadi,\nIltimos qaytadan yuboring!!!</b>",
     'leaderboard': 'Leaderlar Ro\'yxati bilan tanishish uchun tugmani birini bosing',
     'instructions': 'Botdan foydalanish qo\'llanmasi bilan tanishib chiqing 👇\n\nhttps://telegra.ph/Botdan-foydalanish-qollanmasi-10-31',
+    'choose-field-to-edit': "Quyidagilardan birini tanlang 👇",
 
     'caption': '{}',
 

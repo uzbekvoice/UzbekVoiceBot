@@ -137,3 +137,21 @@ def get_all_users():
     with engine.connect() as conn:
         q = select(user_table)
         return conn.execute(q).fetchall()
+
+
+async def edit_profile(tg_id, age=None, lang=None, accent=None):
+    with engine.connect() as conn:
+        if age is not None:
+            q = update(user_table).where(user_table.c.tg_id == tg_id).values(
+                year_of_birth=age
+            )
+        elif lang is not None:
+            q = update(user_table).where(user_table.c.tg_id == tg_id).values(
+                native_language=lang
+            )
+        elif accent is not None:
+            q = update(user_table).where(user_table.c.tg_id == tg_id).values(
+                accent_region=accent
+            )
+        conn.execute(q)
+        session.commit()
