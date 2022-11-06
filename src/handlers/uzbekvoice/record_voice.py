@@ -56,7 +56,7 @@ async def ask_voice_handler(message: Message, state: FSMContext):
     if check_if_audio_is_short(audio_file, text_to_read):
         await send_message(chat_id, 'audio-is-short-please-try-slower', reply=audio_id)
         await AskUserVoice.ask_voice.set()
-        os.remove(audio_file)
+        # os.remove(audio_file)
         return
 
     sent_audio_id = await send_voice(chat_id, audio_id, 'ask-recheck-voice',
@@ -102,7 +102,7 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
             await delete_message(chat_id, voice_checking_message_id)
             await send_message(chat_id, 'wrong-audio-text', reply=reply_message_id, parse='html')
             await AskUserVoice.ask_voice.set()
-            os.remove(audio_file)
+            # os.remove(audio_file)
             return
         # if user passed validation, save current time
         if validation_required:
@@ -112,7 +112,7 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     else:
         await call.message.delete()
         await ask_to_send_voice(chat_id, text, state)
-        os.remove(audio_file)
+        # os.remove(audio_file)
 
 
 # Handler that receives action on pressed report inline button
