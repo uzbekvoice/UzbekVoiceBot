@@ -120,8 +120,10 @@ async def handle_operation(token, operation):
     elif operation["type"] == "skip_sentence":
         return await skip_sentence(token, sentence_id)
     elif operation["type"] == "send_voice":
+        if not os.path.exists(operation["file_directory"]):
+            print("File not found", operation["file_directory"])
+            return
         await send_text_voice(token, operation["file_directory"], sentence_id)
-        os.remove(operation["file_directory"])
         return
 
     # otherwise throw
