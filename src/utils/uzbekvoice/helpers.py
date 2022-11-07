@@ -83,11 +83,20 @@ async def get_sentence_to_read(tg_id, state):
             async with session.get(GET_TEXT_URL, headers=headers, params={'count': '50'}) as get_request:
                 response_json = await get_request.json()
                 await state.update_data(sentences=response_json)
-                return None if len(response_json) == 0 else response_json[0]
+                return await get_sentence_to_read(tg_id, state)
     else:
+        recorded_sentences = data["recorded_sentence_ids"] if "recorded_sentence_ids" in data else []
         sentences = data["sentences"]
-        sentence = sentences.pop()
+        sentence = None
+        for i in range(len(sentences)):
+            sentence = sentences.pop()
+            if sentence["id"] not in recorded_sentences:
+                break
+            else:
+                sentence = None
         await state.update_data(sentences=sentences)
+        if sentence is None:
+            sentence = await get_sentence_to_read(tg_id, state)
         return sentence
 
 
@@ -103,11 +112,20 @@ async def get_voice_to_check(tg_id, state):
             async with session.get(GET_VOICES_URL, headers=headers, params={'count': '50'}) as get_request:
                 response_json = await get_request.json()
                 await state.update_data(voices=response_json)
-                return None if len(response_json) == 0 else response_json[0]
+                return await get_voice_to_check(tg_id, state)
     else:
+        checked_voices = data["checked_voice_ids"] if "checked_voice_ids" in data else []
         voices = data["voices"]
-        voice = voices.pop()
+        voice = None
+        for i in range(len(voices)):
+            voice = voices.pop()
+            if voice["id"] not in checked_voices:
+                break
+            else:
+                voice = None
         await state.update_data(voices=voices)
+        if voice is None:
+            voice = await get_voice_to_check(tg_id, state)
         return voice
 
 

@@ -108,6 +108,12 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
         if validation_required:
             db.user_validated_now(chat_id)
         await enqueue_operation({'type': 'send_voice', 'file_directory': audio_file, 'sentence_id': text_id}, chat_id)
+        await state.update_data(
+            recorded_sentence_ids=[
+                *(data["recorded_sentence_ids"] if "recorded_sentence_ids" in data else []),
+                text_id
+            ]
+        )
         await ask_to_send_new_voice(chat_id, state)
     else:
         await call.message.delete()
@@ -138,11 +144,23 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     elif command == 'skip':
         await call.message.delete()
         await enqueue_operation({'type': 'skip_sentence', 'sentence_id': text_id}, chat_id)
+        await state.update_data(
+            recorded_sentence_ids=[
+                *(data["recorded_sentence_ids"] if "recorded_sentence_ids" in data else []),
+                text_id
+            ]
+        )
     else:
         await call.message.delete()
         if 'report' in command:
             await enqueue_operation({'type': 'skip_sentence', 'sentence_id': text_id}, chat_id)
             await enqueue_operation({'type': 'report_sentence', 'sentence_id': text_id, 'command': command}, chat_id)
+            await state.update_data(
+                recorded_sentence_ids=[
+                    *(data["recorded_sentence_ids"] if "recorded_sentence_ids" in data else []),
+                    text_id
+                ]
+            )
     await ask_to_send_new_voice(chat_id, state)
 
 

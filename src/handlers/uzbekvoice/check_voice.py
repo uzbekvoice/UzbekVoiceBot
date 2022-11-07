@@ -72,6 +72,12 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     if command != 'submit':
         await call.answer()
         await state.update_data(confirm_state=command)
+        await state.update_data(
+            checked_voice_ids=[
+                *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
+                voice_id
+            ]
+        )
         try:
             await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
         except:
