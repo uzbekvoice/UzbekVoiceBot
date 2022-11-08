@@ -1,7 +1,8 @@
 from aiogram.types import Message
 
-from data.messages import SEND_EVERYONE, BOT_STATISTICS, SEND_CERTAIN
+from data.messages import SEND_EVERYONE, BOT_STATISTICS, SEND_CERTAIN, BLOCK_CERTAIN
 
+from admin.block_certain import block_certain_func
 from admin.send_everyone import send_everyone_func
 from admin.get_bot_stat import get_bot_stat_func
 from admin.send_certain import send_certain_func
@@ -17,7 +18,7 @@ async def ask_admin_commands(message: Message):
 
 
 # Answer to all admin commands
-@dp.message_handler(chat_id=ADMINS_ID, text=[SEND_EVERYONE, BOT_STATISTICS, SEND_CERTAIN])
+@dp.message_handler(chat_id=ADMINS_ID, text=[SEND_EVERYONE, BOT_STATISTICS, SEND_CERTAIN, BLOCK_CERTAIN])
 async def admin_commands(message: Message):
     chat_id = message.chat.id
     admin_command = message.text
@@ -28,6 +29,9 @@ async def admin_commands(message: Message):
 
     elif admin_command == SEND_CERTAIN:
         await send_certain_func(chat_id)
+
+    elif admin_command == BLOCK_CERTAIN:
+        await block_certain_func(chat_id)
 
     # Function to get bot statistics
     elif admin_command == BOT_STATISTICS:

@@ -55,6 +55,11 @@ class AdminSendCertain(StatesGroup):
     ask_send = State()
 
 
+class AdminBanCertain(StatesGroup):
+    ask_correct = State()
+    ask_users = State()
+
+
 class AskUserVoice(StatesGroup):
     ask_voice = State()
     ask_confirm = State()
