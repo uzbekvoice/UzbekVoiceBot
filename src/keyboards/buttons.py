@@ -57,9 +57,8 @@ start_button_4 = KeyboardButton(INSTRUCTIONS)
 start_button_5 = KeyboardButton(MY_PROFILE)
 start_button_6 = KeyboardButton(MY_RATING)
 start_button_7 = KeyboardButton(OVERALL_STATS)
-start_markup.add(start_button_1)
-start_markup.add(start_button_2)
-start_markup.add(*[start_button_3, start_button_4, start_button_5, start_button_6, start_button_7])
+start_markup.add(*[start_button_1, start_button_2, start_button_3, start_button_4,
+                   start_button_5, start_button_6, start_button_7])
 
 
 genders_markup = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
