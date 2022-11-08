@@ -2,14 +2,15 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 from data.messages import INSTRUCTIONS, MY_PROFILE, MY_RATING, RECORD_VOICE, CHECK_VOICE, SEND_EVERYONE, BOT_STATISTICS, \
     CANCEL_MESSAGE, LEADERBOARD, \
-    VOICE_LEADERBOARD, VOTE_LEADERBOARD, SEND_CERTAIN, OVERALL_STATS, BLOCK_CERTAIN
+    VOICE_LEADERBOARD, VOTE_LEADERBOARD, SEND_CERTAIN, OVERALL_STATS, BLOCK_CERTAIN, UNBLOCK_CERTAIN
 
 admin_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 admin_button_1 = KeyboardButton(SEND_EVERYONE)
 admin_button_2 = KeyboardButton(SEND_CERTAIN)
 admin_button_3 = KeyboardButton(BLOCK_CERTAIN)
-admin_button_4 = KeyboardButton(BOT_STATISTICS)
-admin_markup.add(*[admin_button_1, admin_button_2, admin_button_3])
+admin_button_4 = KeyboardButton(UNBLOCK_CERTAIN)
+admin_button_5 = KeyboardButton(BOT_STATISTICS)
+admin_markup.add(*[admin_button_1, admin_button_2, admin_button_3, admin_button_4, admin_button_5])
 
 
 go_back_markup = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)

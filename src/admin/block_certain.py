@@ -1,12 +1,10 @@
-import asyncio
+from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, ReplyKeyboardRemove
 
 
 from main import dp, bot, AdminBanCertain
-from keyboards.buttons import admin_markup, sure_markup, yes_no_markup
 from utils.uzbekvoice.db import User, session
-from .send_everyone import send_copied_post_to_user, send_progress_message
+from keyboards.buttons import admin_markup, yes_no_markup
 
 
 async def block_certain_func(chat_id):
@@ -21,10 +19,9 @@ async def block_certain_func(chat_id):
 async def admin_ask_users(message: Message, state: FSMContext):
     chat_id = message.chat.id
     admin_message = message.text
-    print(admin_message)
     await state.update_data(users=admin_message)
 
-    await bot.send_message(chat_id, 'Ban users or cancel?', reply_markup=yes_no_markup)
+    await bot.send_message(chat_id, 'Ban users or cancel the action?', reply_markup=yes_no_markup)
     await AdminBanCertain.ask_users.set()
 
 
@@ -41,7 +38,7 @@ async def admin_ask_send(message: Message, state: FSMContext):
         await state.finish()
         await bot.send_message(chat_id, 'Action canceled 🚫', reply_markup=admin_markup)
         return
-    await bot.send_message(chat_id, 'Ban users or cancel?', reply_markup=yes_no_markup)
+    await bot.send_message(chat_id, 'Ban users or cancel the action?', reply_markup=yes_no_markup)
     await AdminBanCertain.ask_users.set()
 
 

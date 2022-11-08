@@ -60,6 +60,7 @@ VOICE_REPORT = 'Xabar berish ❗️'
 SEND_EVERYONE = '🔊 Push notification'
 SEND_CERTAIN = '🧑 Send to certain users'
 BLOCK_CERTAIN = '👮 Block certain users'
+UNBLOCK_CERTAIN = '🕊️ Unblock certain users'
 BOT_STATISTICS = '📃 Bot statistics'
 CANCEL_MESSAGE = 'Ortga qaytish ↩'
 

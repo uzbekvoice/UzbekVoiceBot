@@ -122,6 +122,7 @@ def add_user_violation(
         )
         session.commit()
 
+
 def user_validated_now(
         tg_id,
 ):

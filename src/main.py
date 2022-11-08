@@ -60,6 +60,11 @@ class AdminBanCertain(StatesGroup):
     ask_users = State()
 
 
+class AdminUnbanCertain(StatesGroup):
+    ask_correct = State()
+    ask_users = State()
+
+
 class AskUserVoice(StatesGroup):
     ask_voice = State()
     ask_confirm = State()
