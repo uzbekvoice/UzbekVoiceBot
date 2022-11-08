@@ -72,12 +72,6 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     if command != 'submit':
         await call.answer()
         await state.update_data(confirm_state=command)
-        await state.update_data(
-            checked_voice_ids=[
-                *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
-                voice_id
-            ]
-        )
         try:
             await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
         except:
@@ -99,12 +93,24 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     if command == 'skip':
         await call.message.delete()
         await enqueue_operation({'type': 'skip_clip', 'voice_id': voice_id}, chat_id)
+        await state.update_data(
+            checked_voice_ids=[
+                *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
+                voice_id
+            ]
+        )
         await ask_to_check_new_voice(chat_id, state)
         return
 
     if command in ['accept', 'reject']:
         await call.message.delete_reply_markup()
         await enqueue_operation({'type': 'vote', 'voice_id': voice_id, 'command': command}, chat_id)
+        await state.update_data(
+            checked_voice_ids=[
+                *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
+                voice_id
+            ]
+        )
         await ask_to_check_new_voice(chat_id, state)
         return
     print("Error in ask_action_handler", command, voice_id, call_data)
@@ -127,6 +133,12 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
     else:
         await call.message.delete_reply_markup()
         await enqueue_operation({'type': 'report_clip', 'voice_id': voice_id, 'command': command}, chat_id)
+        await state.update_data(
+            checked_voice_ids=[
+                *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
+                voice_id
+            ]
+        )
         await send_message(chat_id, 'reported', parse=ParseMode.MARKDOWN)
         await ask_to_check_new_voice(chat_id, state)
 

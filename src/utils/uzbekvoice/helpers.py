@@ -47,7 +47,7 @@ def get_audio_duration(audio_path):
 
 # gets audio duration in seconds
 def check_if_audio_is_short(audio_path, text):
-    characters_per_second = 36 / 2.35
+    characters_per_second = 18
     audio_duration = get_audio_duration(audio_path)
     text_duration = len(replace(text)) / characters_per_second
     return audio_duration < text_duration
