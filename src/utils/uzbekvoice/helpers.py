@@ -157,12 +157,12 @@ async def send_my_profile(tg_id):
     user = db.get_user(tg_id)
     my_profile = [
         f"👤 Mening profilim:\n\n"
-        f"Ism: *{user['full_name']}*",
-        f"Telegram ID: *{tg_id}*",
-        f"Telefon raqam: *{user['phone_number']}*",
-        f"Yosh oralig'i: *{str(user['year_of_birth'])}*",
-        f"Jinsi: *{user['gender']}*",
-        f"Ona-tili: *{user['native_language']}*",
-        f"Shevasi: *{user['accent_region']}*",
+        f"ID: <code>{tg_id}</code>",
+        f"Ism: <b>{user['full_name']}</b>",
+        f"Telefon raqam: <b>{user['phone_number']}</b>",
+        f"Yosh oralig'i: <b>{str(user['year_of_birth'])}</b>",
+        f"Jinsi: <b>{user['gender']}</b>",
+        f"Ona-tili: <b>{user['native_language']}</b>",
+        f"Shevasi: <b>{user['accent_region']}</b>",
     ]
-    await bot.send_message(tg_id, '\n'.join(my_profile), parse_mode='MARKDOWN', reply_markup=my_profile_markup())
+    await bot.send_message(tg_id, '\n'.join(my_profile), parse_mode="HTML", reply_markup=my_profile_markup())
