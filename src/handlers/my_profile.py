@@ -119,6 +119,7 @@ async def vote_leaderboard(message: Message):
                     clips_position = i['position'] + 1
 
     my_stats = [
+        f"🆔 Tg ID: <code>{message.chat.id}</code>",
         f"<b>🏆 Sizning yutuqlaringiz:</b>\n",
         f"🗣 Yozilgan ovozlar: {recorded_clips}",
         f"📊 Ovoz yozishdagi o'rningiz: {clips_position}\n",
