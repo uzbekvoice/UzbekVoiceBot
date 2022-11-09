@@ -165,7 +165,8 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
 
 
 async def ask_to_check_new_voice(chat_id, state):
-    voice = await get_voice_to_check(chat_id, state)
+    user = db.get_user(chat_id)
+    voice = await get_voice_to_check(chat_id, state, user)
     if voice is None:
         await send_message(chat_id, 'no-voices-to-check', markup=start_markup)
         await state.finish()

@@ -195,8 +195,9 @@ def get_random_incorrect_voice():
     return get_local_clip(random.randint(0, len(incorrect_clip_paths) - 1))
 
 
-async def get_voice_to_check(tg_id, state):
-    use_incorrect_clips = random.randint(1, 5) == 1
+async def get_voice_to_check(tg_id, state, user):
+    probability = user["verification_probability"]
+    use_incorrect_clips = random.random() < probability
     if use_incorrect_clips:
         return get_random_incorrect_voice()
 
@@ -211,7 +212,7 @@ async def get_voice_to_check(tg_id, state):
             async with session.get(GET_VOICES_URL, headers=headers, params={'count': '50'}) as get_request:
                 response_json = await get_request.json()
                 await state.update_data(voices=response_json)
-                return await get_voice_to_check(tg_id, state)
+                return await get_voice_to_check(tg_id, state, user)
     else:
         checked_voices = data["checked_voice_ids"] if "checked_voice_ids" in data else []
         voices = data["voices"]
@@ -224,7 +225,7 @@ async def get_voice_to_check(tg_id, state):
                 voice = None
         await state.update_data(voices=voices)
         if voice is None:
-            voice = await get_voice_to_check(tg_id, state)
+            voice = await get_voice_to_check(tg_id, state, user)
         return voice
 
 
