@@ -30,6 +30,11 @@ class User(Base):
     __tablename__ = 'user_account'
     id = Column(BigInteger, primary_key=True)
     tg_id = Column(BigInteger, unique=True)
+    under_investigation = Column(Boolean, default=False, nullable=False)
+    offset_score = Column(BigInteger, default=0, nullable=False)
+    karma = Column(BigInteger, default=0, nullable=False)
+    correct_count = Column(BigInteger, default=0, nullable=False)
+    error_count = Column(BigInteger, default=0, nullable=False)
     uuid = Column(String(40), unique=True)
     access_token = Column(String(40), unique=True)
     full_name = Column(String(300))
@@ -120,6 +125,38 @@ def add_user_violation(
                 client_id=user.uuid
             )
         )
+        session.commit()
+
+
+def is_user_under_investigation(
+        tg_id,
+):
+    with engine.connect() as conn:
+        user = get_user(tg_id)
+        return user.under_investigation
+
+
+def increase_user_error_count(
+        tg_id
+):
+    with engine.connect() as conn:
+        q = update(user_table).where(user_table.c.tg_id == tg_id).values(
+            error_count=user_table.c.error_count + 1,
+            karma=user_table.c.karma - 1
+        )
+        conn.execute(q)
+        session.commit()
+
+
+def increase_user_correct_count(
+        tg_id
+):
+    with engine.connect() as conn:
+        q = update(user_table).where(user_table.c.tg_id == tg_id).values(
+            correct_count=user_table.c.correct_count + 1,
+            karma=user_table.c.karma + 1
+        )
+        conn.execute(q)
         session.commit()
 
 

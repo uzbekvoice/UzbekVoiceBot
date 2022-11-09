@@ -100,7 +100,106 @@ async def get_sentence_to_read(tg_id, state):
         return sentence
 
 
+sample_sentences = [
+    "Bu voqea yuzaga chiqqaniga ishonolmasdim.",
+    "Nilning Misr poytaxti Qohiradagi ko‘rinishi.",
+    "Rekord yana yangilanishda davom etadi.",
+    "Chunki aslida, fonogrammani jinim suymaydi.",
+    "Shu mahallaning egasi-ku sizlar!",
+    "Maqtashga arzigulik filmlar yo‘q deysizmi?",
+    "Umrni uzaytirish xususiyatiga ega mahsulotlar.",
+    "U yetarli darajada bo‘lishi kerak.",
+    "Medal bilan nima bo‘lishi noaniq.",
+    "O‘ylab ko‘rsam, undan ko‘nglim to‘lgan.",
+    "San’atning bu yo‘nalishidagi ijrongizdan qoniqasizmi?",
+    "Italiya sohilni qo‘riqlash xizmati kemasi.",
+    "Ayting-chi, musobaqa qanday o‘tdi?",
+    "Xitoydagi koronavirusga vaqtinchalik nom berildi.",
+    "Ular ish bilan ta’minlanishi mumkin.",
+    "Hozir biz Penrouz ishiga o‘tamiz.",
+    "Biroq qonun talablariga rioya etildi”.",
+    "U hozirda Iordaniyada bo‘lib turibdi.",
+    "Lekin uni xonanda deb bilmayman.",
+    "Umidaxondan eng sevimli taomlar shohsupasi.",
+    "Ella Kennining turmush o‘rtog‘i Ukrainadan.",
+    "Muddatimiz tugab, u yerdan kettik.",
+    "Bu siyosat o‘zini to‘la oqladi.",
+    "Uni ovqat yeyishga majbur qilmang.",
+    "Bunaqasi tarixda birinchi marta bo‘lishi!",
+    "Ichimlik tozalangan qahva kabi damlanadi.",
+    "Aslida bu belgi yaxshi emas.",
+    "Alessandra bilan ishlash maroqli kechmoqda.",
+    "No frost texnologiyasi shunchalik zarurmi?",
+    "Qurilma mart o‘rtalaridan sotuvga chiqadi.",
+    "Bu borada muhokamalar olib borilgan.",
+    "Jinoyatchilar yana uning gapiga kirgan.",
+    "Bitkoinning kursiga nima ta’sir qiladi?",
+    "Quyida ular bilan sizlarni tanishtiramiz.",
+    "Shaharlar shiddat bilan o‘sib bormoqda.",
+    "Bu gaplarni eshitib kulgingiz keladi.",
+    "Lekin tajriba qilishdan qo‘rqmaslik lozim.",
+    "Birinchisida qiz, ikkinchisida o‘g‘il degandi.",
+    "Lumumba esa uy qamog‘ida qolaveradi.",
+    "Ayb menda yoki Viktorda emas.",
+    "Aksariyat onalar kasallikni yengil o‘tkazgan.",
+    "Mahsulotlarga narxlar to‘la yozib qo‘yildi.",
+    "U sanoqli kunlari qolayotganini tushunardi.",
+    "O‘zbekiston delegatsiyasining tashrifi davom etmoqda.",
+    "Allohning mo‘jizasi bilan shifo topdim.",
+    "Qizaloq shifoxonada hayotdan ko‘z yumgan.",
+    "Yangiliklar daryosidan chetda qolib ketmang!"
+]
+
+
+incorrect_clip_paths = [
+    "src/incorrect_clips/1.mp3",
+    "src/incorrect_clips/2.mp3",
+    "src/incorrect_clips/3.mp3",
+    "src/incorrect_clips/4.mp3",
+    "src/incorrect_clips/5.mp3",
+    "src/incorrect_clips/6.mp3",
+    "src/incorrect_clips/7.mp3",
+    "src/incorrect_clips/8.mp3",
+    "src/incorrect_clips/9.mp3",
+    "src/incorrect_clips/10.mp3",
+    "src/incorrect_clips/11.mp3",
+    "src/incorrect_clips/12.mp3",
+    "src/incorrect_clips/13.mp3",
+    "src/incorrect_clips/14.mp3"
+]
+
+
+def is_local_clip_id(clip_id):
+    return int(clip_id) >= 9999999990
+
+
+def is_local_clip(clip):
+    return is_local_clip_id(clip["id"])
+
+
+def get_local_clip(index):
+    real_index = int(index) - 9999999990 if is_local_clip_id(index) else int(index)
+    path = incorrect_clip_paths[real_index]
+    sentence = random.choice(sample_sentences)
+    return {
+        "id": 9999999990 + real_index,
+        "is_correct": False,
+        "local_path": path,
+        "sentence": {
+            "text": sentence,
+        },
+    }
+
+
+def get_random_incorrect_voice():
+    return get_local_clip(random.randint(0, len(incorrect_clip_paths) - 1))
+
+
 async def get_voice_to_check(tg_id, state):
+    use_incorrect_clips = random.randint(1, 5) == 1
+    if use_incorrect_clips:
+        return get_random_incorrect_voice()
+
     data = await state.get_data()
     if "voices" not in data or len(data["voices"]) == 0:
         headers = {

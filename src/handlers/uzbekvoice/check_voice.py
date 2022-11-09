@@ -9,7 +9,8 @@ from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup, IsRegistered, \
     IsBlockedUser, IsSubscribedChannel
-from utils.uzbekvoice.helpers import get_voice_to_check, download_file, get_audio_duration, enqueue_operation
+from utils.uzbekvoice.helpers import get_voice_to_check, download_file, get_audio_duration, enqueue_operation, \
+    is_local_clip, is_local_clip_id, get_local_clip
 import utils.uzbekvoice.db as db
 
 from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STEP, REPORT_TEXT_1, \
@@ -81,39 +82,49 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
 
     command = confirm_state
     last_sent_time = data['last_sent_time']
-    if time.time() - last_sent_time < clip_duration + 0.3 and command in ['accept', 'reject']:
+    if time.time() - last_sent_time < clip_duration - 0.5 and command in ['accept', 'reject']:
         try:
             db.add_user_violation(chat_id, 'vote_streak')
         except Exception as e:
             print(e)
         return await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+    elif is_local_clip_id(voice_id):
+        voice = get_local_clip(voice_id)
+        if not voice["is_correct"] and command == 'accept':
+            db.add_user_violation(chat_id, 'false_positive')
+            db.increase_user_error_count(chat_id)
+            if not db.is_user_under_investigation(chat_id):
+                await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+        elif voice["is_correct"] and command == 'reject':
+            db.add_user_violation(chat_id, 'false_negative')
+            db.increase_user_error_count(chat_id)
+            if not db.is_user_under_investigation(chat_id):
+                await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+        else:
+            db.increase_user_correct_count(chat_id)
+        await call.message.delete_reply_markup()
     else:
         await call.answer()
-
-    if command == 'skip':
-        await call.message.delete()
-        await enqueue_operation({'type': 'skip_clip', 'voice_id': voice_id}, chat_id)
+        await enqueue_operation(
+            {
+                'type': 'skip_clip' if command == 'skip' else 'vote',
+                'voice_id': voice_id,
+                'command': command
+            },
+            chat_id
+        )
         await state.update_data(
             checked_voice_ids=[
                 *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
                 voice_id
             ]
         )
-        await ask_to_check_new_voice(chat_id, state)
-        return
+        if command == 'skip':
+            await call.message.delete()
+        else:
+            await call.message.delete_reply_markup()
 
-    if command in ['accept', 'reject']:
-        await call.message.delete_reply_markup()
-        await enqueue_operation({'type': 'vote', 'voice_id': voice_id, 'command': command}, chat_id)
-        await state.update_data(
-            checked_voice_ids=[
-                *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
-                voice_id
-            ]
-        )
-        await ask_to_check_new_voice(chat_id, state)
-        return
-    print("Error in ask_action_handler", command, voice_id, call_data)
+    await ask_to_check_new_voice(chat_id, state)
 
 
 # Handler that receives action on pressed report inline button
@@ -131,15 +142,25 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
         await AskUserAction.ask_action.set()
         return
     else:
+        if is_local_clip_id(voice_id):
+            voice = get_local_clip(voice_id)
+            if voice["is_correct"]:
+                db.add_user_violation(chat_id, 'false_negative')
+                db.increase_user_error_count(chat_id)
+                if not db.is_user_under_investigation(chat_id):
+                    await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+            else:
+                db.increase_user_correct_count(chat_id)
+        else:
+            await enqueue_operation({'type': 'report_clip', 'voice_id': voice_id, 'command': command}, chat_id)
+            await state.update_data(
+                checked_voice_ids=[
+                    *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
+                    voice_id
+                ]
+            )
+            await send_message(chat_id, 'reported', parse=ParseMode.MARKDOWN)
         await call.message.delete_reply_markup()
-        await enqueue_operation({'type': 'report_clip', 'voice_id': voice_id, 'command': command}, chat_id)
-        await state.update_data(
-            checked_voice_ids=[
-                *(data["checked_voice_ids"] if "checked_voice_ids" in data else []),
-                voice_id
-            ]
-        )
-        await send_message(chat_id, 'reported', parse=ParseMode.MARKDOWN)
         await ask_to_check_new_voice(chat_id, state)
 
 
@@ -151,8 +172,9 @@ async def ask_to_check_new_voice(chat_id, state):
         return
     text_to_check = voice['sentence']['text']
     voice_id = voice['id']
-    voice_url = voice['audioSrc']
-    voice_file = await download_file(voice_url, '{}_{}'.format(chat_id, voice_id))
+    voice_file = voice['local_path'] \
+        if is_local_clip(voice) else \
+        await download_file(voice['audioSrc'], '{}_{}'.format(chat_id, voice_id))
     message_id = await send_voice(chat_id, open(voice_file, 'rb'), 'caption', args=text_to_check)
     clip_duration = get_audio_duration(voice_file)
     await state.update_data(last_sent_time=time.time())
@@ -161,4 +183,5 @@ async def ask_to_check_new_voice(chat_id, state):
     await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, None))
     await state.update_data(reply_message_id=message_id)
     await AskUserAction.ask_action.set()
-    os.remove(voice_file)
+    if not is_local_clip(voice):
+        os.remove(voice_file)
