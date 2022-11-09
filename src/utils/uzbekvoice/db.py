@@ -10,7 +10,8 @@ from sqlalchemy import (
     select,
     Table,
     update,
-    DATETIME
+    DATETIME,
+    Float
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base, Session
@@ -30,6 +31,7 @@ class User(Base):
     __tablename__ = 'user_account'
     id = Column(BigInteger, primary_key=True)
     tg_id = Column(BigInteger, unique=True)
+    verification_probability = Column(Float, default=0.2, nullable=False)
     under_investigation = Column(Boolean, default=False, nullable=False)
     offset_score = Column(BigInteger, default=0, nullable=False)
     karma = Column(BigInteger, default=0, nullable=False)
@@ -140,9 +142,11 @@ def increase_user_error_count(
         tg_id
 ):
     with engine.connect() as conn:
+        user = get_user(tg_id)
         q = update(user_table).where(user_table.c.tg_id == tg_id).values(
             error_count=user_table.c.error_count + 1,
-            karma=user_table.c.karma - 1
+            karma=user_table.c.karma - 1,
+            verification_probability=min(user.verification_probability + 0.2, 0.8)
         )
         conn.execute(q)
         session.commit()
@@ -152,9 +156,11 @@ def increase_user_correct_count(
         tg_id
 ):
     with engine.connect() as conn:
+        user = get_user(tg_id)
         q = update(user_table).where(user_table.c.tg_id == tg_id).values(
             correct_count=user_table.c.correct_count + 1,
-            karma=user_table.c.karma + 1
+            karma=user_table.c.karma + 1,
+            verification_probability=max(user.verification_probability - 0.2, 0.15)
         )
         conn.execute(q)
         session.commit()
