@@ -63,7 +63,7 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     command, voice_id = call_data.split('/')
     data = await state.get_data()
     confirm_state = data['confirm_state'] if 'confirm_state' in data else None
-    clip_duration = data['clip_duration'] if 'clip_duration' in data else 0
+    # clip_duration = data['clip_duration'] if 'clip_duration' in data else 0
     if command == 'report':
         await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
@@ -79,18 +79,18 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         return
 
     command = confirm_state
-    last_sent_time = data['last_sent_time']
-    if time.time() - last_sent_time < clip_duration - 0.5 and command in ['accept', 'reject']:
-        try:
-            db.add_user_violation(chat_id, 'vote_streak')
-        except Exception as e:
-            print(e)
-        try:
-            await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
-        except:
-            pass
-        return
-    elif is_local_clip_id(voice_id):
+    # last_sent_time = data['last_sent_time']
+    # if time.time() - last_sent_time < clip_duration - 0.5 and command in ['accept', 'reject']:
+    #     try:
+    #         db.add_user_violation(chat_id, 'vote_streak')
+    #     except Exception as e:
+    #         print(e)
+    #     try:
+    #         await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+    #     except:
+    #         pass
+    #     return
+    if is_local_clip_id(voice_id):
         voice = get_local_clip(voice_id)
         if not voice["is_correct"] and command == 'accept':
             db.add_user_violation(chat_id, 'false_positive')
