@@ -65,19 +65,11 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
     confirm_state = data['confirm_state'] if 'confirm_state' in data else None
     clip_duration = data['clip_duration'] if 'clip_duration' in data else 0
     if command == 'report':
-        try:
-            await call.answer()
-        except:
-            pass
         await edit_reply_markup(chat_id, message_id, report_voice_markup(voice_id))
         await AskUserAction.report_type.set()
         return
 
     if command != 'submit':
-        try:
-            await call.answer()
-        except:
-            pass
         await state.update_data(confirm_state=command)
         try:
             await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, command))
@@ -93,27 +85,33 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
             db.add_user_violation(chat_id, 'vote_streak')
         except Exception as e:
             print(e)
-        return await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+        try:
+            await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+        except:
+            pass
+        return
     elif is_local_clip_id(voice_id):
         voice = get_local_clip(voice_id)
         if not voice["is_correct"] and command == 'accept':
             db.add_user_violation(chat_id, 'false_positive')
             db.increase_user_error_count(chat_id)
             if not db.is_user_under_investigation(chat_id):
-                await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+                try:
+                    await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+                except:
+                    pass
         elif voice["is_correct"] and command == 'reject':
             db.add_user_violation(chat_id, 'false_negative')
             db.increase_user_error_count(chat_id)
             if not db.is_user_under_investigation(chat_id):
-                await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+                try:
+                    await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+                except:
+                    pass
         else:
             db.increase_user_correct_count(chat_id)
         await call.message.delete_reply_markup()
     else:
-        try:
-            await call.answer()
-        except:
-            pass
         await enqueue_operation(
             {
                 'type': 'skip_clip' if command == 'skip' else 'vote',
@@ -157,7 +155,10 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
                 db.add_user_violation(chat_id, 'false_negative')
                 db.increase_user_error_count(chat_id)
                 if not db.is_user_under_investigation(chat_id):
-                    await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+                    try:
+                        await call.answer(LISTEN_AUDIO_FIRST, show_alert=True)
+                    except:
+                        pass
             else:
                 db.increase_user_correct_count(chat_id)
         else:

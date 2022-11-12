@@ -87,8 +87,11 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
     text = data['text']
     text_id = text['id']
     if str(reply_message_id) != str(message_id):
-        return await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
-    await call.answer()
+        try:
+            await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
+        except:
+            pass
+        return
 
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
     await call.message.delete_reply_markup()
@@ -133,7 +136,8 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     command = call_data
     text_id = text["id"]
     if str(reply_message_id) != str(message_id):
-        return await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
+        await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
+        return
     if command == 'back':
         await edit_reply_markup(chat_id, message_id, text_markup())
         await AskUserVoice.ask_voice.set()
