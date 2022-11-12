@@ -50,9 +50,9 @@ async def send_voice_vote(token, voice_id, is_valid):
     data = {'challenge': 'null', "isValid": is_valid}
     request_url = VOICE_VOTE_URL.format(voice_id)
     async with aiohttp.ClientSession() as session:
-        async with session.post(request_url, data=json.dumps(data), headers=headers) as posted_vote:
-            status = posted_vote.status
-            if status == 200:
+        async with session.post(request_url, data=json.dumps(data), headers=headers) as response:
+            status = response.status
+            if status == 200 or status == 204:
                 return
             else:
                 raise Exception("Error sending vote")
@@ -67,8 +67,13 @@ async def skip_voice(token, voice_id):
 
     request_url = SKIP_VOICE_URL.format(int(voice_id))
     async with aiohttp.ClientSession() as session:
-        async with session.post(request_url, headers=headers) as skipped_voice:
-            skipped_voice_response = await skipped_voice.json()
+        async with session.post(request_url, headers=headers) as response:
+            status = response.status
+            if status == 204 or status == 200:
+                return
+            else:
+                raise Exception("Error skipping voice")
+
 
 
 async def skip_sentence(token, sentence_id):
@@ -79,8 +84,13 @@ async def skip_sentence(token, sentence_id):
 
     request_url = SKIP_SENTENCE_URL.format(sentence_id)
     async with aiohttp.ClientSession() as session:
-        async with session.post(request_url, headers=headers) as skipped_sentence:
-            skipped_sentence_response = await skipped_sentence.json()
+        async with session.post(request_url, headers=headers) as response:
+            status = response.status
+            if status == 204 or status == 200:
+                return
+            else:
+                raise Exception("Error skipping sentence")
+
 
 
 async def report_function(token, kind, id_to_report, report_type):
@@ -102,8 +112,12 @@ async def report_function(token, kind, id_to_report, report_type):
     data = {"kind": kind, "id": id_to_report, "reasons": [reason]}
     print(data)
     async with aiohttp.ClientSession() as session:
-        async with session.post(REPORT_URL, data=json.dumps(data), headers=headers) as post_report:
-            posted_report_response = await post_report.json()
+        async with session.post(REPORT_URL, data=json.dumps(data), headers=headers) as response:
+            status = response.status
+            if status == 204 or status == 200:
+                return
+            else:
+                raise Exception("Error reporting")
 
 
 async def handle_operation(token, operation):
