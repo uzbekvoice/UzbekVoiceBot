@@ -110,7 +110,10 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
                     pass
         else:
             db.increase_user_correct_count(chat_id)
-        await call.message.delete_reply_markup()
+        try:
+            await call.message.delete_reply_markup()
+        except:
+            pass
     else:
         await enqueue_operation(
             {
@@ -129,7 +132,10 @@ async def ask_action_handler(call: CallbackQuery, state: FSMContext):
         if command == 'skip':
             await call.message.delete()
         else:
-            await call.message.delete_reply_markup()
+            try:
+                await call.message.delete_reply_markup()
+            except:
+                pass
 
     await ask_to_check_new_voice(chat_id, state)
 
@@ -170,7 +176,10 @@ async def ask_report_type_handler(call: CallbackQuery, state: FSMContext):
                 ]
             )
             await send_message(chat_id, 'reported', parse=ParseMode.MARKDOWN)
-        await call.message.delete_reply_markup()
+        try:
+            await call.message.delete_reply_markup()
+        except:
+            pass
         await ask_to_check_new_voice(chat_id, state)
 
 

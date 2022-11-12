@@ -94,7 +94,10 @@ async def ask_confirm_handler(call: CallbackQuery, state: FSMContext):
         return
 
     audio_file = str(BASE_DIR / 'downloads' / '{}_{}.ogg'.format(chat_id, text_id))
-    await call.message.delete_reply_markup()
+    try:
+        await call.message.delete_reply_markup()
+    except:
+        pass
     if command == 'confirm-voice':
         voice_checking_message_id = await send_message(chat_id, 'voice-checking')
         user = db.get_user(chat_id)
