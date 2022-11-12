@@ -17,6 +17,9 @@ async def not_found_command(message: Message, state: FSMContext):
 
 @dp.callback_query_handler(state="*")
 async def not_found_button(call: CallbackQuery, state: FSMContext):
-    await call.answer()
+    try:
+        await call.answer()
+    except:
+        pass
     await delete_message_markup(call.message.chat.id, call.message.message_id)
     await start.start_command(call.message, state)

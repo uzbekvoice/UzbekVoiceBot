@@ -136,7 +136,10 @@ async def ask_report_handler(call: CallbackQuery, state: FSMContext):
     command = call_data
     text_id = text["id"]
     if str(reply_message_id) != str(message_id):
-        await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
+        try:
+            await call.answer('Xatolik yuz berdi, iltimos qaytadan yuboring!!!', show_alert=True)
+        except:
+            pass
         return
     if command == 'back':
         await edit_reply_markup(chat_id, message_id, text_markup())
