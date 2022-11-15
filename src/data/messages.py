@@ -41,7 +41,8 @@ msg_dict = {
     'banned': "⛔ Siz takroriy qoidabuzarliklar sababli qora ro'yxatdasiz.",
     'about-project': 'O\'zbek nutqini kompyuterga o\'rgatish tashabbusi\n'
                      'Hozirgi vaqtda biz ma\'lumotlar to\'plami yeg\'ish ustida ishlayapmiz\n\n'
-                     'Bizning ijtimoiy tarmoqlar: \n[Telegram](https://t.me/UzbekVoiceai) | '
+                     'Bizning ijtimoiy tarmoqlar: \n[TG Kanal](https://t.me/UzbekVoiceai) | '
+                     '[TG Jamiat](https://t.me/uzbekvoice) | '
                      '[Instagram](https://www.instagram.com/uzbekvoice.ai/) | '
                      '[Veb-sayt](https://uzbekvoice.ai/)'
 }
