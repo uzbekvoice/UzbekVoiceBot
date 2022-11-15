@@ -39,9 +39,9 @@ msg_dict = {
     'reported': '_👮 Ma\'muriyatga xabar berildi. Qoidabuzarlarga qarshi qo\'shgan hissangiz uchun tashakkur!_',
     'channel': "📢 Birinchi bo'lib bizning kanalimizga obuna bo'ling:\nKanal: @UzbekVoiceai",
     'banned': "⛔ Siz takroriy qoidabuzarliklar sababli qora ro'yxatdasiz.",
-    'about-project': 'O\'zbek nutqini kompyuterga o\'rgatish tashabbusi.\n'
+    'about-project': '🇺🇿 O\'zbek nutqini kompyuterga o\'rgatish tashabbusi.\n'
                      'Hozirgi vaqtda biz ma\'lumotlar to\'plami yig\'ish ustida ishlayapmiz\n\n'
-                     'Bizning ijtimoiy tarmoqlar: \n[TG Kanal](https://t.me/UzbekVoiceai) | '
+                     '📢 Bizning ijtimoiy tarmoqlar: \n[TG Kanal](https://t.me/UzbekVoiceai) | '
                      '[TG Jamiyat](https://t.me/uzbekvoice) | '
                      '[Instagram](https://www.instagram.com/uzbekvoice.ai/) | '
                      '[Veb-sayt](https://uzbekvoice.ai/)'
