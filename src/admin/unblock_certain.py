@@ -9,8 +9,6 @@ from keyboards.buttons import admin_markup, yes_no_markup, start_markup
 
 async def unblock_certain_func(chat_id):
     users = session.query(User).filter(User.is_banned == 1)
-    print(users)
-    print(11111111111111111)
     data = {
         '|FIO|': [],
         '|TG_ID|': []

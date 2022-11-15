@@ -39,18 +39,24 @@ msg_dict = {
     'reported': '_👮 Ma\'muriyatga xabar berildi. Qoidabuzarlarga qarshi qo\'shgan hissangiz uchun tashakkur!_',
     'channel': "📢 Birinchi bo'lib bizning kanalimizga obuna bo'ling:\nKanal: @UzbekVoiceai",
     'banned': "⛔ Siz takroriy qoidabuzarliklar sababli qora ro'yxatdasiz.",
+    'about-project': 'O\'zbek nutqini kompyuterga o\'rgatish tashabbusi\n'
+                     'Hozirgi vaqtda biz ma\'lumotlar to\'plami yeg\'ish ustida ishlayapmiz\n\n'
+                     'Bizning ijtimoiy tarmoqlar: \n[Telegram](https://t.me/UzbekVoiceai) | '
+                     '[Instagram](https://www.instagram.com/uzbekvoice.ai/) | '
+                     '[Veb-sayt](https://uzbekvoice.ai/)'
 }
 
 VOICE_LEADERBOARD = '🗣 Jami Yozilgan Audiolar liderlari'
 VOTE_LEADERBOARD = '🔊 Tekshirilgan Audiolar liderlari'
 
-RECORD_VOICE = '🗣 Matn o\'qish'
-CHECK_VOICE = '🔊 Ovoz yozuvlarini tekshirish'
+RECORD_VOICE = '🗣 Matn O\'qish'
+CHECK_VOICE = '🔊 Ovozlarni Tekshirish'
 LEADERBOARD = "📃 Liderlar ro'yxati"
 INSTRUCTIONS = "📘 Qo'llanma"
 MY_PROFILE = "👤 Mening profilim"
 MY_RATING = "📊 Mening statistikam"
 OVERALL_STATS = "📈 Loyiha statistikasi"
+ABOUT_PROJECT = "ℹ Loyiha haqida"
 
 VOICE_CORRECT = 'To\'g\'ri 👍'
 VOICE_INCORRECT = 'Noto\'g\'ri 👎'
