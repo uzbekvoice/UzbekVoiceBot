@@ -1,10 +1,10 @@
 import time
 import os
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup, \
-    ReplyKeyboardRemove
+from aiogram.types import Message, CallbackQuery, ParseMode
+from aiogram.utils.exceptions import BadRequest
 
-from main import dp, AskUserAction, bot
+from main import dp, AskUserAction
 from keyboards.buttons import start_markup, go_back_markup
 from keyboards.inline import yes_no_markup, report_voice_markup
 from utils.helpers import send_message, send_voice, edit_reply_markup, delete_message_markup, IsRegistered, \
@@ -13,9 +13,7 @@ from utils.uzbekvoice.helpers import get_voice_to_check, download_file, get_audi
     is_local_clip, is_local_clip_id, get_local_clip
 import utils.uzbekvoice.db as db
 
-from data.messages import VOICE_INCORRECT, VOICE_CORRECT, VOICE_REPORT, SKIP_STEP, REPORT_TEXT_1, \
-    REPORT_TEXT_2, REPORT_TEXT_3, REPORT_TEXT_4, REPORT_TEXT_5, CONFIRM_VOICE_TEXT, REJECT_VOICE_TEXT, \
-    VOICE_LEADERBOARD, VOTE_LEADERBOARD, CHECK_VOICE, CANCEL_MESSAGE, LISTEN_AUDIO_FIRST
+from data.messages import CHECK_VOICE, CANCEL_MESSAGE, LISTEN_AUDIO_FIRST
 
 
 # Handler that answers to Check Voice message
@@ -195,13 +193,16 @@ async def ask_to_check_new_voice(chat_id, state):
     voice_file = voice['local_path'] \
         if is_local_clip(voice) else \
         await download_file(voice['audioSrc'], '{}_{}'.format(chat_id, voice_id))
-    message_id = await send_voice(chat_id, open(voice_file, 'rb'), 'caption', args=text_to_check)
-    clip_duration = get_audio_duration(voice_file)
-    await state.update_data(last_sent_time=time.time())
-    await state.update_data(clip_duration=clip_duration)
-    await state.update_data(confirm_state=None)
-    await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, None))
-    await state.update_data(reply_message_id=message_id)
-    await AskUserAction.ask_action.set()
-    if not is_local_clip(voice):
-        os.remove(voice_file)
+    try:
+        message_id = await send_voice(chat_id, open(voice_file, 'rb'), 'caption', args=text_to_check)
+        clip_duration = get_audio_duration(voice_file)
+        await state.update_data(last_sent_time=time.time())
+        await state.update_data(clip_duration=clip_duration)
+        await state.update_data(confirm_state=None)
+        await edit_reply_markup(chat_id, message_id, yes_no_markup(voice_id, None))
+        await state.update_data(reply_message_id=message_id)
+        await AskUserAction.ask_action.set()
+        if not is_local_clip(voice):
+            os.remove(voice_file)
+    except BadRequest:
+        await send_message(chat_id, 'allow-send-voice')

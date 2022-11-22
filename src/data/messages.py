@@ -19,6 +19,7 @@ msg_dict = {
 
     'action-rejected': 'Bekor qilindi',
     'voice-checking': 'Ovozingizni suniy idrok tekshirmoqda...',
+    'allow-send-voice': '❗️⚠️ Iltimos, telegram sozlamalarida ovozli xabar yuborishga ruxsat bering.',
     'wrong-audio-text': "<b>Odam ovoziga o'xshamadi,\nIltimos qaytadan yuboring!!!</b>",
     'leaderboard': 'Leaderlar Ro\'yxati bilan tanishish uchun tugmani birini bosing',
     'instructions': 'Botdan foydalanish qo\'llanmasi bilan tanishib chiqing 👇\n\nhttps://telegra.ph/Botdan-foydalanish-qollanmasi-10-31',
